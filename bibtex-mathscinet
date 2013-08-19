@@ -20,36 +20,15 @@ def _main():
     for bib_id in data.entries:
         k += 1
         b = data.entries[bib_id].fields
-        title = b['title']
-        # Extract
-        try:
-            author_lastname = re.sub('([^,]+),.*', r'\1', b['author'])
-        except:
-            author_lastname = ''
-        try:
-            year = b['year']
-        except:
-            year = ''
-        title = title.replace('{', '')
-        title = title.replace('}', '')
-        title = title.replace('(', '')
-        title = title.replace(')', '')
-        title = title.replace('$', '')
-        # Replacing some common TeX symbols.
-        title = title.replace('\\"a', u'ä')
-        title = title.replace('\\"o', u'ö')
-        title = title.replace('\\"u', u'ü')
-        title = title.replace('\\"A', u'Ä')
-        title = title.replace('\\"O', u'Ö')
-        title = title.replace('\\"U', u'Ü')
         # Clean up the title string.
         print('Searching for entry %d/%d...' % (k, n))
         try:
-            bibtex_entry = _find_on_mathscinet(author_lastname, title, year)
+            bibtex_entry = _find_on_mathscinet(b)
         except RuntimeError as e:
-            print('Entry \n\n%s\n\nnot found (\'%s\').' % (title, e.message))
+            print('Entry not found (\'%s\').' % e.message)
             # Write out the old entry to file.
             a = _get_string_representation(data.entries[bib_id])
+            print(a)
             out.write('# Error when fetching the following entry from mathscinet (%s).\n' % e.message)
             out.write(a)
         else:
@@ -88,7 +67,7 @@ def _read_bibtex(filename):
 
     return data
 # -----------------------------------------------------------------------------
-def _find_on_mathscinet(author, title, year):
+def _find_on_mathscinet(entry):
     import requests
 
     #url = 'http://www.ams.org/mathscinet/search/publications.html'
@@ -97,34 +76,81 @@ def _find_on_mathscinet(author, title, year):
     # Typical search query line:
     # http://www.ams.org/mathscinet/search/publications.html?pg4=AUCN&s4=&co4=AND&pg5=TI&s5=ggg&co5=AND&pg6=PC&s6=&co6=AND&pg7=ALLF&s7=&co7=AND&Submit=Search&dr=all&yrop=eq&arg3=&yearRangeFirst=&yearRangeSecond=&pg8=ET&s8=All&review_format=html
     #
-    attempts = [{'title': title,
-                 'author': '',
-                 'dr': 'all', 'year': ''},
-                {'title': title,
-                 'author': author,
-                 'dr': 'all', 'year': ''},
-                {'title': title,
-                 'author': author,
-                 'dr': 'pubyear', 'year': year}
-                ]
+    # Specify the search criteria.
+    # The loop below will first search for title only, then title and author,
+    # and so forth, until a unique match is found.
+    #
+    search_criteria = ['title', 'author', 'year', 'journal']
     success = False
-    for attempt in attempts:
-        payload = {'pg4': 'AUCN', 's4': attempt['author'], 'co4': 'AND',
-                   'pg5': 'TI', 's5': attempt['title'], 'co5': 'AND',
-                   'pg6': 'PC', 's6': '', 'co6': 'AND',
-                   'pg7': 'ALLF', 's7': '', 'co7': 'AND',
-                   'Submit': 'Search',
-                   'dr': attempt['dr'],
-                   'yrop': 'eq',
-                   'arg3': attempt['year'],
-                   'yearRangeFirst': '',
-                   'yearRangeSecond': '',
-                   'pg8': 'ET',
-                   's8': 'All',
-                   'review_format': 'html',
-                   'fmt': 'bibtex' # immediately jump to BibTeX
-                   }
+    # default (empty) payload
+    payload = {'pg4': 'AUCN', 's4': '', 'co4': 'AND',
+               'pg5': 'TI',   's5': '', 'co5': 'AND',
+               'pg6': 'PC',   's6': '', 'co6': 'AND',
+               'pg7': 'ALLF', 's7': '', 'co7': 'AND',
+               'Submit': 'Search',
+               'dr': 'all',
+               'yrop': 'eq',
+               'arg3': '',
+               'yearRangeFirst': '',
+               'yearRangeSecond': '',
+               'pg8': 'ET',
+               's8': 'All',
+               'review_format': 'html',
+               'fmt': 'bibtex' # immediately jump to BibTeX
+               }
+    for sc in search_criteria:
+        # Add a search criterion.
+        if sc == 'title':
+            try:
+                title = entry['title']
+            except:
+                continue
+            title = title.replace('{', '')
+            title = title.replace('}', '')
+            title = title.replace('(', '')
+            title = title.replace(')', '')
+            title = title.replace('$', '')
+            # Replacing some common TeX symbols.
+            title = title.replace('\\"a', u'ä')
+            title = title.replace('\\"o', u'ö')
+            title = title.replace('\\"u', u'ü')
+            title = title.replace('\\"A', u'Ä')
+            title = title.replace('\\"O', u'Ö')
+            title = title.replace('\\"U', u'Ü')
+            payload['pg4'] = 'TI'
+            payload['s4'] = title
+        elif sc == 'author':
+            authors = entry['author'].split(' and ')
+            try:
+                author_lastname = re.sub('([^,]+),.*', r'\1', authors[0])
+            except:
+                continue
+            payload['pg5'] = 'AUCN'
+            payload['s5'] = author_lastname
+            # If there is more than one author, include it too.
+            if len(authors) > 1:
+                try:
+                    author_lastname = re.sub('([^,]+),.*', r'\1', authors[1])
+                except:
+                    continue
+                payload['pg6'] = 'AUCN'
+                payload['s6'] = author_lastname
+        elif sc == 'year':
+            payload['dr'] = 'pubyear'
+            try:
+                payload['arg3'] = entry['year']
+            except:
+                continue
+        elif sc == 'journal':
+            payload['pg7'] = 'JOUR'
+            try:
+                payload['s7'] = entry['journal']
+            except:
+                continue
+        else:
+            ValueError('Illegal search criterion \'%s\'.' % sc)
 
+        # Search request.
         r = requests.get(url, params=payload)
         assert(r.ok)
 
@@ -132,7 +158,10 @@ def _find_on_mathscinet(author, title, year):
         import re
         a = '@[a-zA-Z]+\s*{'
         m = re.findall(a, r.content)
-        if not m:
+        if len(m) == 1:
+            success = True
+            break
+        elif len(m) == 0:
             # Check if the website issues an error message.
             a = 'No publications results for'
             m = re.search(a, r.content)
@@ -140,9 +169,6 @@ def _find_on_mathscinet(author, title, year):
                 raise RuntimeError('No publication results on mathscinet.')
             else:
                 raise RuntimeError('Unknown error on mathscinet.')
-        elif len(m) == 1:
-            success = True
-            break
         # else len(m) > 1 .. try again with stricter criteria
 
     if not success:
