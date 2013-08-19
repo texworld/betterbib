@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf8 -*-
 # -----------------------------------------------------------------------------
 def _main():
 
@@ -18,8 +19,14 @@ def _main():
         title = title.replace('}', '')
         title = title.replace('(', '')
         title = title.replace(')', '')
+        # Replacing some common TeX symbols.
+        title = title.replace('\\"a', u'ä')
+        title = title.replace('\\"o', u'ö')
+        title = title.replace('\\"u', u'ü')
+        title = title.replace('\\"A', u'Ä')
+        title = title.replace('\\"O', u'Ö')
+        title = title.replace('\\"U', u'Ü')
         # Clean up the title string.
-        #print('Searching for \n\n%s\n\n...' % title)
         print('Searching for entry %d/%d...' % (k, n))
         try:
             bibtex_entry = _find_on_mathscinet(title)
@@ -28,6 +35,8 @@ def _main():
             continue
         print('found.')
         success_count += 1
+
+    print('%d out of %d entries successfully converted.')
 
     return
 # -----------------------------------------------------------------------------
