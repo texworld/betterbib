@@ -1,0 +1,110 @@
+#!/usr/bin/env python
+# -----------------------------------------------------------------------------
+def _main():
+
+    args = _parse_cmd_arguments()
+    filename = args.filename
+
+    data = _read_bibtex(filename)
+
+    n = len(data.entries)
+    k = 0
+    success_count = 0
+    for bib_id in data.entries:
+        k += 1
+        b = data.entries[bib_id].fields
+        title = b['title']
+        title = title.replace('{', '')
+        title = title.replace('}', '')
+        title = title.replace('(', '')
+        title = title.replace(')', '')
+        # Clean up the title string.
+        #print('Searching for \n\n%s\n\n...' % title)
+        print('Searching for entry %d/%d...' % (k, n))
+        try:
+            bibtex_entry = _find_on_mathscinet(title)
+        except:
+            print('Entry \n\n%s\n\nnot found.' % title)
+            continue
+        print('found.')
+        success_count += 1
+
+    return
+# -----------------------------------------------------------------------------
+def _read_bibtex(filename):
+
+    from pybtex.database.input import bibtex
+
+    # Open file for parsing.
+    parser = bibtex.Parser()
+    data = parser.parse_file(filename)
+
+    return data
+# -----------------------------------------------------------------------------
+def _find_on_mathscinet(title):
+    import requests
+
+    url = 'http://www.ams.org/mathscinet/search/publications.html'
+
+    # Typical search query line:
+    # http://www.ams.org/mathscinet/search/publications.html?pg4=AUCN&s4=&co4=AND&pg5=TI&s5=ggg&co5=AND&pg6=PC&s6=&co6=AND&pg7=ALLF&s7=&co7=AND&Submit=Search&dr=all&yrop=eq&arg3=&yearRangeFirst=&yearRangeSecond=&pg8=ET&s8=All&review_format=html
+    #
+    payload = {'pg4': 'AUCN', 's4': '', 'co4': 'AND',
+               'pg5': 'TI', 's5': title, 'co5': 'AND',
+               'pg6': 'PC', 's6': '', 'co6': 'AND',
+               'pg7': 'ALLF', 's7': '', 'co7': 'AND',
+               'Submit': 'Search',
+               'dr': 'all',
+               'yrop': 'eq',
+               'arg3': '',
+               'yearRangeFirst': '',
+               'yearRangeSecond': '',
+               'pg8': 'ET',
+               's8': 'All',
+               'review_format': 'html',
+               'fmt': 'bibtex' # immediately jump to BibTeX
+               }
+    r = requests.get(url, params=payload)
+    assert(r.ok)
+
+    # Find the BibTeX entry and extract it.
+    import re
+    a = '@[a-zA-Z]+\s*{'
+    m = re.search(a, r.content)
+    if not m:
+        # Check if the website issues an error message.
+        a = 'No publications results for'
+        m = re.search(a, r.content)
+        if m:
+            raise RuntimeError('No publication results on mathscinet.')
+        else:
+            raise RuntimeError('Unknown error on mathscinet.')
+    assert(m)
+
+    # Find matching closing bracket.
+    i0 = m.end()
+    num_open_brackets = 1
+    i1 = i0
+    while num_open_brackets > 0:
+        if r.content[i1] == '{':
+            num_open_brackets += 1
+        elif r.content[i1] == '}':
+            num_open_brackets -= 1
+        i1 += 1
+    bibtex_entry = r.content[m.start():i1]
+
+    return bibtex_entry
+# -----------------------------------------------------------------------------
+def _parse_cmd_arguments():
+    import argparse
+
+    parser = argparse.ArgumentParser(description='Improve BibTeX libraries.')
+    parser.add_argument('filename',
+                        type=str,
+                        help='BibTeX file')
+
+    return parser.parse_args()
+# -----------------------------------------------------------------------------
+if __name__ == '__main__':
+    _main()
+# -----------------------------------------------------------------------------
