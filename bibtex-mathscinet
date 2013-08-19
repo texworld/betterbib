@@ -22,7 +22,14 @@ def _main():
         b = data.entries[bib_id].fields
         title = b['title']
         # Extract
-        author_lastname = re.sub('([^,]+),.*', r'\1', b['author'])
+        try:
+            author_lastname = re.sub('([^,]+),.*', r'\1', b['author'])
+        except:
+            author_lastname = ''
+        try:
+            year = b['year']
+        except:
+            year = ''
         title = title.replace('{', '')
         title = title.replace('}', '')
         title = title.replace('(', '')
@@ -38,7 +45,7 @@ def _main():
         # Clean up the title string.
         print('Searching for entry %d/%d...' % (k, n))
         try:
-            bibtex_entry = _find_on_mathscinet(author_lastname, title)
+            bibtex_entry = _find_on_mathscinet(author_lastname, title, year)
         except RuntimeError as e:
             print('Entry \n\n%s\n\nnot found (\'%s\').' % (title, e.message))
             # Write out the old entry to file.
@@ -81,10 +88,11 @@ def _read_bibtex(filename):
 
     return data
 # -----------------------------------------------------------------------------
-def _find_on_mathscinet(author, title):
+def _find_on_mathscinet(author, title, year):
     import requests
 
-    url = 'http://www.ams.org/mathscinet/search/publications.html'
+    #url = 'http://www.ams.org/mathscinet/search/publications.html'
+    url = 'http://ams.math.uni-bielefeld.de/mathscinet/search/publications.html'
 
     # Typical search query line:
     # http://www.ams.org/mathscinet/search/publications.html?pg4=AUCN&s4=&co4=AND&pg5=TI&s5=ggg&co5=AND&pg6=PC&s6=&co6=AND&pg7=ALLF&s7=&co7=AND&Submit=Search&dr=all&yrop=eq&arg3=&yearRangeFirst=&yearRangeSecond=&pg8=ET&s8=All&review_format=html
@@ -96,7 +104,7 @@ def _find_on_mathscinet(author, title):
                'Submit': 'Search',
                'dr': 'all',
                'yrop': 'eq',
-               'arg3': '',
+               'arg3': year,
                'yearRangeFirst': '',
                'yearRangeSecond': '',
                'pg8': 'ET',
