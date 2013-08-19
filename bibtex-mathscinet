@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
+
+import re
 # -----------------------------------------------------------------------------
 def _main():
 
@@ -22,6 +24,7 @@ def _main():
         title = title.replace('}', '')
         title = title.replace('(', '')
         title = title.replace(')', '')
+        title = title.replace('$', '')
         # Replacing some common TeX symbols.
         title = title.replace('\\"a', u'ä')
         title = title.replace('\\"o', u'ö')
@@ -33,12 +36,17 @@ def _main():
         print('Searching for entry %d/%d...' % (k, n))
         try:
             bibtex_entry = _find_on_mathscinet(title)
+        except:
+            print('Entry \n\n%s\n\nnot found.' % title)
+        else:
             print('found.')
+            # Make sure that the BibTeX key remains identical.
+            pattern = '(@[a-zA-Z]+\s*{)\w+'
+            bibtex_entry = re.sub(pattern, r'\1%s' % bib_id, bibtex_entry)
+            # Write it out to a file.
             out.write(bibtex_entry)
             out.write('\n\n')
             success_count += 1
-        except:
-            print('Entry \n\n%s\n\nnot found.' % title)
 
     out.close()
     print('%d out of %d entries successfully converted.' % (success_count, n))
