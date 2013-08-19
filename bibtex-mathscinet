@@ -97,38 +97,56 @@ def _find_on_mathscinet(author, title, year):
     # Typical search query line:
     # http://www.ams.org/mathscinet/search/publications.html?pg4=AUCN&s4=&co4=AND&pg5=TI&s5=ggg&co5=AND&pg6=PC&s6=&co6=AND&pg7=ALLF&s7=&co7=AND&Submit=Search&dr=all&yrop=eq&arg3=&yearRangeFirst=&yearRangeSecond=&pg8=ET&s8=All&review_format=html
     #
-    payload = {'pg4': 'AUCN', 's4': author, 'co4': 'AND',
-               'pg5': 'TI', 's5': title, 'co5': 'AND',
-               'pg6': 'PC', 's6': '', 'co6': 'AND',
-               'pg7': 'ALLF', 's7': '', 'co7': 'AND',
-               'Submit': 'Search',
-               'dr': 'all',
-               'yrop': 'eq',
-               'arg3': year,
-               'yearRangeFirst': '',
-               'yearRangeSecond': '',
-               'pg8': 'ET',
-               's8': 'All',
-               'review_format': 'html',
-               'fmt': 'bibtex' # immediately jump to BibTeX
-               }
-    r = requests.get(url, params=payload)
-    assert(r.ok)
+    attempts = [{'title': title,
+                 'author': '',
+                 'dr': 'all', 'year': ''},
+                {'title': title,
+                 'author': author,
+                 'dr': 'all', 'year': ''},
+                {'title': title,
+                 'author': author,
+                 'dr': 'pubyear', 'year': year}
+                ]
+    success = False
+    for attempt in attempts:
+        payload = {'pg4': 'AUCN', 's4': attempt['author'], 'co4': 'AND',
+                   'pg5': 'TI', 's5': attempt['title'], 'co5': 'AND',
+                   'pg6': 'PC', 's6': '', 'co6': 'AND',
+                   'pg7': 'ALLF', 's7': '', 'co7': 'AND',
+                   'Submit': 'Search',
+                   'dr': attempt['dr'],
+                   'yrop': 'eq',
+                   'arg3': attempt['year'],
+                   'yearRangeFirst': '',
+                   'yearRangeSecond': '',
+                   'pg8': 'ET',
+                   's8': 'All',
+                   'review_format': 'html',
+                   'fmt': 'bibtex' # immediately jump to BibTeX
+                   }
 
-    # Find the BibTeX entry and extract it.
-    import re
-    a = '@[a-zA-Z]+\s*{'
-    m = re.findall(a, r.content)
-    if not m:
-        # Check if the website issues an error message.
-        a = 'No publications results for'
-        m = re.search(a, r.content)
-        if m:
-            raise RuntimeError('No publication results on mathscinet.')
-        else:
-            raise RuntimeError('Unknown error on mathscinet.')
-    elif len(m) > 1:
-        raise RuntimeError('Found more than one match.')
+        r = requests.get(url, params=payload)
+        assert(r.ok)
+
+        # Find the BibTeX entry and extract it.
+        import re
+        a = '@[a-zA-Z]+\s*{'
+        m = re.findall(a, r.content)
+        if not m:
+            # Check if the website issues an error message.
+            a = 'No publications results for'
+            m = re.search(a, r.content)
+            if m:
+                raise RuntimeError('No publication results on mathscinet.')
+            else:
+                raise RuntimeError('Unknown error on mathscinet.')
+        elif len(m) == 1:
+            success = True
+            break
+        # else len(m) > 1 .. try again with stricter criteria
+
+    if not success:
+        raise RuntimeError('Found %d matches with full criteria.' % len(m))
 
     # Now we know that there is exactly one matching entry in the string.
     # If there's a way to extract the corresponding MatchObject directly
