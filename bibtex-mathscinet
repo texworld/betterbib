@@ -4,9 +4,12 @@
 def _main():
 
     args = _parse_cmd_arguments()
-    filename = args.filename
+    infile = args.infile
 
-    data = _read_bibtex(filename)
+    data = _read_bibtex(infile)
+
+    # Open output file for writing.
+    out = open(args.outfile, 'w')
 
     n = len(data.entries)
     k = 0
@@ -30,13 +33,15 @@ def _main():
         print('Searching for entry %d/%d...' % (k, n))
         try:
             bibtex_entry = _find_on_mathscinet(title)
+            print('found.')
+            out.write(bibtex_entry)
+            out.write('\n\n')
+            success_count += 1
         except:
             print('Entry \n\n%s\n\nnot found.' % title)
-            continue
-        print('found.')
-        success_count += 1
 
-    print('%d out of %d entries successfully converted.')
+    out.close()
+    print('%d out of %d entries successfully converted.' % (success_count, n))
 
     return
 # -----------------------------------------------------------------------------
@@ -108,9 +113,12 @@ def _parse_cmd_arguments():
     import argparse
 
     parser = argparse.ArgumentParser(description='Improve BibTeX libraries.')
-    parser.add_argument('filename',
+    parser.add_argument('infile',
                         type=str,
-                        help='BibTeX file')
+                        help='input BibTeX file')
+    parser.add_argument('outfile',
+                        type=str,
+                        help='output BibTeX file')
 
     return parser.parse_args()
 # -----------------------------------------------------------------------------
