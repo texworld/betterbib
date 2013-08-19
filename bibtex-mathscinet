@@ -40,7 +40,7 @@ def _main():
             print('Entry \n\n%s\n\nnot found.' % title)
             # Write out the old entry to file.
             a = _get_string_representation(data.entries[bib_id])
-            out.write('# The following entry could no be found on mathscinet.')
+            out.write('# The following entry could no be found on mathscinet.\n')
             out.write(a)
         else:
             print('found.')
