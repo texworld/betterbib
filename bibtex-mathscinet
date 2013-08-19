@@ -21,6 +21,8 @@ def _main():
         k += 1
         b = data.entries[bib_id].fields
         title = b['title']
+        # Extract
+        author_lastname = re.sub('([^,]+),.*', r'\1', b['author'])
         title = title.replace('{', '')
         title = title.replace('}', '')
         title = title.replace('(', '')
@@ -36,7 +38,7 @@ def _main():
         # Clean up the title string.
         print('Searching for entry %d/%d...' % (k, n))
         try:
-            bibtex_entry = _find_on_mathscinet(title)
+            bibtex_entry = _find_on_mathscinet(author_lastname, title)
         except RuntimeError as e:
             print('Entry \n\n%s\n\nnot found (\'%s\').' % (title, e.message))
             # Write out the old entry to file.
@@ -79,7 +81,7 @@ def _read_bibtex(filename):
 
     return data
 # -----------------------------------------------------------------------------
-def _find_on_mathscinet(title):
+def _find_on_mathscinet(author, title):
     import requests
 
     url = 'http://www.ams.org/mathscinet/search/publications.html'
@@ -87,7 +89,7 @@ def _find_on_mathscinet(title):
     # Typical search query line:
     # http://www.ams.org/mathscinet/search/publications.html?pg4=AUCN&s4=&co4=AND&pg5=TI&s5=ggg&co5=AND&pg6=PC&s6=&co6=AND&pg7=ALLF&s7=&co7=AND&Submit=Search&dr=all&yrop=eq&arg3=&yearRangeFirst=&yearRangeSecond=&pg8=ET&s8=All&review_format=html
     #
-    payload = {'pg4': 'AUCN', 's4': '', 'co4': 'AND',
+    payload = {'pg4': 'AUCN', 's4': author, 'co4': 'AND',
                'pg5': 'TI', 's5': title, 'co5': 'AND',
                'pg6': 'PC', 's6': '', 'co6': 'AND',
                'pg7': 'ALLF', 's7': '', 'co7': 'AND',
@@ -117,8 +119,13 @@ def _find_on_mathscinet(title):
             raise RuntimeError('No publication results on mathscinet.')
         else:
             raise RuntimeError('Unknown error on mathscinet.')
-    elif m > 1:
+    elif len(m) > 1:
         raise RuntimeError('Found more than one match.')
+
+    # Now we know that there is exactly one matching entry in the string.
+    # If there's a way to extract the corresponding MatchObject directly
+    # from findall, that'd be great. For now, just to another search().
+    m = re.search(a, r.content)
 
     # Find matching closing bracket.
     i0 = m.end()
