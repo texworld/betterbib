@@ -38,6 +38,10 @@ def _main():
             bibtex_entry = _find_on_mathscinet(title)
         except:
             print('Entry \n\n%s\n\nnot found.' % title)
+            # Write out the old entry to file.
+            a = _get_string_representation(data.entries[bib_id])
+            out.write('# The following entry could no be found on mathscinet.')
+            out.write(a)
         else:
             print('found.')
             # Make sure that the BibTeX key remains identical.
@@ -45,13 +49,24 @@ def _main():
             bibtex_entry = re.sub(pattern, r'\1%s' % bib_id, bibtex_entry)
             # Write it out to a file.
             out.write(bibtex_entry)
-            out.write('\n\n')
             success_count += 1
+        out.write('\n\n')
 
     out.close()
     print('%d out of %d entries successfully converted.' % (success_count, n))
 
     return
+# -----------------------------------------------------------------------------
+def _get_string_representation(entry):
+    '''String representation of BibTeX entry.
+    '''
+    lst = []
+    lst.append('@%s{%s' % (entry.type, entry.key))
+    for field, value in entry.fields.iteritems():
+        lst.append('%s = {%s}' % (field, value))
+    lst.append('}')
+
+    return ',\n  '.join(lst)
 # -----------------------------------------------------------------------------
 def _read_bibtex(filename):
 
