@@ -37,8 +37,8 @@ def _main():
         print('Searching for entry %d/%d...' % (k, n))
         try:
             bibtex_entry = _find_on_mathscinet(title)
-        except:
-            print('Entry \n\n%s\n\nnot found.' % title)
+        except RuntimeError as e:
+            print('Entry \n\n%s\n\nnot found (\'%s\').' % (title, e.message))
             # Write out the old entry to file.
             a = _get_string_representation(data.entries[bib_id])
             out.write('# The following entry could no be found on mathscinet.\n')
@@ -108,7 +108,7 @@ def _find_on_mathscinet(title):
     # Find the BibTeX entry and extract it.
     import re
     a = '@[a-zA-Z]+\s*{'
-    m = re.search(a, r.content)
+    m = re.findall(a, r.content)
     if not m:
         # Check if the website issues an error message.
         a = 'No publications results for'
@@ -117,7 +117,8 @@ def _find_on_mathscinet(title):
             raise RuntimeError('No publication results on mathscinet.')
         else:
             raise RuntimeError('Unknown error on mathscinet.')
-    assert(m)
+    elif m > 1:
+        raise RuntimeError('Found more than one match.')
 
     # Find matching closing bracket.
     i0 = m.end()
