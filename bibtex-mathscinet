@@ -33,7 +33,7 @@ def _main():
     n = len(data.entries)
     k = 0
     success_count = 0
-    for bib_id in data.entries:
+    for bib_id in data.entry_keys:
         k += 1
         b = data.entries[bib_id].fields
         # Clean up the title string.
@@ -50,8 +50,8 @@ def _main():
         else:
             print('found.')
             # Make sure that the BibTeX key remains identical.
-            pattern = '(@[a-zA-Z]+\s*{)\w+'
-            bibtex_entry = re.sub(pattern, r'\1%s' % bib_id, bibtex_entry)
+            pattern = '(@[a-zA-Z]+)\s*{\w+'
+            bibtex_entry = re.sub(pattern, r'\1{%s' % bib_id, bibtex_entry)
             # Write it out to a file.
             out.write(bibtex_entry)
             success_count += 1
