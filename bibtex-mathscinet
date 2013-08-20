@@ -121,11 +121,17 @@ def _find_on_mathscinet(entry):
                 title = entry['title']
             except:
                 continue
+            # Remove everything starting from the first dollar sign (math
+            # mode). Removing only what is enclosed in the dollar signs does
+            # not work with matscinet's search mask, unfortunately.
+            p = '\$.*'
+            import re
+            title = re.sub(p, '', title)
+            # Remove some tokens that make mathscinet fail.
             title = title.replace('{', '')
             title = title.replace('}', '')
             title = title.replace('(', '')
             title = title.replace(')', '')
-            title = title.replace('$', '')
             # Replacing some common TeX symbols.
             title = title.replace('\\"a', u'ä')
             title = title.replace('\\"o', u'ö')
