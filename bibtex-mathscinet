@@ -19,6 +19,8 @@
 #
 import re
 import xml.etree.ElementTree as ET
+import sys
+import os
 # -----------------------------------------------------------------------------
 def _main():
 
@@ -31,17 +33,30 @@ def _main():
     out = open(args.outfile, 'w')
 
     n = len(data.entries)
+
+    # Determine progress bar width according to the current console width.
+    rows, columns = os.popen('stty size', 'r').read().split()
+    progress_bar_width = int(columns) - 10 - len(str(n))
+
     k = 0
     success_count = 0
     for bib_id in data.entry_keys:
         k += 1
         b = data.entries[bib_id].fields
+
+        # Print a progress bar.
+        # 73% [======================================>] 143
+        percentage = float(k)/n
+        filled_width = int(percentage * progress_bar_width)
+        empty_width = progress_bar_width - filled_width
+        sys.stdout.write(('\r%3d%% [' + '='*(filled_width-1) + '>' + ' '*empty_width + '] %d') % (int(100*percentage), k))
+        sys.stdout.flush()
+
         # Clean up the title string.
-        print('Searching for entry %d/%d...' % (k, n))
         try:
             bibtex_entry = _find_on_mathscinet(b)
         except RuntimeError as e:
-            print('Entry not found (\'%s\').' % e.message)
+            #print('Entry not found (\'%s\').' % e.message)
             # Write out the old entry to file.
             a = _get_string_representation(data.entries[bib_id])
             out.write('# Error when fetching the following entry from mathscinet (%s).\n' % e.message)
@@ -51,10 +66,10 @@ def _main():
             try:
                 out.write(a.encode('utf8'))
             except:
-                print('\nUnable to write the following entry to an ASCII-encoded file:\n\n %s\n' % a)
+                #print('\nUnable to write the following entry to an ASCII-encoded file:\n\n %s\n' % a)
                 raise
         else:
-            print('found.')
+            #print('found.')
             # Make sure that the BibTeX key remains identical.
             pattern = '(@[a-zA-Z]+)\s*{\w+'
             bibtex_entry = re.sub(pattern, r'\1{%s' % bib_id, bibtex_entry)
@@ -64,7 +79,8 @@ def _main():
         out.write('\n\n')
 
     out.close()
-    print('%d out of %d entries successfully converted.' % (success_count, n))
+    print
+    print('%d of %d entries successfully converted.' % (success_count, n))
 
     return
 # -----------------------------------------------------------------------------
