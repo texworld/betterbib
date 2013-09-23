@@ -22,6 +22,13 @@ import xml.etree.ElementTree as ET
 import sys
 import os
 # -----------------------------------------------------------------------------
+NAME = 'bibtex-mathscinet'
+VERSION = '0.1'
+COPYRIGHT_YEARS = '2013'
+AUTHOR = 'Nico Schömer'
+AUTHOR_EMAIL = 'nico.schloemer@gmail.com'
+WEBSITE = 'https://github.com/nschloe/bibtex-mathscinet'
+# -----------------------------------------------------------------------------
 def _main():
 
     args = _parse_cmd_arguments()
@@ -61,6 +68,19 @@ def _main():
 
     # Open output file for writing.
     out = open(args.outfile, 'w')
+
+    # Write header to the output file.
+    out.write(('# This file was created by %s v%s.\n'
+               '# Copyright (c) %s, %s <%s>\n'
+               '# All rights reserved.\n'
+               '#\n'
+               '# The latest updates can be retrieved from\n'
+               '#     <%s>\n'
+               '# where you can also file issues and contribute to %s.\n'
+               '#\n'
+               )
+              % (NAME, VERSION, COPYRIGHT_YEARS, AUTHOR, AUTHOR_EMAIL,
+                 WEBSITE, NAME))
 
     # Determine progress bar width according to the current console width.
     rows, columns = os.popen('stty size', 'r').read().split()
