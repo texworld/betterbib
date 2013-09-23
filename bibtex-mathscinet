@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 #
-#   bibtex-mathscibet updates a BibTeX file with information from MathSciNet.
+#   bibtex-mathscinet updates a BibTeX file with information from MathSciNet.
 #   Copyright (C) 2013  Nico Schlömer
 #
 #   This program is free software: you can redistribute it and/or modify
@@ -27,13 +27,27 @@ def _main():
     args = _parse_cmd_arguments()
     infile = args.infile
 
-    sys.stdout.write('Checking connection with MathSciNet... ')
+    servers = ['http://www.ams.org/mathscinet/',
+               'http://ams.rice.edu/mathscinet/',
+               'http://ams.impa.br/mathscinet/',
+               'http://ams.math.uni-bielefeld.de/mathscinet/',
+               'http://ams.mpim-bonn.mpg.de/mathscinet/',
+               'http://ams.u-strasbg.fr/mathscinet/'
+               ]
+
+    server = servers[0]
+
+    sys.stdout.write('Checking connection with %s... ' % server)
     try:
-        connection_good = _test_connection()
+        _test_connection(server)
         sys.stdout.write('ok.\n')
     except:
         sys.stdout.write('failed.\n\n')
-        sys.stdout.write('Unable to establish connection with MathSciNet.\n\n')
+        message=('Unable to establish connection with %s. '
+                 'Make sure that you have access to the site and that the '
+                 'search function returns valid results.\n\n') \
+                % server
+        sys.stdout.write(message)
         return
 
     sys.stdout.write('Reading from: %s\n' % infile)
@@ -68,7 +82,7 @@ def _main():
 
         # Clean up the title string.
         try:
-            bibtex_entry = _find_on_MathSciNet(b)
+            bibtex_entry = _find_on_mathscinet(b)
         except RuntimeError as e:
             #print('Entry not found (\'%s\').' % e.message)
             # Write out the old entry to file.
@@ -115,8 +129,8 @@ def _get_string_representation(entry):
 def _get_person_str(p):
     person_str = []
     for s in [' '.join(p.prelast()+p.last()),
-            ' '.join(p.lineage()),
-            ' '.join(p.first()+p.middle())]:
+              ' '.join(p.lineage()),
+              ' '.join(p.first()+p.middle())]:
         if s:
             person_str.append(s)
     return ', '.join(person_str)
@@ -131,7 +145,7 @@ def _read_bibtex(filename):
 
     return data
 # -----------------------------------------------------------------------------
-def _test_connection():
+def _test_connection(server):
     '''Test the connection with MathSkyNet. ;)
     '''
     test_entry = {'title': 'Krylov subspace methods',
@@ -154,18 +168,18 @@ def _test_connection():
   MRNUMBER = {3024841},
 }'''
 
-    bt = _find_on_MathSciNet(test_entry)
+    bt = _find_on_mathscinet(test_entry, server=server)
 
     # Check the result.
-    return bt==expected
+    if bt != expected:
+        raise RuntimeError('Connection established, but wrong search result.')
+
+    return
 # -----------------------------------------------------------------------------
-def _find_on_MathSciNet(entry):
+def _find_on_mathscinet(entry, server='http://www.ams.org/mathscinet/'):
     import requests
 
-    #server='http://www.ams.org/'
-    server='http://ams.math.uni-bielefeld.de/'
-
-    url = server + '/mathscinet/search/publications.html'
+    url = server + '/search/publications.html'
 
     # Typical search query line:
     # http://www.ams.org/MathSciNet/search/publications.html?pg4=AUCN&s4=&co4=AND&pg5=TI&s5=ggg&co5=AND&pg6=PC&s6=&co6=AND&pg7=ALLF&s7=&co7=AND&Submit=Search&dr=all&yrop=eq&arg3=&yearRangeFirst=&yearRangeSecond=&pg8=ET&s8=All&review_format=html
