@@ -21,6 +21,7 @@ import re
 import xml.etree.ElementTree as ET
 import sys
 import os
+import time
 # -----------------------------------------------------------------------------
 NAME = 'bibtex-mathscinet'
 VERSION = '0.1'
@@ -42,12 +43,14 @@ def _main():
                'http://ams.u-strasbg.fr/mathscinet/'
                ]
 
-    server = servers[0]
+    server = servers[3]
 
     sys.stdout.write('Checking connection with %s... ' % server)
     try:
+        t = time.time()
         _test_connection(server)
-        sys.stdout.write('ok.\n')
+        elapsed = time.time() - t
+        sys.stdout.write('ok (%gs).\n' % elapsed)
     except:
         sys.stdout.write('failed.\n\n')
         message=('Unable to establish connection with %s. '
@@ -102,7 +105,7 @@ def _main():
 
         # Clean up the title string.
         try:
-            bibtex_entry = _find_on_mathscinet(b)
+            bibtex_entry = _find_on_mathscinet(b, server=server)
         except RuntimeError as e:
             #print('Entry not found (\'%s\').' % e.message)
             # Write out the old entry to file.
