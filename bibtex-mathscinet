@@ -24,7 +24,7 @@ import os
 import time
 # -----------------------------------------------------------------------------
 NAME = 'bibtex-mathscinet'
-VERSION = '0.1'
+VERSION = '0.1.0'
 COPYRIGHT_YEARS = '2013'
 AUTHOR = 'Nico Schlömer'
 AUTHOR_EMAIL = 'nico.schloemer@gmail.com'
