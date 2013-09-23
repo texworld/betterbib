@@ -25,7 +25,7 @@ import os
 NAME = 'bibtex-mathscinet'
 VERSION = '0.1'
 COPYRIGHT_YEARS = '2013'
-AUTHOR = 'Nico Schömer'
+AUTHOR = 'Nico Schlömer'
 AUTHOR_EMAIL = 'nico.schloemer@gmail.com'
 WEBSITE = 'https://github.com/nschloe/bibtex-mathscinet'
 # -----------------------------------------------------------------------------
