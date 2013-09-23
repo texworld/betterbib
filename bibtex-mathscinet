@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 #
-#   bibtex-mathscinet updates a BibTeX file with information from mathscinet.
+#   bibtex-mathscibet updates a BibTeX file with information from MathSciNet.
 #   Copyright (C) 2013  Nico Schlömer
 #
 #   This program is free software: you can redistribute it and/or modify
@@ -27,12 +27,26 @@ def _main():
     args = _parse_cmd_arguments()
     infile = args.infile
 
+    sys.stdout.write('Checking connection with MathSciNet... ')
+    try:
+        connection_good = _test_connection()
+        sys.stdout.write('ok.\n')
+    except:
+        sys.stdout.write('failed.\n\n')
+        sys.stdout.write('Unable to establish connection with MathSciNet.\n\n')
+        return
+
+    sys.stdout.write('Reading from: %s\n' % infile)
+
     data = _read_bibtex(infile)
+    n = len(data.entries)
+
+    sys.stdout.write('Number of entries: %d\n' % n)
+    sys.stdout.write('Saving to: %s\n' % args.outfile)
+    sys.stdout.write('\n')
 
     # Open output file for writing.
     out = open(args.outfile, 'w')
-
-    n = len(data.entries)
 
     # Determine progress bar width according to the current console width.
     rows, columns = os.popen('stty size', 'r').read().split()
@@ -54,12 +68,12 @@ def _main():
 
         # Clean up the title string.
         try:
-            bibtex_entry = _find_on_mathscinet(b)
+            bibtex_entry = _find_on_MathSciNet(b)
         except RuntimeError as e:
             #print('Entry not found (\'%s\').' % e.message)
             # Write out the old entry to file.
             a = _get_string_representation(data.entries[bib_id])
-            out.write('# Error when fetching the following entry from mathscinet (%s).\n' % e.message)
+            out.write('# Error when fetching the following entry from MathSciNet (%s).\n' % e.message)
             # This write operation may fail if `a` contains non-ASCII
             # characters. It's okay to fail too since this case requires some
             # human interaction anyways.
@@ -117,14 +131,44 @@ def _read_bibtex(filename):
 
     return data
 # -----------------------------------------------------------------------------
-def _find_on_mathscinet(entry):
+def _test_connection():
+    '''Test the connection with MathSkyNet. ;)
+    '''
+    test_entry = {'title': 'Krylov subspace methods',
+                  'author': 'Liesen and Strakoš'
+                  }
+
+    # Define the expected return string. Note that special characters need to
+    # be escaped.
+    expected = '''@book {MR3024841,
+    AUTHOR = {Liesen, J{\\"o}rg and Strako{\\v{s}}, Zden{\\v{e}}k},
+     TITLE = {Krylov subspace methods},
+    SERIES = {Numerical Mathematics and Scientific Computation},
+      NOTE = {Principles and analysis},
+ PUBLISHER = {Oxford University Press},
+   ADDRESS = {Oxford},
+      YEAR = {2013},
+     PAGES = {xvi+391},
+      ISBN = {978-0-19-965541-0},
+   MRCLASS = {65F10 (65F15)},
+  MRNUMBER = {3024841},
+}'''
+
+    bt = _find_on_MathSciNet(test_entry)
+
+    # Check the result.
+    return bt==expected
+# -----------------------------------------------------------------------------
+def _find_on_MathSciNet(entry):
     import requests
 
-    #url = 'http://www.ams.org/mathscinet/search/publications.html'
-    url = 'http://ams.math.uni-bielefeld.de/mathscinet/search/publications.html'
+    #server='http://www.ams.org/'
+    server='http://ams.math.uni-bielefeld.de/'
+
+    url = server + '/mathscinet/search/publications.html'
 
     # Typical search query line:
-    # http://www.ams.org/mathscinet/search/publications.html?pg4=AUCN&s4=&co4=AND&pg5=TI&s5=ggg&co5=AND&pg6=PC&s6=&co6=AND&pg7=ALLF&s7=&co7=AND&Submit=Search&dr=all&yrop=eq&arg3=&yearRangeFirst=&yearRangeSecond=&pg8=ET&s8=All&review_format=html
+    # http://www.ams.org/MathSciNet/search/publications.html?pg4=AUCN&s4=&co4=AND&pg5=TI&s5=ggg&co5=AND&pg6=PC&s6=&co6=AND&pg7=ALLF&s7=&co7=AND&Submit=Search&dr=all&yrop=eq&arg3=&yearRangeFirst=&yearRangeSecond=&pg8=ET&s8=All&review_format=html
     #
     # Specify the search criteria.
     # The loop below will first search for title only, then title and author,
@@ -157,11 +201,11 @@ def _find_on_mathscinet(entry):
                 continue
             # Remove everything starting from the first dollar sign (math
             # mode). Removing only what is enclosed in the dollar signs does
-            # not work with matscinet's search mask, unfortunately.
+            # not work with MathSciNet's search mask, unfortunately.
             p = '\$.*'
             import re
             title = re.sub(p, '', title)
-            # Remove some tokens that make mathscinet fail.
+            # Remove some tokens that make MathSciNet fail.
             title = title.replace('{', '')
             title = title.replace('}', '')
             title = title.replace('(', '')
@@ -176,21 +220,18 @@ def _find_on_mathscinet(entry):
             payload['pg4'] = 'TI'
             payload['s4'] = title
         elif sc == 'author':
-            authors = entry['author'].split(' and ')
             try:
-                author_lastname = re.sub('([^,]+),.*', r'\1', authors[0])
+                authors = entry['author'].split(' and ')
+                last_names = []
+                for author in authors:
+                    # Extract everything up to the first comma of `author`
+                    # which is hopefully the last name.
+                    last_names.append(re.sub('([^,]+),.*', r'\1', author))
             except:
                 continue
+            last_names = ' and '.join(last_names)
             payload['pg5'] = 'AUCN'
-            payload['s5'] = author_lastname
-            # If there is more than one author, include it too.
-            if len(authors) > 1:
-                try:
-                    author_lastname = re.sub('([^,]+),.*', r'\1', authors[1])
-                except:
-                    continue
-                payload['pg6'] = 'AUCN'
-                payload['s6'] = author_lastname
+            payload['s5'] = last_names
         elif sc == 'year':
             payload['dr'] = 'pubyear'
             try:
@@ -198,9 +239,9 @@ def _find_on_mathscinet(entry):
             except:
                 continue
         elif sc == 'journal':
-            payload['pg7'] = 'JOUR'
+            payload['pg6'] = 'JOUR'
             try:
-                payload['s7'] = entry['journal']
+                payload['s6'] = entry['journal']
             except:
                 continue
         else:
@@ -209,7 +250,8 @@ def _find_on_mathscinet(entry):
         # Search request.
         r = requests.get(url, params=payload)
         if not r.ok:
-            raise RuntimeError('Could not fetch data.')
+            raise RuntimeError('Could not fetch data (status code %d).' \
+                              % r.status_code)
 
         # Find the BibTeX entry and extract it.
         import re
@@ -223,9 +265,9 @@ def _find_on_mathscinet(entry):
             a = 'No publications results for'
             m = re.search(a, r.content)
             if m:
-                raise RuntimeError('No publication results on mathscinet.')
+                raise RuntimeError('No publication results on MathSciNet.')
             else:
-                raise RuntimeError('Unknown error on mathscinet.')
+                raise RuntimeError('Unknown error on MathSciNet.')
         # else len(m) > 1 .. try again with stricter criteria
 
     if not success:
