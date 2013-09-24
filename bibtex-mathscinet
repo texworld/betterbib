@@ -22,6 +22,8 @@ import xml.etree.ElementTree as ET
 import sys
 import os
 import time
+import requests
+from pybtex.database.input import bibtex
 # -----------------------------------------------------------------------------
 NAME = 'bibtex-mathscinet'
 VERSION = '0.1.0'
@@ -91,9 +93,9 @@ def _main():
 
     k = 0
     success_count = 0
-    for bib_id in data.entry_keys:
+    for bib_id, entry in data.entries.iteritems():
         k += 1
-        b = data.entries[bib_id].fields
+        b = entry.fields
 
         # Print a progress bar.
         # 73% [======================================>] 143
@@ -109,7 +111,7 @@ def _main():
         except RuntimeError as e:
             #print('Entry not found (\'%s\').' % e.message)
             # Write out the old entry to file.
-            a = _get_string_representation(data.entries[bib_id])
+            a = _get_string_representation(entry)
             out.write('# Error when fetching the following entry from MathSciNet (%s).\n' % e.message)
             # This write operation may fail if `a` contains non-ASCII
             # characters. It's okay to fail too since this case requires some
@@ -160,8 +162,6 @@ def _get_person_str(p):
 # -----------------------------------------------------------------------------
 def _read_bibtex(filename):
 
-    from pybtex.database.input import bibtex
-
     # Open file for parsing.
     parser = bibtex.Parser()
     data = parser.parse_file(filename)
@@ -200,8 +200,6 @@ def _test_connection(server):
     return
 # -----------------------------------------------------------------------------
 def _find_on_mathscinet(entry, server='http://www.ams.org/mathscinet/'):
-    import requests
-
     url = server + '/search/publications.html'
 
     # Typical search query line:
