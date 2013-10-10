@@ -75,14 +75,15 @@ def _main():
     out = open(args.outfile, 'w')
 
     # Write header to the output file.
-    out.write(('@comment This file was created by %s v%s.\n'
-               '@comment Copyright (c) %s, %s <%s>\n'
-               '@comment All rights reserved.\n'
-               '@comment\n'
-               '@comment The latest updates can be retrieved from\n'
-               '@comment     <%s>\n'
-               '@comment where you can also file issues and contribute to %s.\n'
-               '@comment\n'
+    out.write(('@comment{\n',
+               'This file was created by %s v%s.\n'
+               'Copyright (c) %s, %s <%s>\n'
+               'All rights reserved.\n'
+               '\n'
+               'The latest updates can be retrieved from\n'
+               '    <%s>\n'
+               'where you can also file issues and contribute to %s.\n'
+               '}\n'
                )
               % (NAME, VERSION, COPYRIGHT_YEARS, AUTHOR, AUTHOR_EMAIL,
                  WEBSITE, NAME))
@@ -112,7 +113,7 @@ def _main():
             #print('Entry not found (\'%s\').' % e.message)
             # Write out the old entry to file.
             a = _get_string_representation(entry)
-            out.write('@comment Error when fetching the following entry from MathSciNet (%s).\n' % e.message)
+            out.write('@comment{Error when fetching the following entry from MathSciNet (%s).}\n' % e.message)
             # This write operation may fail if `a` contains non-ASCII
             # characters. It's okay to fail too since this case requires some
             # human interaction anyways.
