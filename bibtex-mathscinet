@@ -334,7 +334,9 @@ def _find_on_mathscinet(entry, server='http://www.ams.org/mathscinet/'):
 
 def _parse_cmd_arguments():
     import argparse
-    parser = argparse.ArgumentParser(description='Improve BibTeX libraries.')
+    parser = argparse.ArgumentParser(
+        description='Improve BibTeX libraries with information from MathSciNet'
+        )
     parser.add_argument('infile',
                         type=str,
                         help='input BibTeX file')
