@@ -24,16 +24,16 @@ import os
 import time
 import requests
 from pybtex.database.input import bibtex
-# -----------------------------------------------------------------------------
+
 NAME = 'bibtex-mathscinet'
 VERSION = '0.1.0'
 COPYRIGHT_YEARS = '2013'
 AUTHOR = 'Nico Schlömer'
 AUTHOR_EMAIL = 'nico.schloemer@gmail.com'
 WEBSITE = 'https://github.com/nschloe/bibtex-mathscinet'
-# -----------------------------------------------------------------------------
-def _main():
 
+
+def _main():
     args = _parse_cmd_arguments()
     infile = args.infile
 
@@ -123,7 +123,9 @@ def _main():
             try:
                 out.write(a.encode('utf8'))
             except:
-                #print('\nUnable to write the following entry to an ASCII-encoded file:\n\n %s\n' % a)
+                #print('\nUnable to write the following entry to an '
+                #      'ASCII-encoded file:\n\n %s\n' % a
+                #      )
                 raise
         else:
             #print('found.')
@@ -138,9 +140,9 @@ def _main():
     out.close()
     print
     print('%d of %d entries successfully converted.' % (success_count, n))
-
     return
-# -----------------------------------------------------------------------------
+
+
 def _get_string_representation(entry):
     '''String representation of BibTeX entry.
     '''
@@ -152,9 +154,9 @@ def _get_string_representation(entry):
     for field, value in entry.fields.iteritems():
         lst.append('%s = {%s}' % (field, value))
     lst.append('}')
-
     return ',\n  '.join(lst)
-# -----------------------------------------------------------------------------
+
+
 def _get_person_str(p):
     person_str = []
     for s in [' '.join(p.prelast()+p.last()),
@@ -163,15 +165,15 @@ def _get_person_str(p):
         if s:
             person_str.append(s)
     return ', '.join(person_str)
-# -----------------------------------------------------------------------------
-def _read_bibtex(filename):
 
+
+def _read_bibtex(filename):
     # Open file for parsing.
     parser = bibtex.Parser()
     data = parser.parse_file(filename)
-
     return data
-# -----------------------------------------------------------------------------
+
+
 def _test_connection(server):
     '''Test the connection with MathSkyNet. ;)
     '''
@@ -194,15 +196,13 @@ def _test_connection(server):
    MRCLASS = {65F10 (65F15)},
   MRNUMBER = {3024841},
 }'''
-
     bt = _find_on_mathscinet(test_entry, server=server)
-
     # Check the result.
     if bt != expected:
         raise RuntimeError('Connection established, but wrong search result.')
-
     return
-# -----------------------------------------------------------------------------
+
+
 def _find_on_mathscinet(entry, server='http://www.ams.org/mathscinet/'):
     url = server + '/search/publications.html'
 
@@ -330,10 +330,10 @@ def _find_on_mathscinet(entry, server='http://www.ams.org/mathscinet/'):
     bibtex_entry = r.content[m.start():i1]
 
     return bibtex_entry
-# -----------------------------------------------------------------------------
+
+
 def _parse_cmd_arguments():
     import argparse
-
     parser = argparse.ArgumentParser(description='Improve BibTeX libraries.')
     parser.add_argument('infile',
                         type=str,
@@ -341,9 +341,9 @@ def _parse_cmd_arguments():
     parser.add_argument('outfile',
                         type=str,
                         help='output BibTeX file')
-
     return parser.parse_args()
-# -----------------------------------------------------------------------------
+
+
 def _get_maps():
     tree = ET.parse('unicode.xml')
     root = tree.getroot()
@@ -360,13 +360,14 @@ def _get_maps():
         except ValueError:
             pass
     return u2l, l2u
-# -----------------------------------------------------------------------------
+
+
 def _preprocess_latex(s):
     # list: https://en.wikibooks.org/wiki/LaTeX/Special_Characters
     return re.sub(r'\\([\'"`\^\~=\.])([a-zA-Z])',
                   r'\\\1{\2}',
                   s)
-# -----------------------------------------------------------------------------
+
+
 if __name__ == '__main__':
     _main()
-# -----------------------------------------------------------------------------
