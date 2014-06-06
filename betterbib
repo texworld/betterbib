@@ -18,7 +18,7 @@
 #   along with this program.  If not, see [http://www.gnu.org/licenses/].
 #
 import re
-import xml.etree.ElementTree as ET
+import xml.etree.ElementTree
 import sys
 import os
 import time
@@ -248,7 +248,6 @@ def _find_on_mathscinet(entry, server='http://www.ams.org/mathscinet/'):
             # mode). Removing only what is enclosed in the dollar signs does
             # not work with MathSciNet's search mask, unfortunately.
             p = '\$.*'
-            import re
             title = re.sub(p, '', title)
             # Remove some tokens that make MathSciNet fail.
             title = title.replace('{', '')
@@ -299,7 +298,6 @@ def _find_on_mathscinet(entry, server='http://www.ams.org/mathscinet/'):
                                % r.status_code)
 
         # Find the BibTeX entry and extract it.
-        import re
         a = '@[a-zA-Z]+\s*{'
         m = re.findall(a, r.content)
         if len(m) == 1:
@@ -341,7 +339,8 @@ def _find_on_mathscinet(entry, server='http://www.ams.org/mathscinet/'):
 def _parse_cmd_arguments():
     import argparse
     parser = argparse.ArgumentParser(
-        description='Improve BibTeX libraries with information from MathSciNet'
+        description='Improve BibTeX libraries '
+        'with information from online sources.'
         )
     parser.add_argument('infile',
                         type=str,
@@ -353,7 +352,7 @@ def _parse_cmd_arguments():
 
 
 def _get_maps():
-    tree = ET.parse('unicode.xml')
+    tree = xml.etree.ElementTree.parse('unicode.xml')
     root = tree.getroot()
 
     u2l = {}
