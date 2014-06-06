@@ -23,6 +23,7 @@ import sys
 import os
 import time
 import requests
+import collections
 from pybtex.database.input import bibtex
 
 NAME = 'BetterBib'
@@ -91,20 +92,24 @@ def _main():
     rows, columns = os.popen('stty size', 'r').read().split()
     progress_bar_width = int(columns) - 10 - len(str(n))
 
+    # Use an ordered dictionary to make sure that the entries are written out
+    # sorted by their BibTeX key.
+    od = collections.OrderedDict(sorted(data.entries.items()))
+
     k = 0
     success_count = 0
-    for bib_id, entry in data.entries.iteritems():
+    for bib_id, entry in od.iteritems():
         k += 1
         b = entry.fields
 
         # Print a progress bar.
         # 73% [======================================>] 143
-        percentage = float(k)/n
+        percentage = float(k) / n
         filled_width = int(percentage * progress_bar_width)
         empty_width = progress_bar_width - filled_width
-        sys.stdout.write(('\r%3d%% [' + '='*(filled_width-1) + '>'
-                         + ' '*empty_width + '] %d')
-                         % (int(100*percentage), k)
+        sys.stdout.write(('\r%3d%% [' + '=' * (filled_width - 1) + '>'
+                         + ' ' * empty_width + '] %d')
+                         % (int(100 * percentage), k)
                          )
         sys.stdout.flush()
 
@@ -159,9 +164,9 @@ def _get_string_representation(entry):
 
 def _get_person_str(p):
     person_str = []
-    for s in [' '.join(p.prelast()+p.last()),
+    for s in [' '.join(p.prelast() + p.last()),
               ' '.join(p.lineage()),
-              ' '.join(p.first()+p.middle())]:
+              ' '.join(p.first() + p.middle())]:
         if s:
             person_str.append(s)
     return ', '.join(person_str)
@@ -201,7 +206,8 @@ MRREVIEWER = {Melina A. Freitag},
     if bt != expected:
         import difflib
         diff = difflib.Differ().compare(bt, expected)
-        diff = ''.join(['***'+i[2:]+'***' if i[:1] == '+' else i[2:] for i in diff if not i[:1] in '-?'])
+        diff = ''.join(['***' + i[2:] + '***' if i[:1] == '+'
+            else i[2:] for i in diff if not i[:1] in '-?'])
         print
         print(diff)
         print
