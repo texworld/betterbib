@@ -27,7 +27,7 @@ import collections
 from pybtex.database.input import bibtex
 
 NAME = 'BetterBib'
-VERSION = '0.1.0'
+VERSION = '0.2.0'
 COPYRIGHT_YEARS = '2013--2014'
 AUTHOR = 'Nico Schlömer'
 AUTHOR_EMAIL = 'nico.schloemer@gmail.com'
