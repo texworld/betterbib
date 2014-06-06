@@ -35,6 +35,11 @@ WEBSITE = 'https://github.com/nschloe/betterbib'
 
 
 class MathSciNet(object):
+    '''
+    BibTeX resource from MathSciNet, http://www.ams.org/mathscinet/.
+    Unfortunately, access to MathSciNet is restricted and typically only
+    accessible from university campuses.
+    '''
     def __init__(self):
         servers = ['http://www.ams.org/mathscinet/',
                    'http://ams.rice.edu/mathscinet/',
@@ -239,6 +244,7 @@ def _main():
     sys.stdout.write('Saving to: %s\n' % args.outfile)
     sys.stdout.write('\n')
 
+    # Create the checkers.
     mathscinet = MathSciNet()
 
     # Open output file for writing.
@@ -273,7 +279,7 @@ def _main():
         b = entry.fields
 
         # Print a progress bar.
-        # 73% [======================================>] 143
+        # 73% [==========================>          ] 143
         percentage = float(k) / n
         filled_width = int(percentage * progress_bar_width)
         empty_width = progress_bar_width - filled_width
