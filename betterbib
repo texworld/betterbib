@@ -74,7 +74,7 @@ def _main():
     out = open(args.outfile, 'w')
 
     # Write header to the output file.
-    out.write(('@comment{\n',
+    out.write(('@comment{\n'
                'This file was created by %s v%s.\n'
                'Copyright (c) %s, %s <%s>\n'
                'All rights reserved.\n'
