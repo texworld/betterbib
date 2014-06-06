@@ -188,17 +188,23 @@ def _test_connection(server):
      TITLE = {Krylov subspace methods},
     SERIES = {Numerical Mathematics and Scientific Computation},
       NOTE = {Principles and analysis},
- PUBLISHER = {Oxford University Press},
-   ADDRESS = {Oxford},
+ PUBLISHER = {Oxford University Press, Oxford},
       YEAR = {2013},
      PAGES = {xvi+391},
       ISBN = {978-0-19-965541-0},
    MRCLASS = {65F10 (65F15)},
   MRNUMBER = {3024841},
+MRREVIEWER = {Melina A. Freitag},
 }'''
     bt = _find_on_mathscinet(test_entry, server=server)
     # Check the result.
     if bt != expected:
+        import difflib
+        diff = difflib.Differ().compare(bt, expected)
+        diff = ''.join(['***'+i[2:]+'***' if i[:1] == '+' else i[2:] for i in diff if not i[:1] in '-?'])
+        print
+        print(diff)
+        print
         raise RuntimeError('Connection established, but wrong search result.')
     return
 
