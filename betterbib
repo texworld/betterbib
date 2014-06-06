@@ -34,7 +34,15 @@ AUTHOR_EMAIL = 'nico.schloemer@gmail.com'
 WEBSITE = 'https://github.com/nschloe/betterbib'
 
 
-class MathSciNet(object):
+class Checker(object):
+    '''
+    Abstract base class for all BibTeX checkers.
+    '''
+    def find(self, bibtex_entry):
+        raise NotImplementedError
+
+
+class MathSciNet(Checker):
     '''
     BibTeX resource from MathSciNet, http://www.ams.org/mathscinet/.
     Unfortunately, access to MathSciNet is restricted and typically only
