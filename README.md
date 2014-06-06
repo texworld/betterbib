@@ -1,10 +1,11 @@
-# bibtex-mathscinet
+# BetterBib
 
-Update BibTeX file with info from http://www.ams.org/mathscinet/
+Update BibTeX file with info from online sources, e.g.,
+http://www.ams.org/mathscinet/.
 
 # Requirements
 
-bibtex-mathscinet requires a few Python modules to run, notably
+BetterBib requires a few Python modules to run, notably
 
 * [requests](http://docs.python-requests.org/en/latest/),
 * [Pybtex](http://pybtex.sourceforge.net/).
@@ -12,6 +13,7 @@ bibtex-mathscinet requires a few Python modules to run, notably
 
 # Usage
 ```
-$ ./bibtex-mathscinet mybibliography.bib out.bib
+$ ./betterbib mybibliography.bib out.bib
 ```
-Download http://www.w3.org/Math/characters/unicode.xml to the directory where the script resides.
+Download http://www.w3.org/Math/characters/unicode.xml to the directory where
+the script resides.
