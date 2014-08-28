@@ -1,5 +1,7 @@
 # BetterBib
 
+[![Code Health](https://landscape.io/github/nschloe/betterbib/master/landscape.png)](https://landscape.io/github/nschloe/betterbib/master)
+
 Update BibTeX file with info from online sources, e.g.,
 http://www.ams.org/mathscinet/.
 
