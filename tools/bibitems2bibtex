@@ -24,11 +24,6 @@ Parses a number of bibitems into a proper BibTeX bibliography.  Since bibitems
 don't have semantic information, certain heuristics have to be applied.
 '''
 
-bibitem = '''\bibitem{BlaCOR09}
-{\sc S.~Blanes, F.~Casas, J.A. Oteo, and J.~Ros},.
-{\em The {M}agnus expansion
-  and some of its applications}, Phys. Rep., 470 (2009), pp.~151--238.'''
-
 import argparse
 import re
 
