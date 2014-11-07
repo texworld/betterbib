@@ -40,8 +40,17 @@ def _main():
     bibitem_strings = extract_bibitems(args.input)
     for bibitem_string in bibitem_strings:
         bibitem = parse_bibitem_string(bibitem_string)
-        print(bibitem)
+        write_bibtex_entry(bibitem)
         exit()
+    return
+
+
+def write_bibtex_entry(bibitem):
+    print(bibitem)
+    print('@article{%s,' % bibitem['key'])
+    print('  author = %s,' % bibitem['authors'])
+    print('  title = %s,' % bibitem['title'])
+    print('}')
     return
 
 
