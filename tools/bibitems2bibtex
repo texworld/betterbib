@@ -35,18 +35,47 @@ def _main():
     bibitem_strings = extract_bibitems(args.input)
     for bibitem_string in bibitem_strings:
         bibitem = parse_bibitem_string(bibitem_string)
-        write_bibtex_entry(bibitem)
-        exit()
+        entry = write_bibtex_entry(bibitem)
+        print(entry)
     return
+
+
+def clean(entry):
+    '''Removes newlines and font specs from entries.
+    '''
+    new = entry
+    new = entry \
+        .replace('\n', ' ') \
+        .replace('\\em ', '') \
+        .replace('\\sc ', '') \
+        .replace('~', ' ')
+    # Remove surrounding brackets
+    if new[0] == '{' and new[-1] == '}':
+        new = new[1:-1]
+    return new
+
+
+def clean_pages(entry):
+    new = clean(entry)\
+        .replace('pp. ', '') \
+        .replace('.  ', '') \
+        .replace('--', '-')
+    return new
 
 
 def write_bibtex_entry(bibitem):
-    print(bibitem)
-    print('@article{%s,' % bibitem['key'])
-    print('  author = %s,' % bibitem['authors'])
-    print('  title = %s,' % bibitem['title'])
-    print('}')
-    return
+    entries = []
+    if 'authors' in bibitem:
+        entries.append('  author = {%s}' % clean(bibitem['authors']))
+    if 'title' in bibitem:
+        entries.append('  title = {%s}' % clean(bibitem['title']))
+    if 'journal' in bibitem:
+        entries.append('  journal = {%s}' % clean(bibitem['journal']))
+    if 'pages' in bibitem:
+        entries.append('  pages = {%s}' % clean_pages(bibitem['pages']))
+
+    entry = '@article{%s,\n%s\n}' % (bibitem['key'], ',\n'.join(entries))
+    return entry
 
 
 def parse_bibitem_string(bibitem_string):
@@ -68,10 +97,13 @@ def parse_bibitem_string(bibitem_string):
         'key': m.group(1),
         'authors': m2[0],
         'title': m2[1],
-        'journal': m2[2],
-        'number': m2[3],
-        'pages': m2[4]
         }
+    if len(m2) > 2:
+        bibitem['journal'] = m2[2]
+    if len(m2) > 3:
+        bibitem['number'] = m2[3]
+    if len(m2) > 4:
+        bibitem['pages'] = m2[4]
 
     return bibitem
 
