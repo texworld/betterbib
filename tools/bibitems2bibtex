@@ -58,7 +58,8 @@ def clean(entry):
         .replace('\n', ' ') \
         .replace('\\em ', '') \
         .replace('\\sc ', '') \
-        .replace('~', ' ')
+        .replace('~', ' ') \
+        .strip()
     # Remove surrounding brackets
     if new[0] == '{' and new[-1] == '}':
         new = new[1:-1]
@@ -66,10 +67,11 @@ def clean(entry):
 
 
 def clean_pages(entry):
-    new = clean(entry)\
-        .replace('pp. ', '') \
-        .replace('.  ', '') \
-        .replace('--', '-')
+    new = clean(entry)
+    m = re.match('[^0-9]*([0-9]+[-]+[0-9]+).*', entry)
+    if m and len(m.groups()) > 0:
+        new = m.group(1) \
+            .replace('--', '-')
     return new
 
 
