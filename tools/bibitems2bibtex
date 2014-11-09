@@ -62,13 +62,16 @@ def clean(entry):
         .strip()
     # Remove surrounding brackets
     if new[0] == '{' and new[-1] == '}':
-        new = new[1:-1]
+        new = new[1:-1].strip()
+
+    # Replace multiple white space by a simple space.
+    new = re.sub('\s+', ' ', new)
     return new
 
 
 def clean_pages(entry):
     new = clean(entry)
-    m = re.match('[^0-9]*([0-9]+[-]+[0-9]+).*', entry)
+    m = re.match('^[^0-9]*([0-9]+[-]+[0-9]+).*', entry)
     if m and len(m.groups()) > 0:
         new = m.group(1) \
             .replace('--', '-')
