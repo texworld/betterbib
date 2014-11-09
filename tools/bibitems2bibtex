@@ -43,7 +43,6 @@ def _main():
             bibitem['authors'] = previous_author
         entry = create_bibtex_string(bibitem)
         print(entry)
-        print()
         if 'authors' in bibitem:
             previous_author = bibitem['authors']
         else:
