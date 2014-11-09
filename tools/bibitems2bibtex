@@ -33,10 +33,21 @@ def _main():
     '''
     args = _parse_args()
     bibitem_strings = extract_bibitems(args.input)
+    previous_author = None
     for bibitem_string in bibitem_strings:
         bibitem = parse_bibitem_string(bibitem_string)
-        entry = write_bibtex_entry(bibitem)
+        # If the author entry contains a vrule, assume that this is a
+        # placeholder for the authors from the previous paper.
+        if ('authors' in bibitem and '\\vrule' in bibitem['authors']
+           and previous_author):
+            bibitem['authors'] = previous_author
+        entry = create_bibtex_string(bibitem)
         print(entry)
+        print()
+        if 'authors' in bibitem:
+            previous_author = bibitem['authors']
+        else:
+            previous_author = None
     return
 
 
@@ -63,7 +74,7 @@ def clean_pages(entry):
     return new
 
 
-def write_bibtex_entry(bibitem):
+def create_bibtex_string(bibitem):
     entries = []
     if 'authors' in bibitem:
         entries.append('  author = {%s}' % clean(bibitem['authors']))
@@ -142,11 +153,6 @@ def _parse_args():
         'input',
         type=str,
         help='input LaTeX file'
-        )
-    parser.add_argument(
-        'output',
-        type=str,
-        help='output BibTeX file'
         )
     return parser.parse_args()
 
