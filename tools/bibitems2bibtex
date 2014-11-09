@@ -88,6 +88,27 @@ def create_bibtex_string(bibitem):
     return entry
 
 
+def my_split(s):
+    '''Explodes a string around commas except when in a {}-environment.
+    See <http://stackoverflow.com/a/26809037/353337>.
+    '''
+    parts = []
+    bracket_level = 0
+    current = []
+    # trick to remove special-case of trailing chars
+    for c in (s + ","):
+        if c == "," and bracket_level == 0:
+            parts.append("".join(current))
+            current = []
+        else:
+            if c == "{":
+                bracket_level += 1
+            elif c == "}":
+                bracket_level -= 1
+            current.append(c)
+    return parts
+
+
 def parse_bibitem_string(bibitem_string):
     '''Parses a bibitem given as (multiline) string and returns semantic
     information. Of course, heuristics are needed.
@@ -98,9 +119,8 @@ def parse_bibitem_string(bibitem_string):
     m = re.match(regex, bibitem_string)
 
     # Explode the rest of the string around commas, except the commas
-    # are enclosed in curly brackets (e.g., in the authors list); see
-    # <http://stackoverflow.com/a/26809170/353337>.
-    m2 = re.split(',\s*(?![^{}]*\})', m.group(2))
+    # are enclosed in curly brackets (e.g., in the authors list).
+    m2 = my_split(m.group(2))
 
     # Now the heuristics.
     bibitem = {
