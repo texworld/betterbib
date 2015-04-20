@@ -68,7 +68,7 @@ class MathSciNet(Checker):
         except:
             sys.stdout.write('failed.\n\n')
             message = ('Unable to establish connection with %s. '
-                       'Make sure that you have access to the site and that'
+                       'Make sure that you have access to the site and that '
                        'the search function returns valid results.\n\n') \
             % self.server
             sys.stdout.write(message)
