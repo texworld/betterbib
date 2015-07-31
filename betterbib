@@ -34,6 +34,40 @@ AUTHOR_EMAIL = 'nico.schloemer@gmail.com'
 WEBSITE = 'https://github.com/nschloe/betterbib'
 
 
+class DictDiffer(object):
+    # from <http://stackoverflow.com/a/1165552/353337>
+    '''
+    Calculate the difference between two dictionaries as:
+    (1) items added
+    (2) items removed
+    (3) keys same in both but changed values
+    (4) keys same in both and unchanged values
+    '''
+    def __init__(self, current_dict, past_dict):
+        self.current_dict, self.past_dict = current_dict, past_dict
+        self.set_current, self.set_past = \
+            set(current_dict.keys()), set(past_dict.keys())
+        self.intersect = self.set_current.intersection(self.set_past)
+
+    def added(self):
+        return self.set_current - self.intersect
+
+    def removed(self):
+        return self.set_past - self.intersect
+
+    def changed(self):
+        return set(
+            o for o in self.intersect
+            if self.past_dict[o] != self.current_dict[o]
+            )
+
+    def unchanged(self):
+        return set(
+            o for o in self.intersect
+            if self.past_dict[o] == self.current_dict[o]
+            )
+
+
 class Checker(object):
     '''
     Abstract base class for all BibTeX checkers.
@@ -261,18 +295,19 @@ def _main():
     out = open(args.outfile, 'w')
 
     # Write header to the output file.
-    out.write(('%%comment{\n'
-               'This file was created by %s v%s.\n'
-               'Copyright (c) %s, %s <%s>\n'
-               'All rights reserved.\n'
-               '\n'
-               'The latest updates can be retrieved from\n'
-               '    <%s>\n'
-               'where you can also file issues and contribute to %s.\n'
-               '}\n'
-               )
-              % (NAME, VERSION, COPYRIGHT_YEARS, AUTHOR, AUTHOR_EMAIL,
-                 WEBSITE, NAME))
+    out.write(
+        ('%%comment{\n'
+         'This file was created by %s v%s.\n'
+         'Copyright (c) %s, %s <%s>\n'
+         'All rights reserved.\n'
+         '\n'
+         'The latest updates can be retrieved from\n'
+         '    <%s>\n'
+         'where you can also file issues and contribute to %s.\n'
+         '}\n'
+         )
+        % (NAME, VERSION, COPYRIGHT_YEARS, AUTHOR, AUTHOR_EMAIL, WEBSITE, NAME)
+    )
 
     # Determine progress bar width according to the current console width.
     rows, columns = os.popen('stty size', 'r').read().split()
@@ -284,6 +319,7 @@ def _main():
 
     k = 0
     success_count = 0
+    change_count = 0
     for bib_id, entry in od.iteritems():
         k += 1
         b = entry.fields
@@ -322,6 +358,18 @@ def _main():
                 raise
         else:
             # print('found.')
+            # Check if the the fetched entry actually differs from what we
+            # already had. This is for stats.
+            import StringIO
+            parser = bibtex.Parser()
+            parsed_bibtex = \
+                parser.parse_stream(StringIO.StringIO(bibtex_entry))
+            assert len(parsed_bibtex.entries) == 1
+            entry = parsed_bibtex.entries[parsed_bibtex.entries.keys()[0]]
+
+            if _adds_info(entry.fields, b):
+                change_count += 1
+
             # Make sure that the BibTeX key remains identical.
             pattern = '(@[a-zA-Z]+)\s*{\w+'
             bibtex_entry = re.sub(pattern, r'\1{%s' % bib_id, bibtex_entry)
@@ -332,8 +380,32 @@ def _main():
 
     out.close()
     print
-    print('%d of %d entries successfully converted.' % (success_count, n))
+    print('Total number of entries: %d' % n)
+    print('Found on MathSciNet:     %d' % success_count)
+    print('Corrected entries:       %d' % change_count)
     return
+
+
+def _adds_info(entry0, entry1):
+    '''Returns True if entry1 adds information to entry0, False otherwise.
+    '''
+    entry0u = _to_uppercase_keys(entry0)
+    entry1u = _to_uppercase_keys(entry1)
+    d = DictDiffer(entry0u, entry1u)
+    # print(d.added())
+    # print(d.removed())
+    # print(d.unchanged())
+    # Count as same if no entries were added or changed.
+    return d.changed() or d.added()
+
+
+def _to_uppercase_keys(dictionary):
+    '''Returns a str-keyed dictionary with uppercase keys.
+    '''
+    new_dict = {}
+    for key, value in dictionary.iteritems():
+        new_dict[key.upper()] = value
+    return new_dict
 
 
 def _get_string_representation(entry):
