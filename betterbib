@@ -2,7 +2,7 @@
 # -*- coding: utf8 -*-
 #
 #   BetterBib updates a BibTeX file with information from MathSciNet.
-#   Copyright (C) 2013--2014  Nico Schlömer
+#   Copyright (C) 2013--2015  Nico Schlömer
 #
 #   This program is free software: you can redistribute it and/or modify
 #   it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ from pybtex.database.input import bibtex
 
 NAME = 'BetterBib'
 VERSION = '0.2.0'
-COPYRIGHT_YEARS = '2013--2014'
+COPYRIGHT_YEARS = '2013--2015'
 AUTHOR = 'Nico Schlömer'
 AUTHOR_EMAIL = 'nico.schloemer@gmail.com'
 WEBSITE = 'https://github.com/nschloe/betterbib'
