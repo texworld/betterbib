@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-from checker import Checker
-from mathscinet import MathSciNet
+from betterbib.checker import Checker
+from betterbib.mathscinet import MathSciNet
 
 __all__ = [
     'checker',
@@ -13,5 +13,3 @@ __version__ = '0.2.0'
 __author__ = 'Nico Schlömer'
 __author_email__ = 'nico.schloemer@gmail.com'
 __website__ = 'https://github.com/nschloe/betterbib'
-
-# COPYRIGHT_YEARS = '2013-2015'

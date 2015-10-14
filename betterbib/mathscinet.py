@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-from checker import Checker
+from betterbib.checker import Checker
 
 import difflib
 import time
