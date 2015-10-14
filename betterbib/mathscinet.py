@@ -1,6 +1,6 @@
 # -*- coding: utf8 -*-
 #
-from betterbib.checker import Checker
+from betterbib.connector import Connector
 
 import difflib
 import time
@@ -9,7 +9,7 @@ import requests
 import sys
 
 
-class MathSciNet(Checker):
+class MathSciNet(Connector):
     '''
     BibTeX resource from MathSciNet, http://www.ams.org/mathscinet/.
     Unfortunately, access to MathSciNet is restricted and typically only

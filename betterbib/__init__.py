@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 #
 from betterbib.bibtex import get_string_representation, read_bibtex
-from betterbib.checker import Checker
+from betterbib.connector import Connector
 from betterbib.dictdiffer import adds_info
 from betterbib.mathscinet import MathSciNet
 from betterbib.progress_bar import ProgressBar
 
 __all__ = [
     'bibtex',
-    'checker',
+    'connector',
     'dictdiffer',
     'mathscinet',
     'progress_bar'
