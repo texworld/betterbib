@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-from checker import Checker
-from mathscinet import MathSciNet
+from betterbib.checker import Checker
+from betterbib.mathscinet import MathSciNet
 
 __all__ = [
     'checker',
