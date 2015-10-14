@@ -31,9 +31,9 @@ is converted into
 MRREVIEWER = {Melina A. Freitag},
 }
 ```
-by simply calling
+simply by calling
 ```
-betterbib in.bib out.bib
+$ betterbib in.bib out.bib
 ```
 
 At the moment, the only BetterBib backend is the
