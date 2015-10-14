@@ -6,7 +6,10 @@ import betterbib
 import collections
 from pybtex.database.input import bibtex
 import re
-import StringIO
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 
 def _main():
@@ -78,7 +81,7 @@ def _main():
             # already had. This is for stats.
             parser = bibtex.Parser()
             parsed_bibtex = \
-                parser.parse_stream(StringIO.StringIO(bibtex_entry))
+                parser.parse_stream(StringIO(bibtex_entry))
             assert len(parsed_bibtex.entries) == 1
             entry = parsed_bibtex.entries[parsed_bibtex.entries.keys()[0]]
 
