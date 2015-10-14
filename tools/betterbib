@@ -15,7 +15,7 @@ def _main():
 
     print('Reading from: %s' % infile)
 
-    data = _read_bibtex(infile)
+    data = betterbib.read_bibtex(infile)
     n = len(data.entries)
 
     print('Number of entries: %d' % n)
@@ -58,7 +58,7 @@ def _main():
         except RuntimeError as e:
             # print('Entry not found (\'%s\').' % e.message)
             # Write out the old entry to file.
-            a = _get_string_representation(entry)
+            a = betterbib.get_string_representation(entry)
             out.write(
                 '%%comment{Error when fetching the following entry (%s).}\n'
                 % e.message
@@ -101,37 +101,6 @@ def _main():
     print('Found on MathSciNet:     %d' % success_count)
     print('Corrected entries:       %d' % change_count)
     return
-
-
-def _get_string_representation(entry):
-    '''String representation of BibTeX entry.
-    '''
-    lst = []
-    lst.append('@%s{%s' % (entry.type, entry.key))
-    for key, persons in entry.persons.items():
-        persons_str = ' and '.join([_get_person_str(p) for p in persons])
-        lst.append('%s = {%s}' % (key, persons_str))
-    for field, value in entry.fields.iteritems():
-        lst.append('%s = {%s}' % (field, value))
-    lst.append('}')
-    return ',\n  '.join(lst)
-
-
-def _get_person_str(p):
-    person_str = []
-    for s in [' '.join(p.prelast() + p.last()),
-              ' '.join(p.lineage()),
-              ' '.join(p.first() + p.middle())]:
-        if s:
-            person_str.append(s)
-    return ', '.join(person_str)
-
-
-def _read_bibtex(filename):
-    # Open file for parsing.
-    parser = bibtex.Parser()
-    data = parser.parse_file(filename)
-    return data
 
 
 def _parse_cmd_arguments():
