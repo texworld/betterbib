@@ -4,7 +4,7 @@ import os
 from setuptools import setup
 import codecs
 
-from betterbib import __version__, __author__, __author_email__
+from betterbib import __name__, __version__, __author__, __author_email__
 
 
 def read(fname):
@@ -23,10 +23,10 @@ setup(
     author=__author__,
     author_email=__author_email__,
     packages=['betterbib'],
-    description='y meshes, Voronoi regions',
+    description='Better BibTeX data',
     long_description=read('README.rst'),
     url='https://github.com/nschloe/betterbib',
-    download_url='https://pypi.python.org/pypi/matplotlib2tikz',
+    download_url='https://pypi.python.org/pypi/betterbib',
     license='License :: OSI Approved :: MIT License',
     platforms='any',
     requires=[],
