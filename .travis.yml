@@ -1,0 +1,29 @@
+#sudo: false
+sudo: required
+dist: trusty
+
+language: python
+
+python:
+    - "2.7"
+    - "3.4"
+
+virtualenv:
+  system_site_packages: true
+
+# install dependencies
+addons:
+  apt:
+    packages:
+      - pybtex
+      - python-requests
+      - python3-requests
+
+install:
+  - pip install -r requirements.txt
+
+script:
+  # Alternative: setup.py install.
+  # Using pip makes sure that the package is pip-compatible, too.
+  - pip install .
+  - betterbib -h
