@@ -2,9 +2,11 @@
 # -*- coding: utf8 -*-
 #
 import betterbib
-import re
+
 import collections
 from pybtex.database.input import bibtex
+import re
+import StringIO
 
 
 def _main():
@@ -75,14 +77,13 @@ def _main():
             # print('found.')
             # Check if the the fetched entry actually differs from what we
             # already had. This is for stats.
-            import StringIO
             parser = bibtex.Parser()
             parsed_bibtex = \
                 parser.parse_stream(StringIO.StringIO(bibtex_entry))
             assert len(parsed_bibtex.entries) == 1
             entry = parsed_bibtex.entries[parsed_bibtex.entries.keys()[0]]
 
-            if _adds_info(entry.fields, b):
+            if betterbib.adds_info(entry.fields, b):
                 change_count += 1
 
             # Make sure that the BibTeX key remains identical.
@@ -95,32 +96,11 @@ def _main():
 
     out.close()
     print
+    print
     print('Total number of entries: %d' % n)
     print('Found on MathSciNet:     %d' % success_count)
     print('Corrected entries:       %d' % change_count)
     return
-
-
-def _adds_info(entry0, entry1):
-    '''Returns True if entry1 adds information to entry0, False otherwise.
-    '''
-    entry0u = _to_uppercase_keys(entry0)
-    entry1u = _to_uppercase_keys(entry1)
-    d = betterbib.DictDiffer(entry0u, entry1u)
-    # print(d.added())
-    # print(d.removed())
-    # print(d.unchanged())
-    # Count as same if no entries were added or changed.
-    return d.changed() or d.added()
-
-
-def _to_uppercase_keys(dictionary):
-    '''Returns a str-keyed dictionary with uppercase keys.
-    '''
-    new_dict = {}
-    for key, value in dictionary.iteritems():
-        new_dict[key.upper()] = value
-    return new_dict
 
 
 def _get_string_representation(entry):

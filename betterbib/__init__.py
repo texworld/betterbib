@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 from betterbib.checker import Checker
-from betterbib.dictdiffer import DictDiffer
+from betterbib.dictdiffer import adds_info
 from betterbib.mathscinet import MathSciNet
 from betterbib.progress_bar import ProgressBar
 

@@ -2,6 +2,28 @@
 #
 
 
+def adds_info(entry0, entry1):
+    '''Returns True if entry1 adds information to entry0, False otherwise.
+    '''
+    entry0u = _to_uppercase_keys(entry0)
+    entry1u = _to_uppercase_keys(entry1)
+    d = DictDiffer(entry0u, entry1u)
+    # print(d.added())
+    # print(d.removed())
+    # print(d.unchanged())
+    # Count as same if no entries were added or changed.
+    return d.changed() or d.added()
+
+
+def _to_uppercase_keys(dictionary):
+    '''Returns a str-keyed dictionary with uppercase keys.
+    '''
+    new_dict = {}
+    for key, value in dictionary.iteritems():
+        new_dict[key.upper()] = value
+    return new_dict
+
+
 # from <http://stackoverflow.com/a/1165552/353337>
 class DictDiffer(object):
     '''
