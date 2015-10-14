@@ -3,8 +3,6 @@
 #
 import betterbib
 import re
-import sys
-import os
 import collections
 from pybtex.database.input import bibtex
 
@@ -13,14 +11,14 @@ def _main():
     args = _parse_cmd_arguments()
     infile = args.infile
 
-    sys.stdout.write('Reading from: %s\n' % infile)
+    print('Reading from: %s' % infile)
 
     data = _read_bibtex(infile)
     n = len(data.entries)
 
-    sys.stdout.write('Number of entries: %d\n' % n)
-    sys.stdout.write('Saving to: %s\n' % args.outfile)
-    sys.stdout.write('\n')
+    print('Number of entries: %d' % n)
+    print('Saving to: %s' % args.outfile)
+    print
 
     # Create the checkers.
     mathscinet = betterbib.MathSciNet()
@@ -35,7 +33,7 @@ def _main():
         )
 
     # Determine progress bar width according to the current console width.
-    progress_bar = betterbib.ProgressBar()
+    progress_bar = betterbib.ProgressBar(n)
 
     # Use an ordered dictionary to make sure that the entries are written out
     # sorted by their BibTeX key.
@@ -50,7 +48,7 @@ def _main():
 
         # Print a progress bar.
         # 73% [==========================>          ] 143
-        progess_bar.show(float(k) / n)
+        progress_bar.show(k)
 
         # Clean up the title string.
         try:
