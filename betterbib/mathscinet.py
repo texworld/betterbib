@@ -66,7 +66,6 @@ MRREVIEWER = {Melina A. Freitag},
         bt = self.find(test_entry)
         # Check the result.
         if bt != expected:
-            import difflib
             diff = difflib.Differ().compare(bt, expected)
             diff = ''.join([
                 '***' + i[2:] + '***' if i[:1] == '+'
