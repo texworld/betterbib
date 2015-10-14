@@ -1,4 +1,5 @@
 *.bib
+*.pyc
 README.rst
 build/
 dist/
