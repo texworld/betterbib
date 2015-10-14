@@ -19,6 +19,8 @@ addons:
 
 install:
   - pip install -r requirements.txt
+
+script:
   # Alternative: setup.py install.
   # Using pip makes sure that the package is pip-compatible, too.
   - pip install .
