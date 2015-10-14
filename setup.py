@@ -29,7 +29,10 @@ setup(
     download_url='https://pypi.python.org/pypi/betterbib',
     license='License :: OSI Approved :: MIT License',
     platforms='any',
-    requires=[],
+    requires=[
+        'pybtex',
+        'requests'
+        ],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Science/Research',
