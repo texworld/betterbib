@@ -3,11 +3,13 @@
 from betterbib.checker import Checker
 from betterbib.dictdiffer import DictDiffer
 from betterbib.mathscinet import MathSciNet
+from betterbib.progress_bar import ProgressBar
 
 __all__ = [
     'checker',
     'dictdiffer',
-    'mathscinet'
+    'mathscinet',
+    'progress_bar'
     ]
 
 __name__ = 'betterbib'

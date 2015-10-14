@@ -35,8 +35,7 @@ def _main():
         )
 
     # Determine progress bar width according to the current console width.
-    rows, columns = os.popen('stty size', 'r').read().split()
-    progress_bar_width = int(columns) - 10 - len(str(n))
+    progress_bar = betterbib.ProgressBar()
 
     # Use an ordered dictionary to make sure that the entries are written out
     # sorted by their BibTeX key.
@@ -51,14 +50,7 @@ def _main():
 
         # Print a progress bar.
         # 73% [==========================>          ] 143
-        percentage = float(k) / n
-        filled_width = int(percentage * progress_bar_width)
-        empty_width = progress_bar_width - filled_width
-        sys.stdout.write(('\r%3d%% [' + '=' * (filled_width - 1) + '>' +
-                         ' ' * empty_width + '] %d')
-                         % (int(100 * percentage), k)
-                         )
-        sys.stdout.flush()
+        progess_bar.show(float(k) / n)
 
         # Clean up the title string.
         try:
