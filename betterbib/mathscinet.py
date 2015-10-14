@@ -8,6 +8,7 @@ import re
 import requests
 import sys
 
+
 class MathSciNet(Checker):
     '''
     BibTeX resource from MathSciNet, http://www.ams.org/mathscinet/.
@@ -112,7 +113,7 @@ MRREVIEWER = {Melina A. Freitag},
             if sc == 'title':
                 try:
                     title = entry['title']
-                except:
+                except Exception:
                     continue
                 # Remove everything starting from the first dollar sign (math
                 # mode). Removing only what is enclosed in the dollar signs
@@ -141,7 +142,7 @@ MRREVIEWER = {Melina A. Freitag},
                         # Extract everything up to the first comma of `author`
                         # which is hopefully the last name.
                         last_names.append(re.sub('([^,]+),.*', r'\1', author))
-                except:
+                except Exception:
                     continue
                 last_names = ' and '.join(last_names)
                 payload['pg5'] = 'AUCN'
@@ -150,13 +151,13 @@ MRREVIEWER = {Melina A. Freitag},
                 payload['dr'] = 'pubyear'
                 try:
                     payload['arg3'] = entry['year']
-                except:
+                except Exception:
                     continue
             elif sc == 'journal':
                 payload['pg6'] = 'JOUR'
                 try:
                     payload['s6'] = entry['journal']
-                except:
+                except Exception:
                     continue
             else:
                 ValueError('Illegal search criterion \'%s\'.' % sc)
