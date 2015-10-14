@@ -1,46 +1,12 @@
-#!/usr/bin/env python
-# -*- coding: utf8 -*-
+# -*- coding: utf-8 -*-
 #
-#   BetterBib updates a BibTeX file with information from MathSciNet.
-#   Copyright (C) 2013--2014  Nico Schlömer
-#
-#   This program is free software: you can redistribute it and/or modify
-#   it under the terms of the GNU General Public License as published by
-#   the Free Software Foundation, either version 3 of the License, or
-#   (at your option) any later version.
-#
-#   This program is distributed in the hope that it will be useful,
-#   but WITHOUT ANY WARRANTY; without even the implied warranty of
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#   GNU General Public License for more details.
-#
-#   You should have received a copy of the GNU General Public License
-#   along with this program.  If not, see [http://www.gnu.org/licenses/].
-#
-import re
-import xml.etree.ElementTree
-import sys
-import os
+from checker import Checker
+
+import difflib
 import time
+import re
 import requests
-import collections
-from pybtex.database.input import bibtex
-
-NAME = 'BetterBib'
-VERSION = '0.2.0'
-COPYRIGHT_YEARS = '2013--2014'
-AUTHOR = 'Nico Schlömer'
-AUTHOR_EMAIL = 'nico.schloemer@gmail.com'
-WEBSITE = 'https://github.com/nschloe/betterbib'
-
-
-class Checker(object):
-    '''
-    Abstract base class for all BibTeX checkers.
-    '''
-    def find(self, bibtex_entry):
-        raise NotImplementedError
-
+import sys
 
 class MathSciNet(Checker):
     '''
@@ -69,8 +35,9 @@ class MathSciNet(Checker):
             sys.stdout.write('failed.\n\n')
             message = ('Unable to establish connection with %s. '
                        'Make sure that you have access to the site and that '
-                       'the search function returns valid results.\n\n') \
-            % self.server
+                       'the search function returns valid results.\n\n'
+                       ) \
+                % self.server
             sys.stdout.write(message)
             raise
         return
@@ -100,7 +67,6 @@ MRREVIEWER = {Melina A. Freitag},
         bt = self.find(test_entry)
         # Check the result.
         if bt != expected:
-            import difflib
             diff = difflib.Differ().compare(bt, expected)
             diff = ''.join(['***' + i[2:] + '***' if i[:1] == '+'
                 else i[2:] for i in diff if not i[:1] in '-?'])
@@ -119,8 +85,8 @@ MRREVIEWER = {Melina A. Freitag},
         # http://www.ams.org/MathSciNet/search/publications.html?pg4=AUCN&s4=&co4=AND&pg5=TI&s5=ggg&co5=AND&pg6=PC&s6=&co6=AND&pg7=ALLF&s7=&co7=AND&Submit=Search&dr=all&yrop=eq&arg3=&yearRangeFirst=&yearRangeSecond=&pg8=ET&s8=All&review_format=html
         #
         # Specify the search criteria.
-        # The loop below will first search for title only, then title and author,
-        # and so forth, until a unique match is found.
+        # The loop below will first search for title only, then title and
+        # author, and so forth, until a unique match is found.
         #
         search_criteria = ['title', 'author', 'year', 'journal']
         success = False
@@ -148,8 +114,8 @@ MRREVIEWER = {Melina A. Freitag},
                 except:
                     continue
                 # Remove everything starting from the first dollar sign (math
-                # mode). Removing only what is enclosed in the dollar signs does
-                # not work with MathSciNet's search mask, unfortunately.
+                # mode). Removing only what is enclosed in the dollar signs
+                # does not work with MathSciNet's search mask, unfortunately.
                 p = '\$.*'
                 title = re.sub(p, '', title)
                 # Remove some tokens that make MathSciNet fail.
@@ -237,170 +203,3 @@ MRREVIEWER = {Melina A. Freitag},
         bibtex_entry = r.content[m.start():i1]
 
         return bibtex_entry
-
-
-def _main():
-    args = _parse_cmd_arguments()
-    infile = args.infile
-
-    sys.stdout.write('Reading from: %s\n' % infile)
-
-    data = _read_bibtex(infile)
-    n = len(data.entries)
-
-    sys.stdout.write('Number of entries: %d\n' % n)
-    sys.stdout.write('Saving to: %s\n' % args.outfile)
-    sys.stdout.write('\n')
-
-    # Create the checkers.
-    mathscinet = MathSciNet()
-
-    # Open output file for writing.
-    out = open(args.outfile, 'w')
-
-    # Write header to the output file.
-    out.write(('%comment{\n'
-               'This file was created by %s v%s.\n'
-               'Copyright (c) %s, %s <%s>\n'
-               'All rights reserved.\n'
-               '\n'
-               'The latest updates can be retrieved from\n'
-               '    <%s>\n'
-               'where you can also file issues and contribute to %s.\n'
-               '}\n'
-               )
-              % (NAME, VERSION, COPYRIGHT_YEARS, AUTHOR, AUTHOR_EMAIL,
-                 WEBSITE, NAME))
-
-    # Determine progress bar width according to the current console width.
-    rows, columns = os.popen('stty size', 'r').read().split()
-    progress_bar_width = int(columns) - 10 - len(str(n))
-
-    # Use an ordered dictionary to make sure that the entries are written out
-    # sorted by their BibTeX key.
-    od = collections.OrderedDict(sorted(data.entries.items()))
-
-    k = 0
-    success_count = 0
-    for bib_id, entry in od.iteritems():
-        k += 1
-        b = entry.fields
-
-        # Print a progress bar.
-        # 73% [==========================>          ] 143
-        percentage = float(k) / n
-        filled_width = int(percentage * progress_bar_width)
-        empty_width = progress_bar_width - filled_width
-        sys.stdout.write(('\r%3d%% [' + '=' * (filled_width - 1) + '>'
-                         + ' ' * empty_width + '] %d')
-                         % (int(100 * percentage), k)
-                         )
-        sys.stdout.flush()
-
-        # Clean up the title string.
-        try:
-            bibtex_entry = mathscinet.find(b)
-        except RuntimeError as e:
-            #print('Entry not found (\'%s\').' % e.message)
-            # Write out the old entry to file.
-            a = _get_string_representation(entry)
-            out.write('%comment{Error when fetching the following entry (%s).}\n' % e.message)
-            # This write operation may fail if `a` contains non-ASCII
-            # characters. It's okay to fail too since this case requires some
-            # human interaction anyways.
-            try:
-                out.write(a.encode('utf8'))
-            except:
-                #print('\nUnable to write the following entry to an '
-                #      'ASCII-encoded file:\n\n %s\n' % a
-                #      )
-                raise
-        else:
-            #print('found.')
-            # Make sure that the BibTeX key remains identical.
-            pattern = '(@[a-zA-Z]+)\s*{\w+'
-            bibtex_entry = re.sub(pattern, r'\1{%s' % bib_id, bibtex_entry)
-            # Write it out to a file.
-            out.write(bibtex_entry)
-            success_count += 1
-        out.write('\n\n')
-
-    out.close()
-    print
-    print('%d of %d entries successfully converted.' % (success_count, n))
-    return
-
-
-def _get_string_representation(entry):
-    '''String representation of BibTeX entry.
-    '''
-    lst = []
-    lst.append('@%s{%s' % (entry.type, entry.key))
-    for key, persons in entry.persons.items():
-        persons_str = ' and '.join([_get_person_str(p) for p in persons])
-        lst.append('%s = {%s}' % (key, persons_str))
-    for field, value in entry.fields.iteritems():
-        lst.append('%s = {%s}' % (field, value))
-    lst.append('}')
-    return ',\n  '.join(lst)
-
-
-def _get_person_str(p):
-    person_str = []
-    for s in [' '.join(p.prelast() + p.last()),
-              ' '.join(p.lineage()),
-              ' '.join(p.first() + p.middle())]:
-        if s:
-            person_str.append(s)
-    return ', '.join(person_str)
-
-
-def _read_bibtex(filename):
-    # Open file for parsing.
-    parser = bibtex.Parser()
-    data = parser.parse_file(filename)
-    return data
-
-
-def _parse_cmd_arguments():
-    import argparse
-    parser = argparse.ArgumentParser(
-        description='Improve BibTeX libraries '
-        'with information from online sources.'
-        )
-    parser.add_argument('infile',
-                        type=str,
-                        help='input BibTeX file')
-    parser.add_argument('outfile',
-                        type=str,
-                        help='output BibTeX file')
-    return parser.parse_args()
-
-
-def _get_maps():
-    tree = xml.etree.ElementTree.parse('unicode.xml')
-    root = tree.getroot()
-
-    u2l = {}
-    l2u = {}
-    for char in root.iter('character'):
-        try:
-            uni = unichr(int(char.attrib['dec'])).encode('utf-8')
-            for sub in char.iter('latex'):
-                lat = sub.text
-                u2l[uni] = lat
-                l2u[lat] = uni
-        except ValueError:
-            pass
-    return u2l, l2u
-
-
-def _preprocess_latex(s):
-    # list: https://en.wikibooks.org/wiki/LaTeX/Special_Characters
-    return re.sub(r'\\([\'"`\^\~=\.])([a-zA-Z])',
-                  r'\\\1{\2}',
-                  s)
-
-
-if __name__ == '__main__':
-    _main()
