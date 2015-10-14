@@ -1,14 +1,15 @@
+#sudo: false
+sudo: required
+dist: trusty
+
 language: python
 
 python:
     - "2.7"
-    - "3.2"
+    - "3.4"
 
 virtualenv:
   system_site_packages: true
-
-# Enable container-based infrastructure
-sudo: false
 
   # install dependencies
 addons:
