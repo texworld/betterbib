@@ -14,6 +14,7 @@ sudo: false
 addons:
   apt:
     packages:
+      - pybtex
       - python-requests
       - python3-requests
 
