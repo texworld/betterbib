@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 #
 from betterbib.checker import Checker
+from betterbib.dictdiffer import DictDiffer
 from betterbib.mathscinet import MathSciNet
 
 __all__ = [
     'checker',
+    'dictdiffer',
     'mathscinet'
     ]
 
