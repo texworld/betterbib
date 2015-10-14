@@ -1,21 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf8 -*-
 #
+import betterbib
 import re
-import xml.etree.ElementTree
 import sys
 import os
-import time
-import requests
 import collections
 from pybtex.database.input import bibtex
-
-NAME = 'BetterBib'
-VERSION = '0.2.0'
-COPYRIGHT_YEARS = '2013--2015'
-AUTHOR = 'Nico Schlömer'
-AUTHOR_EMAIL = 'nico.schloemer@gmail.com'
-WEBSITE = 'https://github.com/nschloe/betterbib'
 
 
 class DictDiffer(object):
@@ -66,25 +57,16 @@ def _main():
     sys.stdout.write('\n')
 
     # Create the checkers.
-    mathscinet = MathSciNet()
+    mathscinet = betterbib.MathSciNet()
 
     # Open output file for writing.
     out = open(args.outfile, 'w')
 
     # Write header to the output file.
     out.write(
-        ('%%comment{\n'
-         'This file was created by %s v%s.\n'
-         'Copyright (c) %s, %s <%s>\n'
-         'All rights reserved.\n'
-         '\n'
-         'The latest updates can be retrieved from\n'
-         '    <%s>\n'
-         'where you can also file issues and contribute to %s.\n'
-         '}\n'
-         )
-        % (NAME, VERSION, COPYRIGHT_YEARS, AUTHOR, AUTHOR_EMAIL, WEBSITE, NAME)
-    )
+        '%%comment{This file was created with BetterBib v%s.}' %
+        betterbib.__version__
+        )
 
     # Determine progress bar width according to the current console width.
     rows, columns = os.popen('stty size', 'r').read().split()
