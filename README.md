@@ -5,7 +5,7 @@
 Update BibTeX file with info from online sources, e.g.,
 http://www.ams.org/mathscinet/.
 
-# Requirements
+### Requirements
 
 BetterBib requires a few Python modules to run, notably
 
@@ -13,9 +13,13 @@ BetterBib requires a few Python modules to run, notably
 * [Pybtex](http://pybtex.sourceforge.net/).
 
 
-# Usage
+### Usage
 ```
 $ ./betterbib mybibliography.bib out.bib
 ```
 Download http://www.w3.org/Math/characters/unicode.xml to the directory where
 the script resides.
+
+### License
+
+BetterBib is published under the [MIT license](https://en.wikipedia.org/wiki/MIT_License).
