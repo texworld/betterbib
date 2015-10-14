@@ -10,6 +10,13 @@ virtualenv:
 # Enable container-based infrastructure
 sudo: false
 
+  # install dependencies
+addons:
+  apt:
+    packages:
+      - python-requests
+      - python3-requests
+
 install:
   - pip install -r requirements.txt
   # Alternative: setup.py install.
