@@ -1,1 +1,5 @@
 *.bib
+README.rst
+build/
+dist/
+example/
