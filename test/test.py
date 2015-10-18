@@ -6,7 +6,7 @@ import difflib
 
 def test_connection():
 
-    # We can only test ZentralblettMref since MathSciNet is closed.
+    # We can only test ZentralblattMref since MathSciNet is closed.
     source = betterbib.ZentralblattMref()
 
     test_entry = {

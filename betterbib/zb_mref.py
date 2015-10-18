@@ -17,7 +17,7 @@ class ZentralblattMref(Source):
     means of course that you cannot use MathSciNet from outside a university
     network unless you're willing to pay for it. Or can you?
 
-    The AMS offers a [web interface](http://www.ams.org/mathscinet-mref) that
+    The AMS offers a [web interface](http://www.ams.org/mref) that
     hooks up with MathSciNet and can be used from anywhere. Unfortunately, the
     search interface will only give you a meaningful result if there is
     _exactly_ one item in the database matching your query. If there are more,
@@ -161,12 +161,12 @@ class ZentralblattMref(Source):
             raise RuntimeError('No articles found.')
 
     def _mref(self, data):
-        '''Query AMS's mref with the data from zbmath.
+        '''Query AMS's MRef with the data from zbmath.
         '''
         # Typical Mref query:
-        # http://www.ams.org/mathscinet-mref?ref=liesen&dataType=bibtex
+        # http://www.ams.org/mref?ref=liesen&dataType=bibtex
         #
-        url = 'http://www.ams.org/mathscinet-mref'
+        url = 'http://www.ams.org/mref'
         search_query = \
             ' '.join(data['authors'] + [data['title']] + [data['source']])
         r = requests.get(url, params={
@@ -176,15 +176,15 @@ class ZentralblattMref(Source):
 
         if not r.ok:
             raise RuntimeError(
-                'Could not fetch data from mref (status code %d).' %
+                'Could not fetch data from MRef (status code %d).' %
                 r.status_code
                 )
 
         soup = BeautifulSoup(r.content, 'lxml')
         bibtex = soup.find_all('pre')
         if len(bibtex) == 0:
-            raise RuntimeError('Article not found on mref.')
+            raise RuntimeError('Article not found on MRef.')
         elif len(bibtex) > 1:
-            raise RuntimeError('Unexpected mref return data.')
+            raise RuntimeError('Unexpected MRef return data.')
 
         return bibtex[0].contents[0]
