@@ -16,14 +16,23 @@ addons:
   apt:
     packages:
       - pybtex
+      - python-bs4
+      - python3-bs4
+      - python-lxml
+      - python3-lxml
       - python-requests
       - python3-requests
 
 install:
   - pip install -r requirements.txt
-
-script:
+  - pip install coveralls
   # Alternative: setup.py install.
   # Using pip makes sure that the package is pip-compatible, too.
   - pip install .
-  - betterbib -h
+
+# run tests
+script:
+  - nosetests --with-coverage --cover-package=betterbib
+
+after_success:
+  - coveralls

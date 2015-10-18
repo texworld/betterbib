@@ -2,13 +2,18 @@
 
 [![Build Status](https://travis-ci.org/nschloe/betterbib.svg?branch=master)](https://travis-ci.org/nschloe/betterbib)
 [![Code Health](https://landscape.io/github/nschloe/betterbib/master/landscape.png)](https://landscape.io/github/nschloe/betterbib/master)
+[![Coverage Status](https://coveralls.io/repos/nschloe/betterbib/badge.svg?branch=master&service=github)](https://coveralls.io/github/nschloe/betterbib?branch=master)
 [![PyPi Version](https://img.shields.io/pypi/v/betterbib.svg)](https://pypi.python.org/pypi/betterbib)
 [![PyPi Downloads](https://img.shields.io/pypi/dm/betterbib.svg)](https://pypi.python.org/pypi/betterbib)
 
 BibTeX files are typically manually maintained and thus often contain
-inconsistences, mistakes, or are missing information. BetterBib helps
+inconsistencies, mistakes, or are missing information. BetterBib helps
 maintaining your BibTeX files by comparing them with online sources and
-correctiing whatever entries were found faulty. For example, the BibTeX entry
+correcting whatever entries are found faulty. For example, with
+```
+$ betterbib in.bib out.bib
+```
+the input BibTex
 ```
 @article {krylov,
   author = {Liesen and Strakoš},
@@ -31,14 +36,15 @@ is converted into
 MRREVIEWER = {Melina A. Freitag},
 }
 ```
-simply by calling
-```
-$ betterbib in.bib out.bib
-```
 
-At the moment, the only BetterBib backend is the
-[MathSciNet](http://www.ams.org/mathscinet/) service, so you'll have to be in a
-university network for it to work.
+At the moment, BetterBib fetches from one of two data sources:
+
+ * [MRef](http://www.ams.org/mref) and
+ * [MathSciNet](http://www.ams.org/mathscinet/).
+
+The former is free and open, so it is the default. If you have access, you may
+however find the MathSciNet source faster. All BetterBib command-line options
+are explained in `betterbib -h`.
 
 
 ### Installation
@@ -68,6 +74,7 @@ python setup.py install
 
 BetterBib requires a few Python modules to run, notably
 
+* [Beautiful Soup 4](http://www.crummy.com/software/BeautifulSoup/)
 * [requests](http://docs.python-requests.org/en/latest/),
 * [Pybtex](http://pybtex.sourceforge.net/).
 
@@ -76,6 +83,19 @@ BetterBib requires a few Python modules to run, notably
 ```
 $ ./betterbib mybibliography.bib out.bib
 ```
+
+### Testing
+
+To run the BetterBib unit tests, check out this repository and type
+```
+nosetests
+```
+or
+```
+nose2 -s test
+```
+
+
 
 ### Distribution
 To create a new release

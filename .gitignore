@@ -4,3 +4,4 @@ README.rst
 build/
 dist/
 example/
+betterbib.egg-info/

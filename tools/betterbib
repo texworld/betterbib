@@ -25,7 +25,12 @@ def _main():
     print('Saving to: %s' % args.outfile)
     print
 
-    mathscinet = betterbib.MathSciNet()
+    if args.source == 'mref':
+        source = betterbib.ZentralblattMref()
+    elif args.source == 'mathscinet':
+        source = betterbib.MathSciNet()
+    else:
+        raise ValueError('Illegal source \'%s\'.' % args.source)
 
     # Open output file for writing.
     out = open(args.outfile, 'w')
@@ -56,7 +61,7 @@ def _main():
 
         # Clean up the title string.
         try:
-            bibtex_entry = mathscinet.find(b)
+            bibtex_entry = source.find(b)
         except RuntimeError as e:
             # print('Entry not found (\'%s\').' % e.message)
             # Write out the old entry to file.
@@ -100,7 +105,7 @@ def _main():
     print
     print
     print('Total number of entries: %d' % n)
-    print('Found on MathSciNet:     %d' % success_count)
+    print('Found in data source:    %d' % success_count)
     print('Corrected entries:       %d' % change_count)
     return
 
@@ -111,14 +116,24 @@ def _parse_cmd_arguments():
         description='Improve BibTeX libraries '
         'with information from online sources.'
         )
-    parser.add_argument('infile',
-                        type=str,
-                        help='input BibTeX file')
-    parser.add_argument('outfile',
-                        type=str,
-                        help='output BibTeX file')
+    parser.add_argument(
+            'infile',
+            type=str,
+            help='input BibTeX file'
+            )
+    parser.add_argument(
+            'outfile',
+            type=str,
+            help='output BibTeX file'
+            )
+    parser.add_argument(
+            '--source', '-s',
+            type=str,
+            choices=['mref', 'mathscinet'],
+            default='mref',
+            help='data source (default: mref)'
+            )
     return parser.parse_args()
-
 
 
 if __name__ == '__main__':
