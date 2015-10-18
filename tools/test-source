@@ -1,0 +1,89 @@
+#!/usr/bin/env python
+# -*- coding: utf8 -*-
+#
+import betterbib
+
+import difflib
+import time
+
+
+def _main():
+    args = _parse_cmd_arguments()
+
+    if args.source == 'mref':
+        source = betterbib.ZentralblattMref()
+    elif args.source == 'mathscinet':
+        source = betterbib.MathSciNet()
+    else:
+        raise ValueError('Illegal source \'%s\'.' % args.source)
+
+    try:
+        t = time.time()
+        _test_connection(source)
+        elapsed = time.time() - t
+        print('OK (%gs).' % elapsed)
+    except:
+        print('FAILED.\n')
+        raise
+
+
+def _test_connection(source):
+
+    test_entry = {
+            'title': 'Krylov subspace methods',
+            'author': 'Liesen and Strakoš',
+            'year': '2013'
+            }
+
+    # Define the expected return string. Note that special characters need
+    # to be escaped.
+    expected = '''@book {MR3024841,
+    AUTHOR = {Liesen, J{\\"o}rg and Strako{\\v{s}}, Zden{\\v{e}}k},
+     TITLE = {Krylov subspace methods},
+    SERIES = {Numerical Mathematics and Scientific Computation},
+      NOTE = {Principles and analysis},
+ PUBLISHER = {Oxford University Press, Oxford},
+      YEAR = {2013},
+     PAGES = {xvi+391},
+      ISBN = {978-0-19-965541-0},
+   MRCLASS = {65F10 (65F15)},
+  MRNUMBER = {3024841},
+MRREVIEWER = {Melina A. Freitag},
+}'''
+
+    bt = source.find(test_entry)
+
+    # Check the result.
+    if bt != expected:
+        diff = difflib.Differ().compare(bt, expected)
+        diff = ''.join([
+            '***' + i[2:] + '***' if i[:1] == '+'
+            else i[2:] for i in diff if not i[:1] in '-?'
+            ])
+        print
+        print('Unexpected test result. Differences:')
+        print(diff)
+        print
+        raise RuntimeError(
+            'Connection established, but wrong search result.'
+            )
+    return
+
+
+def _parse_cmd_arguments():
+    import argparse
+    parser = argparse.ArgumentParser(
+        description='Test a BibTeX source.'
+        )
+    parser.add_argument(
+            '--source', '-s',
+            type=str,
+            choices=['mref', 'mathscinet'],
+            required=True,
+            help='data source'
+            )
+    return parser.parse_args()
+
+
+if __name__ == '__main__':
+    _main()

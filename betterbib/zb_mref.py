@@ -1,16 +1,13 @@
 # -*- coding: utf8 -*-
 #
-from betterbib.connector import Connector
+from betterbib.source import Source
 
 from bs4 import BeautifulSoup
-import difflib
-import time
 import re
 import requests
-import sys
 
 
-class ZentralblattMref(Connector):
+class ZentralblattMref(Source):
     '''
     This class is a hack for the broken academic data politics.
     The most reliable bibiliographical data in mathematics is in MathSciNet,
@@ -33,19 +30,6 @@ class ZentralblattMref(Connector):
 
     def __init__(self):
 
-        try:
-            t = time.time()
-            self._test_connection()
-            elapsed = time.time() - t
-            sys.stdout.write('ok (%gs).\n\n' % elapsed)
-        except:
-            sys.stdout.write('failed.\n\n')
-            message = (
-                'Unable to establish connection with zbmath server. '
-                'Make sure that the search function returns valid results.\n\n'
-                )
-            sys.stdout.write(message)
-            raise
         return
 
     def _test_connection(self):
