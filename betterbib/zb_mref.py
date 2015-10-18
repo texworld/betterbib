@@ -133,7 +133,13 @@ MRREVIEWER = {Melina A. Freitag},
             # For debugging, you can plug the `query` into the web interface at
             # <https://zbmath.org/>.
 
-            r = requests.get(url, params={'q': query})
+            r = requests.get(
+                    url,
+                    params={'q': query},
+                    # explicitly turn off hostname verification for zbmath.org;
+                    # this works around a verfication bug in trusty
+                    verify=False
+                    )
             if not r.ok:
                 raise RuntimeError(
                     'Could not fetch data (status code %d).' % r.status_code
