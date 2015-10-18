@@ -21,9 +21,13 @@ addons:
 
 install:
   - pip install -r requirements.txt
-
-script:
   # Alternative: setup.py install.
   # Using pip makes sure that the package is pip-compatible, too.
   - pip install .
-  - betterbib -h
+
+# run tests
+script:
+  - nosetests --with-coverage --cover-package=betterbib
+
+after_success:
+  - coveralls
