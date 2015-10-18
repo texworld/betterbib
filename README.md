@@ -7,9 +7,9 @@
 [![PyPi Downloads](https://img.shields.io/pypi/dm/betterbib.svg)](https://pypi.python.org/pypi/betterbib)
 
 BibTeX files are typically manually maintained and thus often contain
-inconsistences, mistakes, or are missing information. BetterBib helps
+inconsistencies, mistakes, or are missing information. BetterBib helps
 maintaining your BibTeX files by comparing them with online sources and
-correctiing whatever entries were found faulty. For example, the BibTeX entry
+correcting whatever entries were found faulty. For example, the BibTeX entry
 ```
 @article {krylov,
   author = {Liesen and Strakoš},
@@ -37,7 +37,7 @@ simply by calling
 $ betterbib in.bib out.bib
 ```
 
-At the moment, the only BetterBib backend is the
+At the moment, the only BetterBib back-end is the
 [MathSciNet](http://www.ams.org/mathscinet/) service, so you'll have to be in a
 university network for it to work.
 
