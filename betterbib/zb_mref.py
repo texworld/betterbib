@@ -5,6 +5,7 @@ from betterbib.source import Source
 from bs4 import BeautifulSoup
 import re
 import requests
+from distutils.version import StrictVersion
 
 
 class ZentralblattMref(Source):
@@ -133,12 +134,15 @@ MRREVIEWER = {Melina A. Freitag},
             # For debugging, you can plug the `query` into the web interface at
             # <https://zbmath.org/>.
 
+            # Verify the hostname certificate only for newer versions of
+            # requests. For some reason, it otherwise fails on Ubuntu trustry
+            # (with requests 2.2.1).
+            verify = \
+                StrictVersion(requests.__version__) >= StrictVersion('2.8.0')
             r = requests.get(
                     url,
                     params={'q': query},
-                    # explicitly turn off hostname verification for zbmath.org;
-                    # this works around a verfication bug in trusty
-                    verify=False
+                    verify=verify
                     )
             if not r.ok:
                 raise RuntimeError(
