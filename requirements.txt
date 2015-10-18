@@ -1,4 +1,5 @@
 beautifulsoup4
+lxml
 pybtex
 readme
 requests

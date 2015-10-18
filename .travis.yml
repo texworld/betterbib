@@ -18,6 +18,8 @@ addons:
       - pybtex
       - python-bs4
       - python3-bs4
+      - python-lxml
+      - python3-lxml
       - python-requests
       - python3-requests
 
