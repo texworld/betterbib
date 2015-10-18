@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/nschloe/betterbib.svg?branch=master)](https://travis-ci.org/nschloe/betterbib)
 [![Code Health](https://landscape.io/github/nschloe/betterbib/master/landscape.png)](https://landscape.io/github/nschloe/betterbib/master)
+[![Coverage Status](https://coveralls.io/repos/nschloe/betterbib/badge.svg?branch=master&service=github)](https://coveralls.io/github/nschloe/betterbib?branch=master)
 [![PyPi Version](https://img.shields.io/pypi/v/betterbib.svg)](https://pypi.python.org/pypi/betterbib)
 [![PyPi Downloads](https://img.shields.io/pypi/dm/betterbib.svg)](https://pypi.python.org/pypi/betterbib)
 
