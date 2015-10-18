@@ -9,7 +9,11 @@
 BibTeX files are typically manually maintained and thus often contain
 inconsistencies, mistakes, or are missing information. BetterBib helps
 maintaining your BibTeX files by comparing them with online sources and
-correcting whatever entries were found faulty. For example, the BibTeX entry
+correcting whatever entries are found faulty. For example, with
+```
+$ betterbib in.bib out.bib
+```
+the input BibTex
 ```
 @article {krylov,
   author = {Liesen and Strakoš},
@@ -32,14 +36,15 @@ is converted into
 MRREVIEWER = {Melina A. Freitag},
 }
 ```
-simply by calling
-```
-$ betterbib in.bib out.bib
-```
 
-At the moment, the only BetterBib back-end is the
-[MathSciNet](http://www.ams.org/mathscinet/) service, so you'll have to be in a
-university network for it to work.
+At the moment, BetterBib fetches from one of two data sources:
+
+ * [MRef](http://www.ams.org/mref) and
+ * [MathSciNet](http://www.ams.org/mathscinet/).
+
+The former is free and open, so it is the default. If you have access, you may
+however find the MathSciNet source faster. All BetterBib command-line options
+are explained in `betterbib -h`.
 
 
 ### Installation
