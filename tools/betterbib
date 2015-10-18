@@ -105,7 +105,7 @@ def _main():
     print
     print
     print('Total number of entries: %d' % n)
-    print('Found on MathSciNet:     %d' % success_count)
+    print('Found in data source:    %d' % success_count)
     print('Corrected entries:       %d' % change_count)
     return
 

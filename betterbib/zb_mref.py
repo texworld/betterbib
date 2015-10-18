@@ -174,15 +174,15 @@ MRREVIEWER = {Melina A. Freitag},
                 articles[0].find_all('a', {'title': 'Author Profile'})
             data['authors'] = []
             for author_tag in author_tags:
-                data['authors'].append(author_tag.contents[0])
+                data['authors'].append(author_tag.text)
 
             title_tags = \
                 articles[0].find_all('div', {'class': 'title'})
-            data['title'] = title_tags[0].contents[0]
+            data['title'] = title_tags[0].text
 
             source_tags = \
                 articles[0].find_all('div', {'class': 'source'})
-            data['source'] = source_tags[0].contents[0]
+            data['source'] = source_tags[0].text
 
             return data
         elif len(articles) > 1:
