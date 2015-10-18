@@ -69,6 +69,7 @@ python setup.py install
 
 BetterBib requires a few Python modules to run, notably
 
+* [Beautiful Soup 4](http://www.crummy.com/software/BeautifulSoup/)
 * [requests](http://docs.python-requests.org/en/latest/),
 * [Pybtex](http://pybtex.sourceforge.net/).
 
@@ -77,6 +78,19 @@ BetterBib requires a few Python modules to run, notably
 ```
 $ ./betterbib mybibliography.bib out.bib
 ```
+
+### Testing
+
+To run the BetterBib unit tests, check out this repository and type
+```
+nosetests
+```
+or
+```
+nose2 -s test
+```
+
+
 
 ### Distribution
 To create a new release
