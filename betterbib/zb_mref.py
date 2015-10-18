@@ -125,7 +125,7 @@ class ZentralblattMref(Source):
         # Test which it is.
 
         # Check if the website issues an error message.
-        m = re.search('Your query produced no results', r.content)
+        m = re.search(b'Your query produced no results', r.content)
         if m:
             raise RuntimeError(
                 'No publication results on zbmath.org.'
