@@ -146,7 +146,7 @@ MRREVIEWER = {Melina A. Freitag},
                     )
 
             # Check how many documents we've found.
-            m = re.search('Found ([0-9]+) documents', r.content)
+            m = re.search(b'Found ([0-9]+) documents', r.content)
             if m:
                 num_matches = int(m.group(1))
                 if num_matches in [0, 1]:
