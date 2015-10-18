@@ -3,13 +3,13 @@
 #
 import betterbib
 
-#import collections
-#from pybtex.database.input import bibtex
-#import re
-#try:
-#    from StringIO import StringIO
-#except ImportError:
-#    from io import StringIO
+import collections
+from pybtex.database.input import bibtex
+import re
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 
 def _main():
