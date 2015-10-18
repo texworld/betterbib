@@ -1,3 +1,4 @@
+beautifulsoup4
 pybtex
 readme
 requests
