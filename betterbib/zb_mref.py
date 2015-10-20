@@ -93,7 +93,7 @@ class ZentralblattMref(Source):
             # <https://zbmath.org/>.
 
             # Verify the hostname certificate only for newer versions of
-            # requests. For some reason, it otherwise fails on Ubuntu trustry
+            # requests. For some reason, it otherwise fails on Ubuntu trusty
             # (with requests 2.2.1).
             verify = \
                 StrictVersion(requests.__version__) >= StrictVersion('2.8.0')
