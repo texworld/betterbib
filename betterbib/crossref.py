@@ -4,7 +4,12 @@ from betterbib.source import Source
 
 import re
 import requests
-import urlparse
+try:
+    # Python 2
+    import urlparse
+except ImportError:
+    # Python 3
+    from urllib.parse import urlparse
 
 
 class Crossref(Source):
