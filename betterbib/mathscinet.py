@@ -24,7 +24,7 @@ class MathSciNet(Source):
         self.server = servers[0]
         return
 
-    def find(self, entry):
+    def find_unique(self, entry):
         url = self.server + '/search/publications.html'
 
         # Typical search query line:

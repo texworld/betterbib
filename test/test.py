@@ -4,16 +4,24 @@ import betterbib
 
 import difflib
 
+
 def test_connection():
 
     # We can only test ZentralblattMref since MathSciNet is closed.
-    source = betterbib.ZentralblattMref()
+    source = betterbib.Crossref()
+    #source = betterbib.ZentralblattMref()
 
     test_entry = {
-            'title': 'Krylov subspace methods',
-            'author': 'Liesen and Strakoš',
+            'title': 'A Framework for Deflated and Augmented ' +
+                     'Krylov Subspace Methods',
+            'author': 'Gaul and Liesen and Gutknecht',
             'year': '2013'
             }
+    #test_entry = {
+    #        'title': 'Krylov subspace methods',
+    #        'author': 'Liesen and Strakoš',
+    #        'year': '2013'
+    #        }
 
     # Define the expected return string. Note that special characters need
     # to be escaped.

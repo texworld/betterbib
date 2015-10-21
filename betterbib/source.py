@@ -6,5 +6,5 @@ class Source(object):
     '''
     Abstract base class for all BibTeX sources.
     '''
-    def find(self, bibtex_entry):
+    def find_unique(self, bibtex_entry):
         raise NotImplementedError

@@ -16,84 +16,92 @@ class Crossref(Source):
     def __init__(self):
         return
 
-    def find(self, entry):
-        url = 'http://search.crossref.org/dois'
-
-        # Typical search query:
-        # http://search.crossref.org/dois?q=%2bliesen+%2bgaul&year=2012
-        #
+    def find_unique(self, entry):
         # Specify the search criteria. Start broad and narrow down until we
         # find exactly one result.
         #
         search_criteria = [
             ['title'],
             ['title', 'authors'],
-            ['title', 'authors', 'year']
+            ['title', 'authors', 'genre'],
+            ['title', 'authors', 'genre', 'year']
             ]
 
         # default (empty) payload
         for sc in search_criteria:
-            payload = []
-            # Add a search criterion.
-            if 'title' in sc:
-                try:
-                    # Prefix all necessary keywords with '+'
-                    payload.append(entry['title'])
-                except KeyError:
-                    continue
+            out = self.find(sc, entry)
+            if len(out) == 1:
+                return out[0]
 
-            if 'authors' in sc:
-                authors = entry['author'].split(' and ')
-                # Extract everything up to the first comma of `author`
-                # which is hopefully the last name.
-                last_names = [
-                    re.sub('([^,]+),.*', r'\1', author)
-                    for author in authors
-                    ]
-                for last_name in last_names:
-                    payload.append(last_name)
+        print(len(out))
+        print(out)
+        raise RuntimeError('No unique match found')
 
-            # Search request.
-            query = ' '.join(payload)
-            # CrossRef: Add '+' to all required keywords
-            query = '+' + query.replace(' ', ' +')
-            params = {'q': query}
+    def find(self, sc, entry):
+        url = 'http://search.crossref.org/dois'
 
-            if 'year' in sc:
-                params['year'] = entry['year']
+        # Typical search query:
+        # http://search.crossref.org/dois?q=%2bliesen+%2bgaul&year=2012
+        #
+        payload = []
 
-            r = requests.get(
-                    url,
-                    params={'q': query}
-                    )
-            if not r.ok:
-                raise RuntimeError(
-                    'Could not fetch data (status code %d).' % r.status_code
-                    )
-            data = r.json()
+        if 'title' in sc:
+            payload.append(entry['title'])
 
-            if len(data) == 0:
-                raise RuntimeError('Seach query unsuccessful.')
-            elif len(data) == 1:
-                break
+        if 'authors' in sc:
+            authors = entry['author'].split(' and ')
+            # Extract everything up to the first comma of `author`
+            # which is hopefully the last name.
+            last_names = [
+                re.sub('([^,]+),.*', r'\1', author)
+                for author in authors
+                ]
+            for last_name in last_names:
+                payload.append(last_name)
 
-        if len(data) > 1:
-            raise RuntimeError('No unique match found on CrossRef')
+        # Search request.
+        query = ' '.join(payload)
+        # CrossRef: Add '+' to all required keywords
+        query = '+' + query.replace(' ', ' +')
+        params = {'q': query}
 
-        # Now construct a bibdata dict from the data.
+        if 'year' in sc:
+            params['year'] = entry['year']
+
+        if 'genre' in sc:
+            if entry['genre'] == 'book':
+                params['type'] = 'Monograph'
+            else:
+                raise RuntimeError('Unknown genre \'%s\'.' % entry['genre'])
+
+        print(params)
+        r = requests.get(
+                url,
+                params=params
+                )
+        if not r.ok:
+            raise RuntimeError(
+                'Could not fetch data (status code %d).' % r.status_code
+                )
+        data = r.json()
+
+        return [self._translate_to_bibdata(item) for item in data]
+
+    def _translate_to_bibdata(self, data):
+        '''Translate a given data set into the bibtex data structure.
+        '''
         bibdata = {}
+        if 'doi' in data:
+            bibdata['doi'] = data['doi']
 
-        if 'doi' in data[0]:
-            bibdata['doi'] = data[0]['doi']
+        if 'title' in data:
+            bibdata['title'] = data['title']
 
-        if 'title' in data[0]:
-            bibdata['title'] = data[0]['title']
+        if 'year' in data:
+            bibdata['year'] = data['year']
 
-        if 'year' in data[0]:
-            bibdata['year'] = data[0]['year']
-
-        if 'coins' in data[0]:
-            coins = urlparse.parse_qs(data[0]['coins'])
+        if 'coins' in data:
+            coins = urlparse.parse_qs(data['coins'])
 
             if 'rft.spage' in coins:
                 bibdata['spage'] = coins['rft.spage'][0]
@@ -125,4 +133,4 @@ class Crossref(Source):
             if 'rft.genre' in coins:
                 bibdata['genre'] = coins['rft.genre'][0]
 
-        return
+        return bibdata

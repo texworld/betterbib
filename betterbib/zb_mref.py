@@ -32,7 +32,7 @@ class ZentralblattMref(Source):
     def __init__(self):
         return
 
-    def find(self, entry):
+    def find_unique(self, entry):
         return self._mref(self._zbmath(entry))
 
     def _zbmath(self, entry):
