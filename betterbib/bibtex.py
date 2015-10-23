@@ -3,18 +3,38 @@
 from pybtex.database.input import bibtex
 
 
-def get_string_representation(entry):
+def pybtex_to_dict(entry):
     '''String representation of BibTeX entry.
     '''
-    lst = []
-    lst.append('@%s{%s' % (entry.type, entry.key))
+    d = {}
+    d['genre'] = entry.type
+    d['key'] = entry.key
+    for key, persons in entry.persons.items():
+        d[key] = [{
+            'first': p.first(),
+            'middle': p.middle(),
+            'prelast': p.prelast(),
+            'last': p.last(),
+            'lineage': p.lineage()
+            } for p in persons]
+    for field, value in entry.fields.iteritems():
+        d[field] = value
+    return d
+
+
+def pybtex_to_bibtex_string(entry, key):
+    '''String representation of BibTeX entry.
+    '''
+    out = '@%s{%s,\n  ' % (entry.type, key)
+    content = []
     for key, persons in entry.persons.items():
         persons_str = ' and '.join([_get_person_str(p) for p in persons])
-        lst.append('%s = {%s}' % (key, persons_str))
+        content.append('%s = {%s}' % (key, persons_str))
     for field, value in entry.fields.iteritems():
-        lst.append('%s = {%s}' % (field, value))
-    lst.append('}')
-    return ',\n  '.join(lst)
+        content.append('%s = {%s}' % (field, value))
+    out += ',\n  '.join(content)
+    out += '\n}'
+    return out
 
 
 def _get_person_str(p):

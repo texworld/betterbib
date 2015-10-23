@@ -1,15 +1,11 @@
 # -*- coding: utf8 -*-
 #
 from betterbib.source import Source
+from betterbib.bibtex import pybtex_to_bibtex_string, pybtex_to_dict
 
+import pybtex.core
 import re
 import requests
-try:
-    # Python 2
-    import urlparse
-except ImportError:
-    # Python 3
-    from urllib.parse import urlparse
 
 
 class Crossref(Source):
@@ -22,64 +18,33 @@ class Crossref(Source):
         return
 
     def find_unique(self, entry):
-        # Specify the search criteria. Start broad and narrow down until we
-        # find exactly one result.
-        #
-        search_criteria = [
-            ['title'],
-            ['title', 'authors'],
-            ['title', 'authors', 'genre'],
-            ['title', 'authors', 'genre', 'year']
-            ]
+        url = 'https://api.crossref.org/works'
 
-        # default (empty) payload
-        for sc in search_criteria:
-            out = self.find(sc, entry)
-            if len(out) == 1:
-                return out[0]
+        d = pybtex_to_dict(entry)
 
-        print(len(out))
-        print(out)
-        raise RuntimeError('No unique match found')
+        # add title with '+' instead of spaces
+        l = ['+'.join(d['title'].split())]
 
-    def find(self, sc, entry):
-        url = 'http://search.crossref.org/dois'
+        # add authors
+        for au in d['author']:
+            l.extend([
+                ' '.join(au['first']), ' '.join(au['middle']),
+                ' '.join(au['prelast']), ' '.join(au['last']),
+                ' '.join(au['lineage'])
+                ])
 
-        # Typical search query:
-        # http://search.crossref.org/dois?q=%2bliesen+%2bgaul&year=2012
-        #
-        payload = []
+        # kick out empty strings
+        l = filter(None, l)
 
-        if 'title' in sc:
-            payload.append(entry['title'])
+        # Simply plug the dict together to a search query. Typical query:
+        # https://api.crossref.org/works?query=vanroose+schl%C3%B6mer&rows=5
+        payload = '+'.join(l)
 
-        if 'authors' in sc:
-            authors = entry['author'].split(' and ')
-            # Extract everything up to the first comma of `author`
-            # which is hopefully the last name.
-            last_names = [
-                re.sub('([^,]+),.*', r'\1', author)
-                for author in authors
-                ]
-            for last_name in last_names:
-                payload.append(last_name)
+        params = {
+            'query': payload,
+            'rows': 5  # get at most 5 search results
+            }
 
-        # Search request.
-        query = ' '.join(payload)
-        # CrossRef: Add '+' to all required keywords
-        query = '+' + query.replace(' ', ' +')
-        params = {'q': query}
-
-        if 'year' in sc:
-            params['year'] = entry['year']
-
-        if 'genre' in sc:
-            if entry['genre'] == 'book':
-                params['type'] = 'Monograph'
-            else:
-                raise RuntimeError('Unknown genre \'%s\'.' % entry['genre'])
-
-        print(params)
         r = requests.get(
                 url,
                 params=params
@@ -90,52 +55,80 @@ class Crossref(Source):
                 )
         data = r.json()
 
-        return [self._translate_to_bibdata(item) for item in data]
+        results = data['message']['items']
 
-    def _translate_to_bibdata(self, data):
+        if results[0]['score'] > 2 * results[1]['score']:
+            # Q: When do we treat a search result as unique?
+            # As a heuristic, assume that the top result is the unique answer
+            # if its score is at least double the score of the the second-best
+            # result.
+            bibtex_key = 'testkey'
+            entry = self._crossref_to_pybtex(results[0])
+            return pybtex_to_bibtex_string(entry, bibtex_key)
+        else:
+            raise RuntimeError('Could not find a positively unique match.')
+
+    def _crossref_to_pybtex(self, data):
         '''Translate a given data set into the bibtex data structure.
         '''
-        bibdata = {}
-        if 'doi' in data:
-            bibdata['doi'] = data['doi']
-
-        if 'title' in data:
-            bibdata['title'] = data['title']
-
-        if 'year' in data:
-            bibdata['year'] = data['year']
-
-        if 'coins' in data:
-            coins = urlparse.parse_qs(data['coins'])
-
-            if 'rft.spage' in coins:
-                bibdata['spage'] = coins['rft.spage'][0]
-
-            if 'rft.epage' in coins:
-                bibdata['epage'] = coins['rft.epage'][0]
-
-            if 'rft.au' in coins:
-                bibdata['authors'] = coins['rft.au']
-
-            if 'rft.volume' in coins:
-                bibdata['volume'] = coins['rft.volume'][0]
-
-            if 'rft.issue' in coins:
-                bibdata['issue'] = coins['rft.issue'][0]
-
-            if 'rft.date' in coins:
-                bibdata['year'] = coins['rft.date'][0]
-
-            if 'rft.atitle' in coins:
-                bibdata['title'] = coins['rft.atitle'][0]
-
-            if 'rft.ctx_ver' in coins:
-                bibdata['ctx_ver'] = coins['rft.ctx_ver'][0]
-
-            if 'rft.jtitle' in coins:
-                bibdata['journal'] = coins['rft.jtitle'][0]
-
-            if 'rft.genre' in coins:
-                bibdata['genre'] = coins['rft.genre'][0]
-
-        return bibdata
+        # A typcial search result is
+        #
+        # {
+        #   u'DOI': u'10.1137/110820713',
+        #   u'subtitle': [],
+        #   u'issued': {u'date-parts': [[2013, 4, 4]]},
+        #   u'prefix': u'http://id.crossref.org/prefix/10.1137',
+        #   u'author': [
+        #     {u'affiliation': [], u'given': u'Andr\xe9', u'family': u'Gaul'},
+        #     {u'affiliation': [], u'given': u'Martin H.', u'family': u'Gutknecht'},
+        #     {u'affiliation': [], u'given': u'J\xf6rg', u'family': u'Liesen'},
+        #     {u'affiliation': [], u'given': u'Reinhard', u'family': u'Nabben'}
+        #   ],
+        #   u'reference-count': 55,
+        #   u'ISSN': [u'0895-4798', u'1095-7162'],
+        #   u'member': u'http://id.crossref.org/member/351',
+        #   u'source': u'CrossRef',
+        #   u'score': 3.3665228,
+        #   u'deposited': {
+        #     u'timestamp': 1372345787000,
+        #     u'date-time': u'2013-06-27T15:09:47Z',
+        #     u'date-parts': [[2013, 6, 27]]
+        #   },
+        #   u'indexed': {
+        #     u'timestamp': 1442739318395,
+        #     u'date-time': u'2015-09-20T08:55:18Z',
+        #     u'date-parts': [[2015, 9, 20]]
+        #   },
+        #   u'type': u'journal-article',
+        #   u'URL': u'http://dx.doi.org/10.1137/110820713',
+        #   u'volume': u'34',
+        #   u'publisher': u'Society for Industrial & Applied Mathematics (SIAM)',
+        #   u'created': {
+        #     u'timestamp': 1368554571000,
+        #     u'date-time': u'2013-05-14T18:02:51Z',
+        #     u'date-parts': [[2013, 5, 14]]
+        #   },
+        #   u'issue': u'2',
+        #   u'title': [u'A Framework for Deflated and Augmented Krylov Subspace Methods'],
+        #   u'alternative-id': [u'10.1137/110820713'],
+        #   u'container-title': [u'SIAM. J. Matrix Anal. & Appl.', u'SIAM Journal on Matrix Analysis and Applications'],
+        #   u'page': u'495-518'
+        # }
+        #
+        return pybtex.core.Entry(
+            'article',
+            fields={
+                'doi': data['DOI'],
+                'issue': data['issue'],
+                # take the shortest of the journal names
+                'journal': min(data['container-title'], key=len),
+                'pages': data['page'],
+                'title': data['title'][0],
+                'volume': data['volume'],
+                'year': data['issued']['date-parts'][0][0]
+            },
+            persons={'author': [
+                pybtex.core.Person('%s, %s' % (au['family'], au['given']))
+                for au in data['author']
+                ]}
+            )

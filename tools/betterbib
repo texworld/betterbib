@@ -55,7 +55,6 @@ def _main():
     change_count = 0
     for bib_id, entry in od.iteritems():
         k += 1
-        b = entry.fields
 
         # Print a progress bar.
         # 73% [==========================>          ] 143
@@ -63,9 +62,7 @@ def _main():
 
         # Clean up the title string.
         try:
-            bibtex_entry = source.find_unique(b)
-            print(bibtex_entry)
-            exit()
+            bibtex_entry = source.find_unique(entry)
         except RuntimeError as e:
             # print('Entry not found (\'%s\').' % e.message)
             # Write out the old entry to file.
@@ -94,14 +91,17 @@ def _main():
             assert len(parsed_bibtex.entries) == 1
             entry = parsed_bibtex.entries[parsed_bibtex.entries.keys()[0]]
 
-            if betterbib.adds_info(entry.fields, b):
-                change_count += 1
+            # TODO have legacy sources return proper pybtex entries
+            # TODO use pybtex to write bibtex file
+            # TODO resurrect following code
+            #if betterbib.adds_info(entry.fields, b):
+            #    change_count += 1
 
             # Make sure that the BibTeX key remains identical.
             pattern = '(@[a-zA-Z]+)\s*{\w+'
             bibtex_entry = re.sub(pattern, r'\1{%s' % bib_id, bibtex_entry)
             # Write it out to a file.
-            out.write(bibtex_entry)
+            out.write(bibtex_entry.encode('utf8'))
             success_count += 1
         out.write('\n\n')
 

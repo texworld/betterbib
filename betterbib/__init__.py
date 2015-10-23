@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
-from betterbib.bibtex import get_string_representation, read_bibtex
+from betterbib.bibtex import pybtex_to_dict, \
+        pybtex_to_bibtex_string, read_bibtex
 from betterbib.crossref import Crossref
 from betterbib.dictdiffer import adds_info
 from betterbib.mathscinet import MathSciNet

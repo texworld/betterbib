@@ -33,8 +33,9 @@ def _test_connection(source):
 
     test_entry = {
             'genre': 'book',
-            'title': 'Krylov subspace methods',
-            'author': 'Liesen and Strakoš',
+            'title': 'A Framework for Deflated and Augmented '
+                     'Krylov Subspace Methods',
+            'author': 'Gaul and Liesen',
             'year': '2013'
             }
 
