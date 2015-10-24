@@ -115,18 +115,46 @@ class Crossref(Source):
         #   u'page': u'495-518'
         # }
         #
+        fields_dict = {}
+        try:
+            fields_dict['doi'] = data['DOI']
+        except KeyError:
+            pass
+
+        try:
+            fields_dict['issue'] = data['issue']
+        except KeyError:
+            pass
+
+        try:
+            # take the shortest of the journal names
+            fields_dict['journal'] = min(data['container-title'], key=len)
+        except KeyError:
+            pass
+
+        try:
+            fields_dict['pages'] = data['page']
+        except KeyError:
+            pass
+
+        try:
+            fields_dict['title'] = data['title'][0]
+        except KeyError:
+            pass
+
+        try:
+            fields_dict['volume'] = data['volume']
+        except KeyError:
+            pass
+
+        try:
+            fields_dict['year'] = data['issued']['date-parts'][0][0]
+        except KeyError:
+            pass
+
         return pybtex.core.Entry(
             'article',
-            fields={
-                'doi': data['DOI'],
-                'issue': data['issue'],
-                # take the shortest of the journal names
-                'journal': min(data['container-title'], key=len),
-                'pages': data['page'],
-                'title': data['title'][0],
-                'volume': data['volume'],
-                'year': data['issued']['date-parts'][0][0]
-            },
+            fields=fields_dict,
             persons={'author': [
                 pybtex.core.Person('%s, %s' % (au['family'], au['given']))
                 for au in data['author']

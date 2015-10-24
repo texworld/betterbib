@@ -68,7 +68,7 @@ def _main():
         except RuntimeError as e:
             # print('Entry not found (\'%s\').' % e.message)
             # Write out the old entry to file.
-            a = betterbib.get_string_representation(entry)
+            a = pybtex_to_bibtex_string(entry, bib_id)
             out.write(
                 '%%comment{Error when fetching the following entry (%s).}\n'
                 % e.message
