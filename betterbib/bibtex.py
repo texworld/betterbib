@@ -10,7 +10,7 @@ def pybtex_to_dict(entry):
     d['genre'] = entry.type
     d['key'] = entry.key
     for key, persons in entry.persons.items():
-        d[key] = [{
+        d[key.lower()] = [{
             'first': p.first(),
             'middle': p.middle(),
             'prelast': p.prelast(),
@@ -18,7 +18,7 @@ def pybtex_to_dict(entry):
             'lineage': p.lineage()
             } for p in persons]
     for field, value in entry.fields.iteritems():
-        d[field] = value
+        d[field.lower()] = value
     return d
 
 
