@@ -3,6 +3,8 @@
 #
 import betterbib
 
+from betterbib import pybtex_to_bibtex_string
+
 import collections
 from pybtex.database.input import bibtex
 import re
@@ -39,7 +41,7 @@ def _main():
 
     # Write header to the output file.
     out.write(
-        '%%comment{This file was created with BetterBib v%s.}' %
+        '%%comment{This file was created with BetterBib v%s.}\n\n' %
         betterbib.__version__
         )
 
@@ -97,11 +99,14 @@ def _main():
             #if betterbib.adds_info(entry.fields, b):
             #    change_count += 1
 
-            # Make sure that the BibTeX key remains identical.
-            pattern = '(@[a-zA-Z]+)\s*{\w+'
-            bibtex_entry = re.sub(pattern, r'\1{%s' % bib_id, bibtex_entry)
+            ## Make sure that the BibTeX key remains identical.
+            #pattern = '(@[a-zA-Z]+)\s*{\w+'
+            #bibtex_entry = re.sub(pattern, r'\1{%s' % bib_id, bibtex_entry)
             # Write it out to a file.
-            out.write(bibtex_entry.encode('utf8'))
+            out.write(
+                #bibtex_entry.encode('utf8')
+                pybtex_to_bibtex_string(entry, bib_id).encode('utf8')
+                )
             success_count += 1
         out.write('\n\n')
 
