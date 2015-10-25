@@ -25,7 +25,7 @@ class Crossref(Source):
 
         l = []
 
-        l.append(latex_to_unicode(d['title']))
+        l.append(d['title'])
 
         # add authors
         for au in d['author']:
@@ -60,7 +60,8 @@ class Crossref(Source):
 
         # Simply plug the dict together to a search query. Typical query:
         # https://api.crossref.org/works?query=vanroose+schl%C3%B6mer&rows=5
-        payload = '+'.join(l)
+        payload = latex_to_unicode(' '.join(l)).replace(' ', '+')
+        print(payload)
 
         params = {
             'query': payload,
@@ -79,6 +80,9 @@ class Crossref(Source):
 
         results = data['message']['items']
 
+        print
+        print(results[0]['score'], results[0]['title'])
+        print(results[1]['score'], results[1]['title'])
         if results[0]['score'] > 2 * results[1]['score']:
             # Q: When do we treat a search result as unique?
             # As a heuristic, assume that the top result is the unique answer
@@ -102,7 +106,7 @@ class Crossref(Source):
         #   u'prefix': u'http://id.crossref.org/prefix/10.1137',
         #   u'author': [
         #     {u'affiliation': [], u'given': u'Andr\xe9', u'family': u'Gaul'},
-        #     {u'affiliation': [], u'given': u'Martin H.', u'family': u'Gutknecht'},
+        #     {u'affiliation': [], u'given': u'Martin', u'family': u'Gut'},
         #     {u'affiliation': [], u'given': u'J\xf6rg', u'family': u'Liesen'},
         #     {u'affiliation': [], u'given': u'Reinhard', u'family': u'Nabben'}
         #   ],
@@ -124,16 +128,19 @@ class Crossref(Source):
         #   u'type': u'journal-article',
         #   u'URL': u'http://dx.doi.org/10.1137/110820713',
         #   u'volume': u'34',
-        #   u'publisher': u'Society for Industrial & Applied Mathematics (SIAM)',
+        #   u'publisher': u'Soc. for Industrial & Applied Mathematics (SIAM)',
         #   u'created': {
         #     u'timestamp': 1368554571000,
         #     u'date-time': u'2013-05-14T18:02:51Z',
         #     u'date-parts': [[2013, 5, 14]]
         #   },
         #   u'issue': u'2',
-        #   u'title': [u'A Framework for Deflated and Augmented Krylov Subspace Methods'],
+        #   u'title': [u'A Framework for Deflated Krylov Subspace Methods'],
         #   u'alternative-id': [u'10.1137/110820713'],
-        #   u'container-title': [u'SIAM. J. Matrix Anal. & Appl.', u'SIAM Journal on Matrix Analysis and Applications'],
+        #   u'container-title': [
+        #     u'SIAM. J. Matrix Anal. & Appl.',
+        #     u'SIAM Journal on Matrix Analysis and Applications'
+        #   ],
         #   u'page': u'495-518'
         # }
         #

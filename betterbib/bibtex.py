@@ -23,7 +23,7 @@ def latex_to_unicode(latex_string):
             stderr=subprocess.PIPE
             )
         stdout, stderr = p.communicate(latex_string)
-        return stdout.replace('\n', ' ').strip()
+        return stdout.replace('\n', ' ').strip().decode('utf-8')
 
 
 def pybtex_to_dict(entry):
