@@ -1,6 +1,29 @@
 # -*- coding: utf8 -*-
 #
 from pybtex.database.input import bibtex
+import os
+import subprocess
+
+
+def latex_to_unicode(latex_string):
+    '''Convert a LaTeX string to unicode.
+    '''
+    # Use pandoc for the job
+    try:
+        # This works in Python 3.4+
+        return subprocess.check_output(
+            ['pandoc', '-f', 'latex', '-t', 'plain'],
+            input=latex_string
+            )
+    except TypeError:  # unexpected keyword 'input'
+        p = subprocess.Popen(
+            ['pandoc', '-f', 'latex', '-t', 'plain'],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE
+            )
+        stdout, stderr = p.communicate(latex_string)
+        return stdout.replace('\n', ' ').strip()
 
 
 def pybtex_to_dict(entry):

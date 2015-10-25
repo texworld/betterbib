@@ -1,7 +1,8 @@
 # -*- coding: utf8 -*-
 #
 from betterbib.source import Source
-from betterbib.bibtex import pybtex_to_bibtex_string, pybtex_to_dict
+from betterbib.bibtex import pybtex_to_bibtex_string, pybtex_to_dict, \
+    latex_to_unicode
 
 import pybtex.core
 import re
@@ -22,8 +23,9 @@ class Crossref(Source):
 
         d = pybtex_to_dict(entry)
 
-        # add title with '+' instead of spaces
-        l = ['+'.join(d['title'].split())]
+        l = []
+
+        l.append(latex_to_unicode(d['title']))
 
         # add authors
         for au in d['author']:
@@ -32,6 +34,26 @@ class Crossref(Source):
                 ' '.join(au['prelast']), ' '.join(au['last']),
                 ' '.join(au['lineage'])
                 ])
+
+        try:
+            l.append(d['journal'])
+        except KeyError:
+            pass
+
+        try:
+            l.append(d['doi'])
+        except KeyError:
+            pass
+
+        try:
+            l.append(d['pages'])
+        except KeyError:
+            pass
+
+        try:
+            l.append(d['year'])
+        except KeyError:
+            pass
 
         # kick out empty strings
         l = filter(None, l)
@@ -42,7 +64,7 @@ class Crossref(Source):
 
         params = {
             'query': payload,
-            'rows': 5  # get at most 5 search results
+            'rows': 2  # get at most 2 search results
             }
 
         r = requests.get(
