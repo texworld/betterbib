@@ -25,15 +25,20 @@ class Crossref(Source):
 
         l = []
 
-        l.append(d['title'])
+        try:
+            l.append(d['title'])
+        except KeyError:
+            pass
 
-        # add authors
-        for au in d['author']:
-            l.extend([
-                ' '.join(au['first']), ' '.join(au['middle']),
-                ' '.join(au['prelast']), ' '.join(au['last']),
-                ' '.join(au['lineage'])
-                ])
+        try:
+            for au in d['author']:
+                l.extend([
+                    ' '.join(au['first']), ' '.join(au['middle']),
+                    ' '.join(au['prelast']), ' '.join(au['last']),
+                    ' '.join(au['lineage'])
+                    ])
+        except KeyError:
+            pass
 
         try:
             l.append(d['journal'])
@@ -52,6 +57,16 @@ class Crossref(Source):
 
         try:
             l.append(d['year'])
+        except KeyError:
+            pass
+
+        try:
+            l.append(d['volume'])
+        except KeyError:
+            pass
+
+        try:
+            l.append(d['number'])
         except KeyError:
             pass
 
@@ -81,8 +96,8 @@ class Crossref(Source):
         results = data['message']['items']
 
         print
-        print(results[0]['score'], results[0]['title'])
-        print(results[1]['score'], results[1]['title'])
+        print(results[0]['score'], results[0])
+        print(results[1]['score'], results[1])
         if results[0]['score'] > 2 * results[1]['score']:
             # Q: When do we treat a search result as unique?
             # As a heuristic, assume that the top result is the unique answer
