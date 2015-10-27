@@ -82,7 +82,8 @@ def _main():
                 )
             out.write(a.encode('utf8'))
 
-        out.write('\n\n')
+        if k != n:
+            out.write('\n\n')
 
     out.close()
     print
