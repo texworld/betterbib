@@ -163,6 +163,7 @@ class Crossref(Source):
             'book': 'book',
             'book-chapter': 'inbook',
             'journal-article': 'article',
+            'proceedings-article': 'inproceedings',
             'report': 'techreport'
             }
         bibtex_type = crossref_to_bibtex_type[data['type']]
@@ -229,6 +230,13 @@ class Crossref(Source):
                 fields_dict['publisher'] = publisher
             if title:
                 fields_dict['chapter'] = title
+        elif bibtex_type == 'inproceedings':
+            if container_title:
+                fields_dict['booktitle'] = container_title
+            if publisher:
+                fields_dict['publisher'] = publisher
+            if title:
+                fields_dict['title'] = title
         elif bibtex_type == 'techreport':
             if container_title:
                 fields_dict['journal'] = container_title
