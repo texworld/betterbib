@@ -16,35 +16,39 @@ $ betterbib in.bib out.bib
 the input BibTex
 ```
 @article {krylov,
-  author = {Liesen and Strakoš},
-  title = {Krylov subspace methods}
+  author = {Liesen and Gaul and Nabben},
+  title = {Deflation Krylov Augmented}
 }
 ```
 is converted into
 ```
-@book{krylov,
-    AUTHOR = {Liesen, J{\"o}rg and Strako{\v{s}}, Zden{\v{e}}k},
-     TITLE = {Krylov subspace methods},
-    SERIES = {Numerical Mathematics and Scientific Computation},
-      NOTE = {Principles and analysis},
- PUBLISHER = {Oxford University Press, Oxford},
-      YEAR = {2013},
-     PAGES = {xvi+391},
-      ISBN = {978-0-19-965541-0},
-   MRCLASS = {65F10 (65F15)},
-  MRNUMBER = {3024841},
-MRREVIEWER = {Melina A. Freitag},
+@article{krylov,
+  author = {Gaul, André and Gutknecht, Martin H. and Liesen, Jörg and Nabben, Reinhard},
+  publisher = {Society for Industrial & Applied Mathematics (SIAM)},
+  doi = {10.1137/110820713},
+  title = {A Framework for Deflated and Augmented Krylov Subspace Methods},
+  url = {http://dx.doi.org/10.1137/110820713},
+  journal = {SIAM. J. Matrix Anal. & Appl.},
+  number = {2},
+  month = apr,
+  volume = {34},
+  source = {CrossRef},
+  year = {2013},
+  pages = {495-518}
 }
 ```
 
-At the moment, BetterBib fetches from one of two data sources:
+At the moment, BetterBib can fetch from one of two data sources:
 
- * [MRef](http://www.ams.org/mref) and
- * [MathSciNet](http://www.ams.org/mathscinet/).
+ * [CrossRef](http://www.crossref.org/) and
+ * [MRef](http://www.ams.org/mref).
 
-The former is free and open, so it is the default. If you have access, you may
-however find the MathSciNet source faster. All BetterBib command-line options
-are explained in `betterbib -h`.
+The default is CrossRef-only, but you can poke add sources as you like:
+```
+$ bibtex in.bib out.bib --sources mref crossref
+```
+This will first check on MRef and if it didn't find anything, it will check
+CrossRef. All BetterBib command-line options are explained in `betterbib -h`.
 
 
 ### Installation
@@ -64,19 +68,26 @@ to upgrade.
 
 #### Manual installation
 
-Download BetterBib from [GitHub](https://github.com/nschloe/betterbib) and install it
-with
+Download BetterBib from [GitHub](https://github.com/nschloe/betterbib) and
+install it with
 ```
 python setup.py install
 ```
 
 ### Requirements
 
-BetterBib requires a few Python modules to run, notably
+BetterBib has a few Python dependencies, all listed in `requirement.txt`,
+notably:
 
-* [Beautiful Soup 4](http://www.crummy.com/software/BeautifulSoup/)
+* [Pybtex](http://pybtex.sourceforge.net/),
 * [requests](http://docs.python-requests.org/en/latest/),
-* [Pybtex](http://pybtex.sourceforge.net/).
+* [Beautiful Soup 4](http://www.crummy.com/software/BeautifulSoup/).
+
+Additionally, BetterBib requires
+
+* pandoc
+
+to be installed.
 
 
 ### Usage
@@ -94,7 +105,6 @@ or
 ```
 nose2 -s test
 ```
-
 
 
 ### Distribution

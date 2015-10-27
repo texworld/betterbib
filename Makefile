@@ -10,4 +10,7 @@ upload: setup.py README.rst
 	python setup.py sdist upload --sign
 
 clean:
-	rm -f README.rst
+	rm -rf \
+	 README.rst \
+	 betterbib.egg-info/ \
+	 dist

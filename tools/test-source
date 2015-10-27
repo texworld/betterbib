@@ -10,7 +10,9 @@ import time
 def _main():
     args = _parse_cmd_arguments()
 
-    if args.source == 'mref':
+    if args.source == 'crossref':
+        source = betterbib.Crossref()
+    elif args.source == 'mref':
         source = betterbib.ZentralblattMref()
     elif args.source == 'mathscinet':
         source = betterbib.MathSciNet()
@@ -30,8 +32,10 @@ def _main():
 def _test_connection(source):
 
     test_entry = {
-            'title': 'Krylov subspace methods',
-            'author': 'Liesen and Strakoš',
+            'genre': 'book',
+            'title': 'A Framework for Deflated and Augmented '
+                     'Krylov Subspace Methods',
+            'author': 'Gaul and Liesen',
             'year': '2013'
             }
 
@@ -51,7 +55,8 @@ def _test_connection(source):
 MRREVIEWER = {Melina A. Freitag},
 }'''
 
-    bt = source.find(test_entry)
+    bt = source.find_unique(test_entry)
+    print(bt)
 
     # Check the result.
     if bt != expected:
@@ -78,7 +83,7 @@ def _parse_cmd_arguments():
     parser.add_argument(
             '--source', '-s',
             type=str,
-            choices=['mref', 'mathscinet'],
+            choices=['crossref', 'mref', 'mathscinet'],
             required=True,
             help='data source'
             )

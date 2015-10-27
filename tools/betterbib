@@ -3,41 +3,39 @@
 #
 import betterbib
 
+from betterbib import pybtex_to_bibtex_string
+
 import collections
-from pybtex.database.input import bibtex
-import re
-try:
-    from StringIO import StringIO
-except ImportError:
-    from io import StringIO
 
 
 def _main():
     args = _parse_cmd_arguments()
     infile = args.infile
 
-    print('Reading from: %s' % infile)
-
     data = betterbib.read_bibtex(infile)
     n = len(data.entries)
 
+    print('Reading from: %s' % infile)
     print('Number of entries: %d' % n)
+    print('Using sources: %s' % ', '.join(args.sources))
     print('Saving to: %s' % args.outfile)
     print
 
-    if args.source == 'mref':
-        source = betterbib.ZentralblattMref()
-    elif args.source == 'mathscinet':
-        source = betterbib.MathSciNet()
-    else:
-        raise ValueError('Illegal source \'%s\'.' % args.source)
+    sources = []
+    for s in args.sources:
+        if s == 'crossref':
+            sources.append(betterbib.Crossref())
+        elif s == 'mref':
+            sources.append(betterbib.ZentralblattMref())
+        else:
+            raise ValueError('Illegal source \'%s\'.' % s)
 
     # Open output file for writing.
     out = open(args.outfile, 'w')
 
     # Write header to the output file.
     out.write(
-        '%%comment{This file was created with BetterBib v%s.}' %
+        '%%comment{This file was created with BetterBib v%s.}\n\n' %
         betterbib.__version__
         )
 
@@ -49,64 +47,52 @@ def _main():
     od = collections.OrderedDict(sorted(data.entries.items()))
 
     k = 0
-    success_count = 0
-    change_count = 0
+    success_by_source = {}
+    for source in args.sources:
+        success_by_source[source] = 0
+
     for bib_id, entry in od.iteritems():
         k += 1
-        b = entry.fields
 
         # Print a progress bar.
         # 73% [==========================>          ] 143
         progress_bar.show(k)
 
-        # Clean up the title string.
-        try:
-            bibtex_entry = source.find(b)
-        except RuntimeError as e:
-            # print('Entry not found (\'%s\').' % e.message)
-            # Write out the old entry to file.
-            a = betterbib.get_string_representation(entry)
+        result = None
+        for source, source_name in zip(sources, args.sources):
+            # TODO don't make the sources throw when nothing has been found
+            try:
+                result = source.find_unique(entry)
+            except RuntimeError as e:
+                pass
+            else:
+                success_by_source[source_name] += 1
+                break
+
+        if result:
+            # Found; write it out to a file.
+            out.write(
+                pybtex_to_bibtex_string(result, bib_id).encode('utf8')
+                )
+        else:
+            # Nothing found; write out the old entry to file.
+            a = pybtex_to_bibtex_string(entry, bib_id)
             out.write(
                 '%%comment{Error when fetching the following entry (%s).}\n'
                 % e.message
                 )
-            # This write operation may fail if `a` contains non-ASCII
-            # characters. It's okay to fail too since this case requires some
-            # human interaction anyways.
-            try:
-                out.write(a.encode('utf8'))
-            except:
-                # print('\nUnable to write the following entry to an '
-                #       'ASCII-encoded file:\n\n %s\n' % a
-                #       )
-                raise
-        else:
-            # print('found.')
-            # Check if the the fetched entry actually differs from what we
-            # already had. This is for stats.
-            parser = bibtex.Parser()
-            parsed_bibtex = \
-                parser.parse_stream(StringIO(bibtex_entry))
-            assert len(parsed_bibtex.entries) == 1
-            entry = parsed_bibtex.entries[parsed_bibtex.entries.keys()[0]]
+            out.write(a.encode('utf8'))
 
-            if betterbib.adds_info(entry.fields, b):
-                change_count += 1
-
-            # Make sure that the BibTeX key remains identical.
-            pattern = '(@[a-zA-Z]+)\s*{\w+'
-            bibtex_entry = re.sub(pattern, r'\1{%s' % bib_id, bibtex_entry)
-            # Write it out to a file.
-            out.write(bibtex_entry)
-            success_count += 1
-        out.write('\n\n')
+        if k != n:
+            out.write('\n\n')
 
     out.close()
     print
     print
     print('Total number of entries: %d' % n)
-    print('Found in data source:    %d' % success_count)
-    print('Corrected entries:       %d' % change_count)
+    print('Found on')
+    for source_name, success_count in success_by_source.iteritems():
+        print('  %s: %d' % (source_name, success_count))
     return
 
 
@@ -127,11 +113,13 @@ def _parse_cmd_arguments():
             help='output BibTeX file'
             )
     parser.add_argument(
-            '--source', '-s',
+            '--sources', '-s',
             type=str,
-            choices=['mref', 'mathscinet'],
-            default='mref',
-            help='data source (default: mref)'
+            nargs='+',
+            choices=['crossref', 'mref'],
+            default=['crossref'],
+            help='data sources with order '
+                 '(default: [crossref])'
             )
     return parser.parse_args()
 
