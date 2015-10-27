@@ -1,5 +1,5 @@
 beautifulsoup4
 lxml
-pybtex
+pybtex < 0.19
 readme
 requests
