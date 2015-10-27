@@ -104,8 +104,6 @@ class Crossref(Source):
             # if its score is at least double the score of the the second-best
             # result.
             entry = self._crossref_to_pybtex(results[0])
-            #bibtex_key = 'testkey'
-            #return pybtex_to_bibtex_string(entry, bibtex_key)
             return entry
         else:
             raise RuntimeError('Could not find a positively unique match.')
@@ -160,6 +158,13 @@ class Crossref(Source):
         #   u'page': u'495-518'
         # }
         #
+        # translate the type
+        crossref_to_bibtex_type = {
+            'journal-article': 'article',
+            'book-chapter': 'inbook'
+            }
+        bibtex_type = crossref_to_bibtex_type[data['type']]
+
         fields_dict = {}
         try:
             fields_dict['doi'] = data['DOI']
@@ -172,20 +177,49 @@ class Crossref(Source):
             pass
 
         try:
-            # take the shortest of the journal names
-            fields_dict['journal'] = min(data['container-title'], key=len)
-        except KeyError:
-            pass
-
-        try:
             fields_dict['pages'] = data['page']
         except KeyError:
             pass
 
         try:
-            fields_dict['title'] = data['title'][0]
+            fields_dict['publisher'] = data['publisher']
         except KeyError:
             pass
+
+        try:
+            fields_dict['source'] = data['source']
+        except KeyError:
+            pass
+
+        try:
+            fields_dict['url'] = data['URL']
+        except KeyError:
+            pass
+
+        try:
+            # take the shortest of the container names
+            container_title = min(data['container-title'], key=len)
+        except KeyError:
+            container_title = None
+
+        try:
+            title = data['title'][0]
+        except KeyError:
+            title = None
+
+        if bibtex_type == 'article':
+            if container_title:
+                fields_dict['journal'] = container_title
+            if title:
+                fields_dict['title'] = title
+        elif bibtex_type == 'inbook':
+            if container_title:
+                # or title?
+                fields_dict['booktitle'] = container_title
+            if title:
+                fields_dict['chapter'] = title
+        else:
+            raise ValueError('Unknown type \'%s\'' % bibtex_type)
 
         try:
             fields_dict['volume'] = data['volume']
@@ -203,7 +237,7 @@ class Crossref(Source):
             pass
 
         return pybtex.core.Entry(
-            'article',
+            bibtex_type,
             fields=fields_dict,
             persons={'author': [
                 pybtex.core.Person('%s, %s' % (au['family'], au['given']))
