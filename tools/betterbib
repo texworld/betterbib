@@ -60,6 +60,7 @@ def _main():
 
         result = None
         for source, source_name in zip(sources, args.sources):
+            # TODO don't make the sources throw when nothing has been found
             try:
                 result = source.find_unique(entry)
             except RuntimeError as e:
