@@ -1,7 +1,6 @@
 # -*- coding: utf8 -*-
 #
 from pybtex.database.input import bibtex
-import os
 import subprocess
 
 
@@ -22,7 +21,7 @@ def latex_to_unicode(latex_string):
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
             )
-        stdout, stderr = p.communicate(latex_string.encode('utf-8'))
+        stdout, _ = p.communicate(latex_string.encode('utf-8'))
         return stdout.replace('\n', ' ').strip().decode('utf-8')
 
 

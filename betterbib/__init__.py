@@ -20,7 +20,6 @@ __all__ = [
     'zb_mref'
     ]
 
-__name__ = 'betterbib'
 __version__ = '1.0.0'
 __author__ = 'Nico Schlömer'
 __author_email__ = 'nico.schloemer@gmail.com'
