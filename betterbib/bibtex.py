@@ -22,7 +22,7 @@ def latex_to_unicode(latex_string):
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
             )
-        stdout, stderr = p.communicate(latex_string)
+        stdout, stderr = p.communicate(latex_string.encode('utf-8'))
         return stdout.replace('\n', ' ').strip().decode('utf-8')
 
 
@@ -44,8 +44,12 @@ def pybtex_to_dict(entry):
         d[field.lower()] = value
     return d
 
-_index_to_month = {1: 'jan', 2: 'feb', 3: 'mar', 4: 'apr', 5: 'may', 6: 'jun',
-    7: 'jul', 8: 'aug', 9: 'sep', 10: 'oct', 11: 'nov', 12: 'dec'
+_index_to_month = {
+    1: 'jan', 2: 'feb', 3: 'mar', 4: 'apr', 5: 'may', 6: 'jun', 7: 'jul',
+    8: 'aug', 9: 'sep', 10: 'oct', 11: 'nov', 12: 'dec',
+    'January': 'jan', 'February': 'feb', 'March': 'mar', 'April': 'apr',
+    'May': 'may', 'June': 'jun', 'July': 'jul', 'August': 'aug',
+    'September': 'sep', 'October': 'oct', 'November': 'nov', 'December': 'dec'
     }
 
 def pybtex_to_bibtex_string(entry, key):
