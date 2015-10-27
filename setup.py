@@ -41,7 +41,7 @@ setup(
         'Programming Language :: Python',
         'Topic :: Utilities'
         ],
-      scripts=[
-          'tools/betterbib'
-          ]
+    scripts=[
+        'tools/betterbib'
+        ]
     )

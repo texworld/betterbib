@@ -64,7 +64,7 @@ def _main():
 
         # Clean up the title string.
         try:
-            bibtex_entry = source.find_unique(entry)
+            entry = source.find_unique(entry)
         except RuntimeError as e:
             # print('Entry not found (\'%s\').' % e.message)
             # Write out the old entry to file.
@@ -87,11 +87,11 @@ def _main():
             # print('found.')
             # Check if the the fetched entry actually differs from what we
             # already had. This is for stats.
-            parser = bibtex.Parser()
-            parsed_bibtex = \
-                parser.parse_stream(StringIO(bibtex_entry))
-            assert len(parsed_bibtex.entries) == 1
-            entry = parsed_bibtex.entries[parsed_bibtex.entries.keys()[0]]
+            #parser = bibtex.Parser()
+            #parsed_bibtex = \
+            #    parser.parse_stream(StringIO(bibtex_entry))
+            #assert len(parsed_bibtex.entries) == 1
+            #entry = parsed_bibtex.entries[parsed_bibtex.entries.keys()[0]]
 
             # TODO have legacy sources return proper pybtex entries
             # TODO use pybtex to write bibtex file

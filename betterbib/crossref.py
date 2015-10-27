@@ -103,9 +103,10 @@ class Crossref(Source):
             # As a heuristic, assume that the top result is the unique answer
             # if its score is at least double the score of the the second-best
             # result.
-            bibtex_key = 'testkey'
             entry = self._crossref_to_pybtex(results[0])
-            return pybtex_to_bibtex_string(entry, bibtex_key)
+            #bibtex_key = 'testkey'
+            #return pybtex_to_bibtex_string(entry, bibtex_key)
+            return entry
         else:
             raise RuntimeError('Could not find a positively unique match.')
 
@@ -166,7 +167,7 @@ class Crossref(Source):
             pass
 
         try:
-            fields_dict['issue'] = data['issue']
+            fields_dict['number'] = data['issue']
         except KeyError:
             pass
 
@@ -194,6 +195,11 @@ class Crossref(Source):
         try:
             fields_dict['year'] = data['issued']['date-parts'][0][0]
         except KeyError:
+            pass
+
+        try:
+            fields_dict['month'] = data['issued']['date-parts'][0][1]
+        except (IndexError, KeyError):
             pass
 
         return pybtex.core.Entry(
