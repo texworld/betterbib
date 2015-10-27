@@ -12,7 +12,8 @@ def latex_to_unicode(latex_string):
         # This works in Python 3.4+
         return subprocess.check_output(
             ['pandoc', '-f', 'latex', '-t', 'plain'],
-            input=latex_string
+            input=latex_string,
+            universal_newlines=True
             )
     except TypeError:  # unexpected keyword 'input'
         p = subprocess.Popen(
