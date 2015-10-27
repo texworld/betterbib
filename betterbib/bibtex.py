@@ -51,6 +51,7 @@ _index_to_month = {
     'September': 'sep', 'October': 'oct', 'November': 'nov', 'December': 'dec'
     }
 
+
 def pybtex_to_bibtex_string(entry, key):
     '''String representation of BibTeX entry.
     '''
@@ -60,7 +61,6 @@ def pybtex_to_bibtex_string(entry, key):
         persons_str = ' and '.join([_get_person_str(p) for p in persons])
         content.append('%s = {%s}' % (key, persons_str))
     for field, value in entry.fields.iteritems():
-        print(field, value)
         if field == 'month':
             content.append('%s = %s' % (field, _index_to_month[value]))
         else:
