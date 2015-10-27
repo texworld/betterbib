@@ -76,11 +76,18 @@ python setup.py install
 
 ### Requirements
 
-BetterBib requires a few Python modules to run, notably
+BetterBib has a few Python dependencies, all listed in `requirement.txt`,
+notably:
 
 * [Pybtex](http://pybtex.sourceforge.net/),
 * [requests](http://docs.python-requests.org/en/latest/),
 * [Beautiful Soup 4](http://www.crummy.com/software/BeautifulSoup/).
+
+Additionally, BetterBib requires
+
+* pandoc
+
+to be installed.
 
 
 ### Usage
