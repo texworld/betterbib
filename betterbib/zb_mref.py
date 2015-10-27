@@ -3,9 +3,14 @@
 from betterbib.source import Source
 
 from bs4 import BeautifulSoup
+from pybtex.database.input import bibtex
 import re
 import requests
 from distutils.version import StrictVersion
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 
 class ZentralblattMref(Source):
@@ -33,7 +38,14 @@ class ZentralblattMref(Source):
         return
 
     def find_unique(self, entry):
-        return self._mref(self._zbmath(entry))
+        result = self._mref(self._zbmath(entry))
+        # parse the string into pybtex
+        parser = bibtex.Parser()
+        parsed_bibtex = \
+            parser.parse_stream(StringIO(result))
+        assert len(parsed_bibtex.entries) == 1
+        entry = parsed_bibtex.entries[parsed_bibtex.entries.keys()[0]]
+        return entry
 
     def _zbmath(self, entry):
         url = 'https://zbmath.org'
@@ -60,27 +72,21 @@ class ZentralblattMref(Source):
             # Add a search criterion.
             if 'title' in sc:
                 try:
-                    payload.append(['ti', entry['title']])
-                except:
+                    payload.append(['ti', entry.fields['title']])
+                except KeyError:
                     continue
 
             if 'authors' in sc:
                 try:
-                    authors = entry['author'].split(' and ')
-                    last_names = []
-                    for author in authors:
-                        # Extract everything up to the first comma of `author`
-                        # which is hopefully the last name.
-                        last_names.append(re.sub('([^,]+),.*', r'\1', author))
-                except:
+                    for au in entry.persons['author']:
+                        payload.append(['au', ' '.join(au.last())])
+                except KeyError:
                     continue
-                for last_name in last_names:
-                    payload.append(['au', last_name])
 
             if 'year' in sc:
                 try:
-                    payload.append(['py', entry['year']])
-                except:
+                    payload.append(['py', entry.fields['year']])
+                except KeyError:
                     continue
 
             # Search request.
@@ -97,6 +103,7 @@ class ZentralblattMref(Source):
             # (with requests 2.2.1).
             verify = \
                 StrictVersion(requests.__version__) >= StrictVersion('2.8.0')
+
             r = requests.get(
                     url,
                     params={'q': query},

@@ -31,7 +31,6 @@ def pybtex_to_dict(entry):
     '''
     d = {}
     d['genre'] = entry.type
-    d['key'] = entry.key
     for key, persons in entry.persons.items():
         d[key.lower()] = [{
             'first': p.first(),

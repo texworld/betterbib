@@ -6,12 +6,7 @@ import betterbib
 from betterbib import pybtex_to_bibtex_string
 
 import collections
-from pybtex.database.input import bibtex
 import re
-try:
-    from StringIO import StringIO
-except ImportError:
-    from io import StringIO
 
 
 def _main():

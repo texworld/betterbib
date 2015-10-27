@@ -16,6 +16,20 @@ class Crossref(Source):
     '''
 
     def __init__(self):
+        self._crossref_to_bibtex_type = {
+            'book': 'book',
+            'book-chapter': 'inbook',
+            'journal-article': 'article',
+            'proceedings-article': 'inproceedings',
+            'report': 'techreport'
+            }
+        self._bibtex_to_crossref_type = {
+            'book': 'book',
+            'inbook': 'book-chapter',
+            'article': 'journal-article',
+            'inproceedings': 'proceedings-article',
+            'techreport': 'report'
+            }
         return
 
     def find_unique(self, entry):
@@ -70,13 +84,17 @@ class Crossref(Source):
         except KeyError:
             pass
 
+        try:
+            l.append(self._bibtex_to_crossref_type[d['genre'].lower()])
+        except KeyError:
+            pass
+
         # kick out empty strings
         l = filter(None, l)
 
         # Simply plug the dict together to a search query. Typical query:
         # https://api.crossref.org/works?query=vanroose+schl%C3%B6mer&rows=5
         payload = latex_to_unicode(' '.join(l)).replace(' ', '+')
-        print(payload)
 
         params = {
             'query': payload,
@@ -95,9 +113,6 @@ class Crossref(Source):
 
         results = data['message']['items']
 
-        print
-        print(results[0]['score'], results[0])
-        print(results[1]['score'], results[1])
         if results[0]['score'] > 2 * results[1]['score']:
             # Q: When do we treat a search result as unique?
             # As a heuristic, assume that the top result is the unique answer
@@ -159,14 +174,7 @@ class Crossref(Source):
         # }
         #
         # translate the type
-        crossref_to_bibtex_type = {
-            'book': 'book',
-            'book-chapter': 'inbook',
-            'journal-article': 'article',
-            'proceedings-article': 'inproceedings',
-            'report': 'techreport'
-            }
-        bibtex_type = crossref_to_bibtex_type[data['type']]
+        bibtex_type = self._crossref_to_bibtex_type[data['type']]
 
         fields_dict = {}
         try:
