@@ -33,6 +33,9 @@ install:
 
 # run tests
 script:
+  # cd into test directory to make sure we're using the pip-installed
+  # betterbib.
+  - cd test
   - nosetests --with-coverage --cover-package=betterbib
 
 after_success:
