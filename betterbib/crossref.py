@@ -3,7 +3,7 @@
 from betterbib.source import Source
 from betterbib.bibtex import pybtex_to_dict, latex_to_unicode
 
-import pybtex.core
+import pybtex
 import requests
 
 
@@ -270,13 +270,13 @@ class Crossref(Source):
 
         try:
             persons = {'author': [
-                pybtex.core.Person('%s, %s' % (au['family'], au['given']))
+                pybtex.database.Person('%s, %s' % (au['family'], au['given']))
                 for au in data['author']
                 ]}
         except KeyError:
             persons = None
 
-        return pybtex.core.Entry(
+        return pybtex.database.Entry(
             bibtex_type,
             fields=fields_dict,
             persons=persons

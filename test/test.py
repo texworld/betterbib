@@ -9,7 +9,7 @@ def test_crossref():
 
     source = betterbib.Crossref()
 
-    test_entry = pybtex.core.Entry(
+    test_entry = pybtex.database.Entry(
             'article',
             fields={
                 'title': 'A Framework for Deflated and Augmented ' +
@@ -17,15 +17,15 @@ def test_crossref():
                 'year': '2013'
             },
             persons={'author': [
-                pybtex.core.Person('Gaul'),
-                pybtex.core.Person('Liesen'),
-                pybtex.core.Person('Gutknecht'),
-                pybtex.core.Person('Nabben'),
+                pybtex.database.Person('Gaul'),
+                pybtex.database.Person('Liesen'),
+                pybtex.database.Person('Gutknecht'),
+                pybtex.database.Person('Nabben'),
                 ]}
             )
 
     bt = source.find_unique(test_entry)
-    reference = pybtex.core.Entry(
+    reference = pybtex.database.Entry(
         'article',
         fields={
             'doi': u'10.1137/110820713',
@@ -44,10 +44,10 @@ def test_crossref():
             },
         persons=pybtex.database.OrderedCaseInsensitiveDict({
             'author': [
-                pybtex.core.Person(u'Gaul, Andr\xe9'),
-                pybtex.core.Person(u'Gutknecht, Martin H.'),
-                pybtex.core.Person(u'Liesen, J\xf6rg'),
-                pybtex.core.Person(u'Nabben, Reinhard')
+                pybtex.database.Person(u'Gaul, Andr\xe9'),
+                pybtex.database.Person(u'Gutknecht, Martin H.'),
+                pybtex.database.Person(u'Liesen, J\xf6rg'),
+                pybtex.database.Person(u'Nabben, Reinhard')
                 ]
             }))
 
@@ -59,7 +59,7 @@ def test_zentralblattmref():
 
     source = betterbib.ZentralblattMref()
 
-    test_entry = pybtex.core.Entry(
+    test_entry = pybtex.database.Entry(
             'article',
             fields={
                 'title': 'A Framework for Deflated and Augmented ' +
@@ -67,14 +67,14 @@ def test_zentralblattmref():
                 'year': '2013'
             },
             persons={'author': [
-                pybtex.core.Person('Gaul'),
-                pybtex.core.Person('Liesen'),
-                pybtex.core.Person('Gutknecht'),
-                pybtex.core.Person('Nabben'),
+                pybtex.database.Person('Gaul'),
+                pybtex.database.Person('Liesen'),
+                pybtex.database.Person('Gutknecht'),
+                pybtex.database.Person('Nabben'),
                 ]}
             )
 
-    reference = pybtex.core.Entry(
+    reference = pybtex.database.Entry(
         u'article',
         fields={
             u'TITLE': u'A framework for deflated and augmented {K}rylov '
@@ -94,10 +94,10 @@ def test_zentralblattmref():
             },
         persons=pybtex.database.OrderedCaseInsensitiveDict({
             u'AUTHOR': [
-                pybtex.core.Person(u'Gaul, Andr{\\\'e}'),
-                pybtex.core.Person(u'Gutknecht, Martin H.'),
-                pybtex.core.Person(u'Liesen, J{\\"o}rg'),
-                pybtex.core.Person(u'Nabben, Reinhard')
+                pybtex.database.Person(u'Gaul, Andr{\\\'e}'),
+                pybtex.database.Person(u'Gutknecht, Martin H.'),
+                pybtex.database.Person(u'Liesen, J{\\"o}rg'),
+                pybtex.database.Person(u'Nabben, Reinhard')
                 ]
             })
         )
