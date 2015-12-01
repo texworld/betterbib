@@ -16,7 +16,6 @@ addons:
   apt:
     packages:
       - pandoc
-      - pybtex
       - python-bs4
       - python3-bs4
       - python-lxml
