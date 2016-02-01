@@ -36,7 +36,7 @@ def test_crossref():
             'url': u'http://dx.doi.org/10.1137/110820713',
             'journal': u'SIAM. J. Matrix Anal. & Appl.',
             'number': u'2',
-            'month': 4,
+            'month': 5,
             'volume': u'34',
             'source': u'CrossRef',
             'year': 2013,
