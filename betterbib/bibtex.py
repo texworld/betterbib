@@ -43,13 +43,26 @@ def pybtex_to_dict(entry):
         d[field.lower()] = value
     return d
 
-_index_to_month = {
-    1: 'jan', 2: 'feb', 3: 'mar', 4: 'apr', 5: 'may', 6: 'jun', 7: 'jul',
-    8: 'aug', 9: 'sep', 10: 'oct', 11: 'nov', 12: 'dec',
-    'January': 'jan', 'February': 'feb', 'March': 'mar', 'April': 'apr',
-    'May': 'may', 'June': 'jun', 'July': 'jul', 'August': 'aug',
-    'September': 'sep', 'October': 'oct', 'November': 'nov', 'December': 'dec'
-    }
+
+def _translate_month(month):
+    '''The month value can take weird forms. Sometimes, it's given as an int,
+    sometimes as a string representing an int, and sometimes the name of the
+    month is spelled out. Try to handle most of this here.
+    '''
+    try:
+        index_to_month = {
+            1: 'jan', 2: 'feb', 3: 'mar', 4: 'apr', 5: 'may', 6: 'jun',
+            7: 'jul', 8: 'aug', 9: 'sep', 10: 'oct', 11: 'nov', 12: 'dec'
+            }
+        return index_to_month[int(month)]
+    except ValueError:
+        # ValueError: invalid literal for int() with base 10: 'Nov'
+        pass
+
+    month = month[:3].lower()
+    assert(month in ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul',
+                     'aug', 'sep', 'nov', 'dec'])
+    return month
 
 
 def pybtex_to_bibtex_string(entry, key):
@@ -62,7 +75,7 @@ def pybtex_to_bibtex_string(entry, key):
         content.append('%s = {%s}' % (key, persons_str))
     for field, value in entry.fields.iteritems():
         if field == 'month':
-            content.append('%s = %s' % (field, _index_to_month[value]))
+            content.append('%s = %s' % (field, _translate_month(value)))
         else:
             content.append('%s = {%s}' % (field, value))
     out += ',\n  '.join(content)
