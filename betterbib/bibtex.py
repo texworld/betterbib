@@ -62,6 +62,7 @@ def pybtex_to_bibtex_string(entry, key):
         content.append('%s = {%s}' % (key, persons_str))
     for field, value in entry.fields.iteritems():
         if field == 'month':
+            value = int(value)  # sometimes, value is a string like '04'
             content.append('%s = %s' % (field, _index_to_month[value]))
         else:
             content.append('%s = {%s}' % (field, value))
