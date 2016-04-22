@@ -1,4 +1,4 @@
-# -*- coding: utf8 -*-
+# -*- coding: utf-8 -*-
 #
 from betterbib.source import Source
 from betterbib.bibtex import pybtex_to_dict, latex_to_unicode
