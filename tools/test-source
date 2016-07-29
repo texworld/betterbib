@@ -14,8 +14,6 @@ def _main():
         source = betterbib.Crossref()
     elif args.source == 'mref':
         source = betterbib.ZentralblattMref()
-    elif args.source == 'mathscinet':
-        source = betterbib.MathSciNet()
     else:
         raise ValueError('Illegal source \'%s\'.' % args.source)
 
@@ -83,7 +81,7 @@ def _parse_cmd_arguments():
     parser.add_argument(
             '--source', '-s',
             type=str,
-            choices=['crossref', 'mref', 'mathscinet'],
+            choices=['crossref', 'mref'],
             required=True,
             help='data source'
             )
