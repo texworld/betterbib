@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 #
-from pybtex.database.input import bibtex
 import subprocess
 
 
@@ -91,10 +90,3 @@ def _get_person_str(p):
         if s:
             person_str.append(s)
     return ', '.join(person_str)
-
-
-def read_bibtex(filename):
-    # Open file for parsing.
-    parser = bibtex.Parser()
-    data = parser.parse_file(filename)
-    return data

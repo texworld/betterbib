@@ -5,6 +5,7 @@ import betterbib
 from betterbib import pybtex_to_bibtex_string
 
 import collections
+from pybtex.database.input import bibtex
 from tqdm import tqdm
 
 
@@ -12,7 +13,9 @@ def _main():
     args = _parse_cmd_arguments()
     infile = args.infile
 
-    data = betterbib.read_bibtex(infile)
+    parser = bibtex.Parser()
+    data = parser.parse_file(infile)
+
     n = len(data.entries)
 
     sources = [betterbib.Crossref()]
