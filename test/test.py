@@ -3,6 +3,7 @@
 import betterbib
 
 import pybtex
+import pybtex.database
 
 
 def _bibtex_equals(obj0, obj1):
