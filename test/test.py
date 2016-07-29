@@ -195,5 +195,43 @@ def test_crossref_techreport0():
     return
 
 
+def test_crossref_inproceedings0():
+
+    source = betterbib.Crossref()
+
+    test_entry = pybtex.database.Entry(
+            'inproceedings',
+            fields={
+                'title': 'Global Warming is Unequivocal'
+            }
+            )
+
+    bt = source.find_unique(test_entry)
+
+    reference = pybtex.database.Entry(
+        'inproceedings',
+        fields={
+            'publisher': 'Institute of Electrical & ' +
+                         'Electronics Engineers (IEEE)',
+            'doi': u'10.1109/aero.2008.4526230',
+            'title': 'Global Warming is Unequivocal',
+            'url': u'http://dx.doi.org/10.1109/aero.2008.4526230',
+            'booktitle': '2008 IEEE Aerospace Conference',
+            'month': 3,
+            'source': u'CrossRef',
+            'year': 2008,
+            },
+        persons=pybtex.database.OrderedCaseInsensitiveDict({
+            'author': [
+                pybtex.database.Person(u'Trenberth, Kevin E.'),
+                ]})
+        )
+
+    # Comparing the Entry object as a whole doesn't work, unfortunately.
+    assert _bibtex_equals(bt, reference)
+
+    return
+
+
 if __name__ == '__main__':
     test_crossref_article0()
