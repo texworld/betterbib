@@ -7,7 +7,6 @@ from betterbib.crossref import Crossref
 from betterbib.dictdiffer import adds_info
 from betterbib.progress_bar import ProgressBar
 from betterbib.source import Source
-from betterbib.zb_mref import ZentralblattMref
 
 __all__ = [
     'bibtex',
@@ -15,7 +14,6 @@ __all__ = [
     'dictdiffer',
     'progress_bar',
     'source',
-    'zb_mref'
     ]
 
 __version__ = '1.1.2'

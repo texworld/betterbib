@@ -10,12 +10,7 @@ import time
 def _main():
     args = _parse_cmd_arguments()
 
-    if args.source == 'crossref':
-        source = betterbib.Crossref()
-    elif args.source == 'mref':
-        source = betterbib.ZentralblattMref()
-    else:
-        raise ValueError('Illegal source \'%s\'.' % args.source)
+    source = betterbib.Crossref()
 
     try:
         t = time.time()
@@ -78,13 +73,6 @@ def _parse_cmd_arguments():
     parser = argparse.ArgumentParser(
         description='Test a BibTeX source.'
         )
-    parser.add_argument(
-            '--source', '-s',
-            type=str,
-            choices=['crossref', 'mref'],
-            required=True,
-            help='data source'
-            )
     return parser.parse_args()
 
 

@@ -38,17 +38,9 @@ is converted into
 }
 ```
 
-At the moment, BetterBib can fetch from one of two data sources:
+BetterBib fetches data from [CrossRef](http://www.crossref.org/).
 
- * [CrossRef](http://www.crossref.org/) and
- * [MRef](http://www.ams.org/mref).
-
-The default is CrossRef-only, but you can poke add sources as you like:
-```
-$ bibtex in.bib out.bib --sources mref crossref
-```
-This will first check on MRef and if it didn't find anything, it will check
-CrossRef. All BetterBib command-line options are explained in `betterbib -h`.
+All BetterBib command-line options are explained in `betterbib -h`.
 
 
 ### Installation

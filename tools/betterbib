@@ -15,20 +15,13 @@ def _main():
     data = betterbib.read_bibtex(infile)
     n = len(data.entries)
 
+    sources = 'crossref'
+
     print('Reading from: %s' % infile)
     print('Number of entries: %d' % n)
-    print('Using sources: %s' % ', '.join(args.sources))
+    print('Using sources: %s' % ', '.join(sources))
     print('Saving to: %s' % args.outfile)
     print
-
-    sources = []
-    for s in args.sources:
-        if s == 'crossref':
-            sources.append(betterbib.Crossref())
-        elif s == 'mref':
-            sources.append(betterbib.ZentralblattMref())
-        else:
-            raise ValueError('Illegal source \'%s\'.' % s)
 
     # Open output file for writing.
     out = open(args.outfile, 'w')
@@ -48,7 +41,7 @@ def _main():
 
     k = 0
     success_by_source = {}
-    for source in args.sources:
+    for source in sources:
         success_by_source[source] = 0
 
     for bib_id, entry in od.iteritems():
@@ -111,15 +104,6 @@ def _parse_cmd_arguments():
             'outfile',
             type=str,
             help='output BibTeX file'
-            )
-    parser.add_argument(
-            '--sources', '-s',
-            type=str,
-            nargs='+',
-            choices=['crossref', 'mref'],
-            default=['crossref'],
-            help='data sources with order '
-                 '(default: [crossref])'
             )
     return parser.parse_args()
 
