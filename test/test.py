@@ -73,6 +73,8 @@ def test_crossref():
         assert(value == reference.fields[key])
 
     string = betterbib.pybtex_to_bibtex_string(reference, 'ABC')
+    print(string)
+    print(reference_str)
     assert string == reference_str
 
     return
