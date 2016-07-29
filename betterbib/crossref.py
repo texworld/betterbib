@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 #
-from betterbib.source import Source
 from betterbib.bibtex import pybtex_to_dict, latex_to_unicode
 
 import pybtex
 import requests
 
 
-class Crossref(Source):
+class Crossref(object):
     '''
     Documentation of the CrossRef Search API:
     <http://search.crossref.org/help/api>.

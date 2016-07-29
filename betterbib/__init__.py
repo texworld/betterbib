@@ -6,14 +6,12 @@ from betterbib.bibtex import pybtex_to_dict, \
 from betterbib.crossref import Crossref
 from betterbib.dictdiffer import adds_info
 from betterbib.progress_bar import ProgressBar
-from betterbib.source import Source
 
 __all__ = [
     'bibtex',
     'crossref',
     'dictdiffer',
     'progress_bar',
-    'source',
     ]
 
 __version__ = '1.1.2'
