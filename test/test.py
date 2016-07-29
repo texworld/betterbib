@@ -5,7 +5,20 @@ import betterbib
 import pybtex
 
 
-def test_crossref():
+def _bibtex_equals(obj0, obj1):
+    if obj0.persons != obj1.persons:
+        return False
+
+    for key, value in obj0.fields.iteritems():
+        if key not in obj1.fields:
+            return False
+        if value != obj1.fields[key]:
+            return False
+
+    return True
+
+
+def test_crossref0():
 
     source = betterbib.Crossref()
 
@@ -65,18 +78,44 @@ def test_crossref():
     return
 
 
-def _bibtex_equals(obj0, obj1):
-    if obj0.persons != obj1.persons:
-        return False
+def test_crossref1():
 
-    for key, value in obj0.fields.iteritems():
-        if key not in obj1.fields:
-            return False
-        if value != obj1.fields[key]:
-            return False
+    source = betterbib.Crossref()
 
-    return True
+    test_entry = pybtex.database.Entry(
+            'book',
+            fields={
+                'title': 'Numerical Ordinary Differential Equations'
+            },
+            persons={'author': [
+                pybtex.database.Person('Butcher'),
+                ]}
+            )
+
+    bt = source.find_unique(test_entry)
+
+    reference = pybtex.database.Entry(
+        'book',
+        fields={
+            'doi': u'10.1002/0470868279',
+            'publisher': u'Wiley-Blackwell',
+            'title': u'Numerical Methods for Ordinary Differential Equations',
+            'url': u'http://dx.doi.org/10.1002/0470868279',
+            'month': 6,
+            'source': u'CrossRef',
+            'year': 2003,
+            },
+        persons=pybtex.database.OrderedCaseInsensitiveDict({
+            'author': [
+                pybtex.database.Person(u'Butcher, J.C.'),
+                ]
+            }))
+
+    # Comparing the Entry object as a whole doesn't work, unfortunately.
+    assert _bibtex_equals(bt, reference)
+
+    return
 
 
 if __name__ == '__main__':
-    test_crossref()
+    test_crossref0()

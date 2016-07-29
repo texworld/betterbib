@@ -110,11 +110,17 @@ class Crossref(object):
 
         results = data['message']['items']
 
-        if results[0]['score'] > 2 * results[1]['score']:
-            # Q: When do we treat a search result as unique?
-            # As a heuristic, assume that the top result is the unique answer
-            # if its score is at least double the score of the the second-best
-            # result.
+        filtered_results = []
+        for result in results:
+            if result['type'] == self._bibtex_to_crossref_type[entry.type]:
+                filtered_results.append(result)
+
+        # Q: When do we treat a search result as unique?
+        # Either if there's only one results, or, as a heuristic, assume that
+        # the top result is the unique answer if its score is at least double
+        # the score of the the second-best result.
+        if len(filtered_results) == 1 or \
+           filtered_results[0]['score'] > 2 * filtered_results[1]['score']:
             entry = self._crossref_to_pybtex(results[0])
             return entry
         else:
