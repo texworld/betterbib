@@ -73,11 +73,20 @@ def test_crossref():
         assert(value == reference.fields[key])
 
     string = betterbib.pybtex_to_bibtex_string(reference, 'ABC')
-    print(string)
-    print(reference_str)
-    assert string == reference_str
+    assert _bibtex_string_equals(string, reference_str)
 
     return
+
+
+def _bibtex_string_equals(str1, str2):
+    str1_lines = str1.split('\n')
+    str2_lines = str2.split('\n')
+
+    # First line (@article{ABC,) and last line (}) must be equal.
+    # The other lines need to be equal by some order.
+    return str1_lines[0] == str2_lines[0] and \
+        str1_lines[-1] == str2_lines[-1] and \
+        set(str1_lines[1:-1]) == set(str2_lines[1:-1])
 
 
 if __name__ == '__main__':
