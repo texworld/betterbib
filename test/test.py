@@ -155,5 +155,45 @@ def test_crossref_inbook0():
     return
 
 
+def test_crossref_techreport0():
+
+    source = betterbib.Crossref()
+
+    test_entry = pybtex.database.Entry(
+            'techreport',
+            fields={
+                'title': 'CT Scan of NASA Booster Nozzle'
+            }
+            )
+
+    bt = source.find_unique(test_entry)
+
+    reference = pybtex.database.Entry(
+        'techreport',
+        fields={
+            'doi': u'10.2172/15014765',
+            'title': 'CT Scan of NASA Booster Nozzle',
+            'url': u'http://dx.doi.org/10.2172/15014765',
+            'month': 7,
+            'source': u'CrossRef',
+            'year': 2004,
+            'institution': 'Office of Scientific ' +
+                           'and Technical Information (OSTI)',
+            'pages': '1-44'
+            },
+        persons=pybtex.database.OrderedCaseInsensitiveDict({
+            'author': [
+                pybtex.database.Person(u'Schneberk, D'),
+                pybtex.database.Person(u'Perry, R'),
+                pybtex.database.Person(u'Thompson, R'),
+                ]})
+        )
+
+    # Comparing the Entry object as a whole doesn't work, unfortunately.
+    assert _bibtex_equals(bt, reference)
+
+    return
+
+
 if __name__ == '__main__':
     test_crossref_article0()
