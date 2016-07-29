@@ -50,6 +50,20 @@ def test_crossref():
                 pybtex.database.Person(u'Nabben, Reinhard')
                 ]
             }))
+    reference_str = u'''@article{ABC,
+  author = {Gaul, Andr\xe9 and Gutknecht, Martin H. and Liesen, J\xf6rg and Nabben, Reinhard},
+  journal = {SIAM. J. Matrix Anal. & Appl.},
+  number = {2},
+  month = may,
+  volume = {34},
+  year = {2013},
+  pages = {495-518},
+  publisher = {Society for Industrial & Applied Mathematics (SIAM)},
+  doi = {10.1137/110820713},
+  title = {A Framework for Deflated and Augmented Krylov Subspace Methods},
+  url = {http://dx.doi.org/10.1137/110820713},
+  source = {CrossRef}
+}'''
 
     # Comparing the Entry object as a whole doesn't work, unfortunately.
     # assert(bt == reference)
@@ -57,6 +71,9 @@ def test_crossref():
     for key, value in bt.fields.iteritems():
         assert(key in reference.fields)
         assert(value == reference.fields[key])
+
+    string = betterbib.pybtex_to_bibtex_string(reference, 'ABC')
+    assert string == reference_str
 
     return
 
