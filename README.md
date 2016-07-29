@@ -4,6 +4,7 @@
 [![Code Health](https://landscape.io/github/nschloe/betterbib/master/landscape.png)](https://landscape.io/github/nschloe/betterbib/master)
 [![codecov](https://codecov.io/gh/nschloe/betterbib/branch/master/graph/badge.svg)](https://codecov.io/gh/nschloe/betterbib)
 [![PyPi Version](https://img.shields.io/pypi/v/betterbib.svg)](https://pypi.python.org/pypi/betterbib)
+[![GitHub stars](https://img.shields.io/github/stars/nschloe/betterbib.svg?style=social&label=Star&maxAge=2592000)](https://github.com/nschloe/betterbib)
 
 BibTeX files are typically manually maintained and thus often contain
 inconsistencies, mistakes, or are missing information. BetterBib helps
