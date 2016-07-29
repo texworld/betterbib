@@ -18,7 +18,7 @@ def _bibtex_equals(obj0, obj1):
     return True
 
 
-def test_crossref0():
+def test_crossref_article0():
 
     source = betterbib.Crossref()
 
@@ -78,7 +78,7 @@ def test_crossref0():
     return
 
 
-def test_crossref1():
+def test_crossref_book0():
 
     source = betterbib.Crossref()
 
@@ -117,5 +117,43 @@ def test_crossref1():
     return
 
 
+def test_crossref_inbook0():
+
+    source = betterbib.Crossref()
+
+    test_entry = pybtex.database.Entry(
+            'inbook',
+            fields={
+                'title': 'Differential and Difference Equations Ordinary'
+            },
+            persons={'author': [
+                pybtex.database.Person('Butcher'),
+                ]}
+            )
+
+    bt = source.find_unique(test_entry)
+
+    reference = pybtex.database.Entry(
+        'inbook',
+        fields={
+            'doi': u'10.1002/0470868279.ch1',
+            'publisher': u'Wiley-Blackwell',
+            'chapter': u'Differential and Difference Equations',
+            'url': u'http://dx.doi.org/10.1002/0470868279.ch1',
+            'booktitle': u'Numerical Methods ' +
+                         'for Ordinary Differential Equations',
+            'month': 1,
+            'source': u'CrossRef',
+            'year': 2005,
+            'pages': '1-44'
+            }
+        )
+
+    # Comparing the Entry object as a whole doesn't work, unfortunately.
+    assert _bibtex_equals(bt, reference)
+
+    return
+
+
 if __name__ == '__main__':
-    test_crossref0()
+    test_crossref_article0()

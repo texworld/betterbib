@@ -206,8 +206,13 @@ class Crossref(object):
             pass
 
         try:
-            # take the shortest of the container names
-            container_title = min(data['container-title'], key=len)
+            # Take the first container names.
+            # This is typically the abbreviated journal name in case of a
+            # journal, and the full book title in case of a book.
+            if len(data['container-title']) > 0:
+                container_title = data['container-title'][0]
+            else:
+                container_title = None
         except (KeyError, ValueError):
             container_title = None
 
