@@ -5,13 +5,11 @@ from betterbib.bibtex import pybtex_to_dict, \
         latex_to_unicode
 from betterbib.crossref import Crossref
 from betterbib.dictdiffer import adds_info
-from betterbib.progress_bar import ProgressBar
 
 __all__ = [
     'bibtex',
     'crossref',
     'dictdiffer',
-    'progress_bar',
     ]
 
 __version__ = '1.1.2'
