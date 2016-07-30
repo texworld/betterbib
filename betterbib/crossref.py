@@ -254,8 +254,6 @@ class Crossref(object):
             if title:
                 fields_dict['title'] = title
         elif bibtex_type == 'techreport':
-            if container_title:
-                fields_dict['journal'] = container_title
             if publisher:
                 fields_dict['institution'] = publisher
             if title:
