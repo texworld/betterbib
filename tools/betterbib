@@ -55,7 +55,8 @@ def _main():
         if result:
             # Found; write it out to a file.
             out.write(
-                pybtex_to_bibtex_string(result, bib_id).encode('utf8')
+                pybtex_to_bibtex_string(result, bib_id).encode('utf8') +
+                '\n\n'
                 )
         else:
             # Nothing found; write out the old entry to file.
@@ -64,7 +65,7 @@ def _main():
                 '%%comment{Error when fetching the following entry (%s).}\n'
                 % e.message
                 )
-            out.write(a.encode('utf8'))
+            out.write(a.encode('utf8') + '\n\n')
 
     out.close()
     print
