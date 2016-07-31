@@ -27,7 +27,7 @@ def test_crossref_article0():
             'article',
             fields={
                 'title': 'A Framework for Deflated and Augmented ' +
-                'Krylov Subspace Methods',
+                         'Krylov Subspace Methods',
                 'year': '2013'
             },
             persons={'author': [
@@ -148,6 +148,54 @@ def test_crossref_inbook0():
             'year': 2005,
             'pages': '1-44'
             }
+        )
+
+    # Comparing the Entry object as a whole doesn't work, unfortunately.
+    assert _bibtex_equals(bt, reference)
+
+    return
+
+
+def test_crossref_incollection0():
+
+    source = betterbib.Crossref()
+
+    test_entry = pybtex.database.Entry(
+            'incollection',
+            fields={
+                'title': 'Numerical continuation, ' +
+                         'and computation of normal forms'
+                },
+            persons=pybtex.database.OrderedCaseInsensitiveDict({
+                'author': [
+                    pybtex.database.Person(u'Beyn'),
+                    pybtex.database.Person(u'Champneys'),
+                    ]
+                }))
+
+    bt = source.find_unique(test_entry)
+
+    reference = pybtex.database.Entry(
+        'inproceedings',
+        fields={
+            'publisher': 'Elsevier BV',
+            'doi': u'10.1016/s1874-575x(02)80025-x',
+            'title': 'Numerical Continuation, and Computation of Normal Forms',
+            'url': u'http://dx.doi.org/10.1016/s1874-575x(02)80025-x',
+            'booktitle': 'Handbook of Dynamical Systems',
+            'source': u'CrossRef',
+            'year': 2002,
+            'pages': u'149-219'
+            },
+        persons=pybtex.database.OrderedCaseInsensitiveDict({
+            'author': [
+                pybtex.database.Person(u'Beyn, Wolf-J\xfcrgen'),
+                pybtex.database.Person(u'Champneys, Alan'),
+                pybtex.database.Person(u'Doedel, Eusebius'),
+                pybtex.database.Person(u'Govaerts, Willy'),
+                pybtex.database.Person(u'Kuznetsov, Yuri A.'),
+                pybtex.database.Person(u'Sandstede, Bj\xf6rn')
+                ]})
         )
 
     # Comparing the Entry object as a whole doesn't work, unfortunately.
