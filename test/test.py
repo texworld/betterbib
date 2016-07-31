@@ -339,5 +339,37 @@ def test_crossref_inproceedings0():
     return
 
 
+def test_crossref_proceedings0():
+
+    source = betterbib.Crossref()
+
+    test_entry = pybtex.database.Entry(
+            'proceedings',
+            fields={
+                'title': 'International Scientific Conference',
+                'doi': '10.15611/amse.2014.17'
+            }
+            )
+
+    bt = source.find_unique(test_entry)
+
+    reference = pybtex.database.Entry(
+        'proceedings',
+        fields={
+            'publisher': 'Wroclaw University of Economics',
+            'doi': u'10.15611/amse.2014.17',
+            'title': 'International Scientific Conference',
+            'url': u'http://dx.doi.org/10.15611/amse.2014.17',
+            'source': u'CrossRef',
+            'year': 2014,
+            }
+        )
+
+    # Comparing the Entry object as a whole doesn't work, unfortunately.
+    assert _bibtex_equals(bt, reference)
+
+    return
+
+
 if __name__ == '__main__':
     test_crossref_article0()

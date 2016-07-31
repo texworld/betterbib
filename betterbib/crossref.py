@@ -53,12 +53,26 @@ class Crossref(object):
             'book': 'book',
             'journal-article': 'article',
             'other': 'misc',
+            'proceedings': 'proceedings',
             'proceedings-article': 'inproceedings',
             'report': 'techreport'
             }
         return _crossref_to_bibtex_type[crossref_type]
 
     def _bibtex_to_crossref_type(self, bibtex_type):
+        if bibtex_type in [
+                'booklet',
+                'conference',
+                'manual',
+                'mastersthesis',
+                'online',
+                'phdthesis',
+                'unpublished'
+                ]:
+            raise RuntimeError(
+                'Crossref doesn''t contain %s data' % bibtex_type
+                )
+
         _bibtex_to_crossref_type = {
             'article': 'journal-article',
             'book': 'book',
@@ -66,6 +80,7 @@ class Crossref(object):
             'misc': 'other',
             'incollection': 'book-chapter',
             'inproceedings': 'proceedings-article',
+            'proceedings': 'proceedings',
             'techreport': 'report'
             }
         return _bibtex_to_crossref_type[bibtex_type]
@@ -298,6 +313,11 @@ class Crossref(object):
         elif bibtex_type == 'inproceedings':
             if container_title:
                 fields_dict['booktitle'] = container_title
+            if publisher:
+                fields_dict['publisher'] = publisher
+            if title:
+                fields_dict['title'] = title
+        elif bibtex_type == 'proceedings':
             if publisher:
                 fields_dict['publisher'] = publisher
             if title:
