@@ -60,7 +60,7 @@ def _translate_month(month):
 
     month = month[:3].lower()
     assert(month in ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul',
-                     'aug', 'sep', 'nov', 'dec'])
+                     'aug', 'sep', 'oct', 'nov', 'dec'])
     return month
 
 
