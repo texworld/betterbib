@@ -39,8 +39,7 @@ class Crossref(object):
 
             # Get the book data
             r = requests.get(self.api_url + '/' + book_doi)
-            if not r.ok:
-                return 'incollection'
+            assert r.ok
 
             book_data = r.json()
 
@@ -142,10 +141,8 @@ class Crossref(object):
                 self.api_url,
                 params=params
                 )
-        if not r.ok:
-            raise RuntimeError(
-                'Could not fetch data (status code %d).' % r.status_code
-                )
+        assert r.ok
+
         data = r.json()
 
         results = data['message']['items']
