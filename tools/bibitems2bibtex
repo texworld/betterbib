@@ -20,8 +20,10 @@ def _main():
         bibitem = parse_bibitem_string(bibitem_string)
         # If the author entry contains a vrule, assume that this is a
         # placeholder for the authors from the previous paper.
-        if ('authors' in bibitem and '\\vrule' in bibitem['authors']
-           and previous_author):
+        if (
+           'authors' in bibitem and '\\vrule' in bibitem['authors'] and
+           previous_author
+           ):
             bibitem['authors'] = previous_author
         entry = create_bibtex_string(bibitem)
         print(entry)

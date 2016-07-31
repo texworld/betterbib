@@ -1,37 +1,91 @@
 # -*- coding: utf-8 -*-
 #
-from betterbib.source import Source
 from betterbib.bibtex import pybtex_to_dict, latex_to_unicode
 
 import pybtex
+import re
 import requests
 
 
-class Crossref(Source):
+class Crossref(object):
     '''
     Documentation of the CrossRef Search API:
-    <http://search.crossref.org/help/api>.
+    <https://github.com/CrossRef/rest-api-doc/blob/master/rest_api.md>.
     '''
 
     def __init__(self):
-        self._crossref_to_bibtex_type = {
+        self.api_url = 'https://api.crossref.org/works'
+        return
+
+    def _crossref_to_bibtex_type(self, entry):
+        # The difficulty here: Translating book-chapter. If the book is a
+        # monograph (all chapters written by the same set of authors), then
+        # return inbook, if all chapters are by different authors, return
+        # incollection.
+        crossref_type = entry['type']
+        if crossref_type == 'book-chapter':
+            # Get the containing book, and see if it has authors or editors. If
+            # authors, consider it a monograph and use inbook; otherwise
+            # incollection.
+            # To get the book, make use of the fact that the chapter DOIs are
+            # the book DOI plus some appendix, e.g., .ch3, _3, etc. In other
+            # words: Strip the last digits plus whatever is nondigit before it.
+            a = re.match('(.*?)([^0-9]+[0-9]+)$', entry['DOI'])
+            if a is None:
+                # The DOI doesn't have that structure; assume 'incollection'.
+                return 'incollection'
+
+            book_doi = a.group(1)
+
+            # Get the book data
+            r = requests.get(self.api_url + '/' + book_doi)
+            assert r.ok
+
+            book_data = r.json()
+
+            if 'author' in book_data['message']:
+                return 'inbook'
+            # else
+            return 'incollection'
+
+        # All other cases
+        _crossref_to_bibtex_type = {
             'book': 'book',
-            'book-chapter': 'inbook',
             'journal-article': 'article',
+            'other': 'misc',
+            'proceedings': 'proceedings',
             'proceedings-article': 'inproceedings',
             'report': 'techreport'
             }
-        self._bibtex_to_crossref_type = {
+        return _crossref_to_bibtex_type[crossref_type]
+
+    def _bibtex_to_crossref_type(self, bibtex_type):
+        if bibtex_type in [
+                'booklet',
+                'conference',
+                'manual',
+                'mastersthesis',
+                'online',
+                'phdthesis',
+                'unpublished'
+                ]:
+            raise RuntimeError(
+                'Crossref doesn''t contain %s data' % bibtex_type
+                )
+
+        _bibtex_to_crossref_type = {
+            'article': 'journal-article',
             'book': 'book',
             'inbook': 'book-chapter',
-            'article': 'journal-article',
+            'misc': 'other',
+            'incollection': 'book-chapter',
             'inproceedings': 'proceedings-article',
+            'proceedings': 'proceedings',
             'techreport': 'report'
             }
-        return
+        return _bibtex_to_crossref_type[bibtex_type]
 
     def find_unique(self, entry):
-        url = 'https://api.crossref.org/works'
 
         d = pybtex_to_dict(entry)
 
@@ -83,7 +137,7 @@ class Crossref(Source):
             pass
 
         try:
-            l.append(self._bibtex_to_crossref_type[d['genre'].lower()])
+            l.append(d['publisher'])
         except KeyError:
             pass
 
@@ -96,30 +150,38 @@ class Crossref(Source):
 
         params = {
             'query': payload,
-            'rows': 2  # get at most 2 search results
+            'filter': 'type:%s' % self._bibtex_to_crossref_type(entry.type),
+            'rows': 2  # max number of results
             }
 
-        r = requests.get(
-                url,
-                params=params
-                )
-        if not r.ok:
-            raise RuntimeError(
-                'Could not fetch data (status code %d).' % r.status_code
-                )
+        r = requests.get(self.api_url, params=params)
+        assert r.ok
+
         data = r.json()
 
         results = data['message']['items']
 
-        if results[0]['score'] > 2 * results[1]['score']:
-            # Q: When do we treat a search result as unique?
-            # As a heuristic, assume that the top result is the unique answer
-            # if its score is at least double the score of the the second-best
-            # result.
-            entry = self._crossref_to_pybtex(results[0])
-            return entry
-        else:
-            raise RuntimeError('Could not find a positively unique match.')
+        if len(results) == 1:
+            return self._crossref_to_pybtex(results[0])
+
+        # Q: How to we find the correct solution if there's more than one
+        #    search result?
+        # As a heuristic, assume that the top result is the unique answer if
+        # its score is at least 1.5 times the score of the the second-best
+        # result.
+        # If that doesn't work, check if the DOI matches exactly with the
+        # input.
+        if len(results) > 1:
+            if results[0]['score'] > 1.5 * results[1]['score']:
+                return self._crossref_to_pybtex(results[0])
+
+            # Check if any of the DOIs matches exactly
+            if 'doi' in d:
+                for result in results:
+                    if result['DOI'].lower() == d['doi'].lower():
+                        return self._crossref_to_pybtex(result)
+
+        raise RuntimeError('Could not find a positively unique match.')
 
     def _crossref_to_pybtex(self, data):
         '''Translate a given data set into the bibtex data structure.
@@ -172,7 +234,7 @@ class Crossref(Source):
         # }
         #
         # translate the type
-        bibtex_type = self._crossref_to_bibtex_type[data['type']]
+        bibtex_type = self._crossref_to_bibtex_type(data)
 
         fields_dict = {}
         try:
@@ -201,8 +263,13 @@ class Crossref(Source):
             pass
 
         try:
-            # take the shortest of the container names
-            container_title = min(data['container-title'], key=len)
+            # Take the first container names.
+            # This is typically the abbreviated journal name in case of a
+            # journal, and the full book title in case of a book.
+            if len(data['container-title']) > 0:
+                container_title = data['container-title'][0]
+            else:
+                container_title = None
         except (KeyError, ValueError):
             container_title = None
 
@@ -236,6 +303,13 @@ class Crossref(Source):
                 fields_dict['publisher'] = publisher
             if title:
                 fields_dict['chapter'] = title
+        elif bibtex_type == 'incollection':
+            if container_title:
+                fields_dict['booktitle'] = container_title
+            if publisher:
+                fields_dict['publisher'] = publisher
+            if title:
+                fields_dict['title'] = title
         elif bibtex_type == 'inproceedings':
             if container_title:
                 fields_dict['booktitle'] = container_title
@@ -243,9 +317,12 @@ class Crossref(Source):
                 fields_dict['publisher'] = publisher
             if title:
                 fields_dict['title'] = title
+        elif bibtex_type == 'proceedings':
+            if publisher:
+                fields_dict['publisher'] = publisher
+            if title:
+                fields_dict['title'] = title
         elif bibtex_type == 'techreport':
-            if container_title:
-                fields_dict['journal'] = container_title
             if publisher:
                 fields_dict['institution'] = publisher
             if title:

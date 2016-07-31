@@ -4,7 +4,7 @@
 [![Code Health](https://landscape.io/github/nschloe/betterbib/master/landscape.png)](https://landscape.io/github/nschloe/betterbib/master)
 [![codecov](https://codecov.io/gh/nschloe/betterbib/branch/master/graph/badge.svg)](https://codecov.io/gh/nschloe/betterbib)
 [![PyPi Version](https://img.shields.io/pypi/v/betterbib.svg)](https://pypi.python.org/pypi/betterbib)
-[![PyPi Downloads](https://img.shields.io/pypi/dm/betterbib.svg)](https://pypi.python.org/pypi/betterbib)
+[![GitHub stars](https://img.shields.io/github/stars/nschloe/betterbib.svg?style=social&label=Star&maxAge=2592000)](https://github.com/nschloe/betterbib)
 
 BibTeX files are typically manually maintained and thus often contain
 inconsistencies, mistakes, or are missing information. BetterBib helps
@@ -38,17 +38,9 @@ is converted into
 }
 ```
 
-At the moment, BetterBib can fetch from one of two data sources:
+BetterBib fetches data from [CrossRef](http://www.crossref.org/).
 
- * [CrossRef](http://www.crossref.org/) and
- * [MRef](http://www.ams.org/mref).
-
-The default is CrossRef-only, but you can poke add sources as you like:
-```
-$ bibtex in.bib out.bib --sources mref crossref
-```
-This will first check on MRef and if it didn't find anything, it will check
-CrossRef. All BetterBib command-line options are explained in `betterbib -h`.
+All BetterBib command-line options are explained in `betterbib -h`.
 
 
 ### Installation
@@ -112,16 +104,9 @@ To create a new release
 
 1. bump the `__version__` number,
 
-2. create a Git tag,
+2. publish to PyPi and tag on GitHub:
     ```
-    $ git tag v0.3.1
-    $ git push --tags
-    ```
-    and
-
-3. upload to PyPi:
-    ```
-    $ make upload
+    $ make publish
     ```
 
 ### License

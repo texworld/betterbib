@@ -1,6 +1,12 @@
+VERSION=$(shell python -c "import betterbib; print(betterbib.__version__)")
+
+# Make sure we're on the master branch
+ifneq "$(shell git rev-parse --abbrev-ref HEAD)" "master"
+$(error Not on master branch)
+endif
 
 default:
-	@echo "\"make upload\"?"
+	@echo "\"make publish\"?"
 
 README.rst: README.md
 	pandoc README.md -o README.rst
@@ -9,8 +15,12 @@ README.rst: README.md
 upload: setup.py README.rst
 	python setup.py sdist upload --sign
 
+tag:
+	@echo "Tagging v$(VERSION)..."
+	git tag v$(VERSION)
+	git push --tags
+
+publish: tag upload
+
 clean:
-	rm -rf \
-	 README.rst \
-	 betterbib.egg-info/ \
-	 dist
+	rm -f README.rst

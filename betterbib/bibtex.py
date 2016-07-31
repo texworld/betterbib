@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 #
-from pybtex.database.input import bibtex
 import subprocess
 
 
@@ -61,7 +60,7 @@ def _translate_month(month):
 
     month = month[:3].lower()
     assert(month in ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul',
-                     'aug', 'sep', 'nov', 'dec'])
+                     'aug', 'sep', 'oct', 'nov', 'dec'])
     return month
 
 
@@ -91,37 +90,3 @@ def _get_person_str(p):
         if s:
             person_str.append(s)
     return ', '.join(person_str)
-
-
-def read_bibtex(filename):
-    # Open file for parsing.
-    parser = bibtex.Parser()
-    data = parser.parse_file(filename)
-    return data
-
-
-def _get_maps():
-    import xml.etree.ElementTree
-    tree = xml.etree.ElementTree.parse('unicode.xml')
-    root = tree.getroot()
-
-    u2l = {}
-    l2u = {}
-    for char in root.iter('character'):
-        try:
-            uni = unichr(int(char.attrib['dec'])).encode('utf-8')
-            for sub in char.iter('latex'):
-                lat = sub.text
-                u2l[uni] = lat
-                l2u[lat] = uni
-        except ValueError:
-            pass
-    return u2l, l2u
-
-
-def _preprocess_latex(s):
-    # list: https://en.wikibooks.org/wiki/LaTeX/Special_Characters
-    import re
-    return re.sub(r'\\([\'"`\^\~=\.])([a-zA-Z])',
-                  r'\\\1{\2}',
-                  s)
