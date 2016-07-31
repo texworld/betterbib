@@ -137,29 +137,34 @@ class Crossref(object):
             'rows': 2  # max number of results
             }
 
-        r = requests.get(
-                self.api_url,
-                params=params
-                )
+        r = requests.get(self.api_url, params=params)
         assert r.ok
 
         data = r.json()
 
         results = data['message']['items']
 
-        # Q: When do we treat a search result as unique?
-        # Either if there's only one results, or, as a heuristic, assume that
-        # the top result is the unique answer if its score is at least 1.5
-        # times the score of the the second-best result.
-        if len(results) == 1 or \
-           (
-            len(results) > 1 and
-            results[0]['score'] > 1.5 * results[1]['score']
-           ):
-            entry = self._crossref_to_pybtex(results[0])
-            return entry
-        else:
-            raise RuntimeError('Could not find a positively unique match.')
+        if len(results) == 1:
+            return self._crossref_to_pybtex(results[0])
+
+        # Q: How to we find the correct solution if there's more than one
+        #    search result?
+        # As a heuristic, assume that the top result is the unique answer if
+        # its score is at least 1.5 times the score of the the second-best
+        # result.
+        # If that doesn't work, check if the DOI matches exactly with the
+        # input.
+        if len(results) > 1:
+            if results[0]['score'] > 1.5 * results[1]['score']:
+                return self._crossref_to_pybtex(results[0])
+
+            # Check if any of the DOIs matches exactly
+            if 'doi' in d:
+                for result in results:
+                    if result['DOI'].lower() == d['doi'].lower():
+                        return self._crossref_to_pybtex(result)
+
+        raise RuntimeError('Could not find a positively unique match.')
 
     def _crossref_to_pybtex(self, data):
         '''Translate a given data set into the bibtex data structure.

@@ -79,6 +79,63 @@ def test_crossref_article0():
     return
 
 
+def test_crossref_article1():
+    '''This entry has two very close matches.
+    '''
+
+    source = betterbib.Crossref()
+
+    test_entry = pybtex.database.Entry(
+            'article',
+            fields={
+                'title': 'A significance test for the lasso',
+                'doi': '10.1214/13-AOS1175'
+            },
+            persons={'author': [
+                pybtex.database.Person('Tibshirani')
+                ]}
+            )
+
+    bt = source.find_unique(test_entry)
+
+    reference = pybtex.database.Entry(
+        'article',
+        fields={
+            'doi': u'10.1214/13-aos1175',
+            'publisher': u'Institute of Mathematical Statistics',
+            'title': u'A significance test for the lasso',
+            'url': u'http://dx.doi.org/10.1214/13-aos1175',
+            'journal': u'Ann. Statist.',
+            'number': u'2',
+            'month': 4,
+            'volume': u'42',
+            'source': u'CrossRef',
+            'year': 2014,
+            'pages': u'413-468'
+            },
+        persons=pybtex.database.OrderedCaseInsensitiveDict({
+            'author': [
+                pybtex.database.Person(u'Lockhart, Richard'),
+                pybtex.database.Person(u'Taylor, Jonathan'),
+                pybtex.database.Person(u'Tibshirani, Ryan J.'),
+                pybtex.database.Person(u'Tibshirani, Robert'),
+                ]
+            }))
+
+    # Comparing the Entry object as a whole doesn't work, unfortunately.
+    assert _bibtex_equals(bt, reference)
+
+    # test string conversion
+    betterbib.pybtex_to_bibtex_string(reference, 'ABC')
+    # No assertions here yet.
+    # What we'd like to do: Take the string, parse it back into a PybTeX entry,
+    # and make sure it's the original. This doesn't quite work yet since
+    # months are transposed from, e.g., 5, to "May" by PybTeX; see
+    # <https://bitbucket.org/pybtex-devs/pybtex/issues/84/handling-of-month-year-in-bibtex-entry>.
+
+    return
+
+
 def test_crossref_book0():
 
     source = betterbib.Crossref()
