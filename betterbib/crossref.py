@@ -52,6 +52,7 @@ class Crossref(object):
         _crossref_to_bibtex_type = {
             'book': 'book',
             'journal-article': 'article',
+            'other': 'misc',
             'proceedings-article': 'inproceedings',
             'report': 'techreport'
             }
@@ -62,6 +63,7 @@ class Crossref(object):
             'article': 'journal-article',
             'book': 'book',
             'inbook': 'book-chapter',
+            'misc': 'other',
             'incollection': 'book-chapter',
             'inproceedings': 'proceedings-article',
             'techreport': 'report'
