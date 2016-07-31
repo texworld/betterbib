@@ -22,8 +22,6 @@ def _main():
     source_names = ['crossref']
 
     print('Reading from: %s' % infile)
-    print('Number of entries: %d' % n)
-    print('Using sources: %s' % ', '.join(source_names))
     print('Saving to: %s' % args.outfile)
     print
 
@@ -40,9 +38,7 @@ def _main():
     # sorted by their BibTeX key.
     od = collections.OrderedDict(sorted(data.entries.items()))
 
-    success_by_source = {}
-    for source_name in source_names:
-        success_by_source[source_name] = 0
+    num_success = 0
 
     for bib_id, entry in tqdm(od.items()):
         result = None
@@ -53,7 +49,7 @@ def _main():
             except RuntimeError as e:
                 pass
             else:
-                success_by_source[source_name] += 1
+                num_success += 1
                 break
 
         if result:
@@ -74,9 +70,8 @@ def _main():
     print
     print
     print('Total number of entries: %d' % n)
-    print('Found on')
-    for source_name, success_count in success_by_source.iteritems():
-        print('  %s: %d' % (source_name, success_count))
+    print('Found: %d' % num_success)
+
     return
 
 
