@@ -275,7 +275,7 @@ class Crossref(object):
 
         try:
             title = data['title'][0]
-        except KeyError:
+        except (KeyError, IndexError):
             title = None
 
         try:
@@ -337,7 +337,7 @@ class Crossref(object):
 
         try:
             fields_dict['year'] = data['issued']['date-parts'][0][0]
-        except KeyError:
+        except (KeyError, IndexError):
             pass
 
         try:
