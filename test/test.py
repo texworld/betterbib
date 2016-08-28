@@ -143,7 +143,8 @@ def test_crossref_book0():
     test_entry = pybtex.database.Entry(
             'book',
             fields={
-                'title': 'Numerical Ordinary Differential Equations'
+                'title': 'Numerical Ordinary Differential Equations',
+                'doi': '10.1002/0470868279',
             },
             persons={'author': [
                 pybtex.database.Person('Butcher'),
