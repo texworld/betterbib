@@ -37,14 +37,12 @@ class Crossref(object):
 
             book_doi = a.group(1)
 
-            # Get the book data
+            # Try to get the book data
             r = requests.get(self.api_url + '/' + book_doi)
-            assert r.ok
-
-            book_data = r.json()
-
-            if 'author' in book_data['message']:
-                return 'inbook'
+            if r.ok:
+                book_data = r.json()
+                if 'author' in book_data['message']:
+                    return 'inbook'
             # else
             return 'incollection'
 
