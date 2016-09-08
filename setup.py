@@ -31,7 +31,8 @@ setup(
     platforms='any',
     requires=[
         'pybtex',
-        'requests'
+        'requests',
+        'tqdm'
         ],
     classifiers=[
         'Development Status :: 4 - Beta',
