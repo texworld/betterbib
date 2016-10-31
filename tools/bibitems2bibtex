@@ -73,6 +73,7 @@ def create_bibtex_string(bibitem):
     if 'pages' in bibitem:
         entries.append('  pages = {%s}' % clean_pages(bibitem['pages']))
 
+    print(bibitem)
     entry = '@article{%s,\n%s\n}' % (bibitem['key'], ',\n'.join(entries))
     return entry
 
@@ -85,14 +86,14 @@ def my_split(s):
     bracket_level = 0
     current = []
     # trick to remove special-case of trailing chars
-    for c in (s + ","):
-        if c == "," and bracket_level == 0:
-            parts.append("".join(current))
+    for c in (s + ','):
+        if c == ',' and bracket_level == 0:
+            parts.append(''.join(current))
             current = []
         else:
-            if c == "{":
+            if c == '{':
                 bracket_level += 1
-            elif c == "}":
+            elif c == '}':
                 bracket_level -= 1
             current.append(c)
     return parts
@@ -113,16 +114,16 @@ def parse_bibitem_string(bibitem_string):
 
     # Now the heuristics.
     bibitem = {
-        'key': m.group(1),
-        'authors': m2[0],
-        'title': m2[1],
+        'key': m.group(1).strip(),
+        'authors': m2[0].strip(),
+        'title': m2[1].strip(),
         }
     if len(m2) > 2:
-        bibitem['journal'] = m2[2]
+        bibitem['journal'] = m2[2].strip()
     if len(m2) > 3:
-        bibitem['number'] = m2[3]
+        bibitem['number'] = m2[3].strip()
     if len(m2) > 4:
-        bibitem['pages'] = m2[4]
+        bibitem['pages'] = m2[4].strip()
 
     return bibitem
 
