@@ -115,17 +115,32 @@ def parse_bibitem_string(bibitem_string):
     # Now the heuristics.
     bibitem = {
         'key': m.group(1).strip(),
-        'authors': m2[0].strip(),
-        'title': m2[1].strip(),
+        'authors': clean_bibitem_string(m2[0]),
+        'title': clean_bibitem_string(m2[1]),
         }
     if len(m2) > 2:
-        bibitem['journal'] = m2[2].strip()
+        bibitem['journal'] = clean_bibitem_string(m2[2])
     if len(m2) > 3:
-        bibitem['number'] = m2[3].strip()
+        bibitem['number'] = clean_bibitem_string(m2[3])
     if len(m2) > 4:
-        bibitem['pages'] = m2[4].strip()
+        bibitem['pages'] = clean_bibitem_string(m2[4])
 
     return bibitem
+
+
+def clean_bibitem_string(string):
+    '''Removes surrounding whitespace, surrounding \emph brackets etc.
+    '''
+    out = string
+    out = out.strip()
+    if out[:6] == '\\emph{' and out[-1] == '}':
+        out = out[6:-1]
+    if out[:8] == '\\textsc{' and out[-1] == '}':
+        out = out[8:-1]
+    if out[-1] == '.':
+        out = out[:-1]
+
+    return out
 
 
 def extract_bibitems(filename):
