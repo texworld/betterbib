@@ -21,7 +21,10 @@ def _main():
         # If the author entry contains a vrule, assume that this is a
         # placeholder for the authors from the previous paper.
         if (
-           'authors' in bibitem and '\\vrule' in bibitem['authors'] and
+           'authors' in bibitem and
+           ('\\vrule' in bibitem['authors'] or
+            '\\sameauthor' in bibitem['authors']
+            ) and
            previous_author
            ):
             bibitem['authors'] = previous_author
