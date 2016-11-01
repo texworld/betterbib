@@ -176,6 +176,47 @@ def test_crossref_book0():
     return
 
 
+def test_crossref_book1():
+
+    source = betterbib.Crossref()
+
+    test_entry = pybtex.database.Entry(
+            'book',
+            fields={
+                'title': 'Matrices, Moments and Quadrature with Applications',
+            },
+            persons={'author': [
+                pybtex.database.Person('Golub'),
+                pybtex.database.Person('Meurant'),
+                ]}
+            )
+
+    bt = source.find_unique(test_entry)
+
+    reference = pybtex.database.Entry(
+        'book',
+        fields={
+            'title': u'Matrices, Moments and Quadrature with Applications',
+            'source': u'CrossRef',
+            'publisher': u'Walter de Gruyter GmbH',
+            'year': 2009,
+            'month': 1,
+            'doi': '10.1515/9781400833887',
+            'url': u'http://dx.doi.org/10.1515/9781400833887',
+            },
+        persons=pybtex.database.OrderedCaseInsensitiveDict({
+            'author': [
+                pybtex.database.Person(u'Golub, Gene H.'),
+                pybtex.database.Person(u'Meurant, G\xe9rard'),
+                ]
+            }))
+
+    # Comparing the Entry object as a whole doesn't work, unfortunately.
+    assert _bibtex_equals(bt, reference)
+
+    return
+
+
 def test_crossref_inbook0():
 
     source = betterbib.Crossref()
