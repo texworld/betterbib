@@ -188,6 +188,8 @@ class Crossref(object):
         # result.
         # If that doesn't work, check if the DOI matches exactly with the
         # input.
+        # If that doesn't work, check if the second entry is a JSTOR copy of
+        # the original article -- yes, that happens --, and take the first one.
         if len(results) > 1:
             if results[0]['score'] > 1.5 * results[1]['score']:
                 return self._crossref_to_pybtex(results[0])
@@ -197,6 +199,11 @@ class Crossref(object):
                 for result in results:
                     if result['DOI'].lower() == d['doi'].lower():
                         return self._crossref_to_pybtex(result)
+
+            if results[1]['publisher'] == 'JSTOR' and \
+                    results[0]['title'][0].lower() == \
+                    results[1]['title'][0].lower():
+                return self._crossref_to_pybtex(results[0])
 
         raise RuntimeError('Could not find a positively unique match.')
 
