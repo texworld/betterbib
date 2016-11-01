@@ -77,14 +77,11 @@ def create_bibtex_string(bibitem):
         entries.append('  publisher = {%s}' % clean(bibitem['publisher']))
     if 'pages' in bibitem:
         entries.append('  pages = {%s}' % clean_pages(bibitem['pages']))
-        entry_type = 'article'
-    else:
-        entry_type = 'book'
     if 'year' in bibitem:
         entries.append('  year = {%s}' % clean_pages(bibitem['year']))
 
     entry = '@%s{%s,\n%s\n}' \
-        % (entry_type, bibitem['key'], ',\n'.join(entries))
+        % (bibitem['type'], bibitem['key'], ',\n'.join(entries))
     return entry
 
 
@@ -109,6 +106,26 @@ def my_split(s):
     return parts
 
 
+def _get_entry_type(m2):
+    if len(m2) > 2:
+        a = clean_bibitem_string(m2[2])
+        if a[:3] == 'in:':
+            return'inbook'
+
+    if len(m2) > 4:
+        a = clean_bibitem_string(m2[4])
+        if a[-1] == '.':
+            a = a[:-1]
+
+        if len(a) == 4 and '-' not in a:
+            return 'book'
+        else:
+            return 'article'
+
+    # fallback
+    return 'article'
+
+
 def parse_bibitem_string(bibitem_string):
     '''Parses a bibitem given as (multiline) string and returns semantic
     information. Of course, heuristics are needed.
@@ -127,28 +144,36 @@ def parse_bibitem_string(bibitem_string):
         'key': m.group(1).strip(),
         'authors': clean_bibitem_string(m2[0]),
         'title': clean_bibitem_string(m2[1]),
+        'type': _get_entry_type(m2),
         }
 
-    is_journal = True
-    if len(m2) > 4:
-        a = clean_bibitem_string(m2[4])
-        if a[-1] == '.':
-            a = a[:-1]
-
-        if len(a) == 4 and '-' not in a:
-            bibitem['year'] = a
-            is_journal = False
-        else:
-            bibitem['pages'] = a
-
-    if len(m2) > 2:
-        if is_journal:
+    if bibitem['type'] == 'article':
+        if len(m2) > 2:
             bibitem['journal'] = clean_bibitem_string(m2[2])
-        else:
+        if len(m2) > 3:
+            bibitem['number'] = clean_bibitem_string(m2[3])
+        if len(m2) > 4:
+            a = clean_bibitem_string(m2[4])
+            if a[-1] == '.':
+                a = a[:-1]
+            if len(a) == 4 and '-' not in a:
+                bibitem['year'] = a
+            else:
+                bibitem['pages'] = a
+    elif bibitem['type'] == 'book':
+        if len(m2) > 2:
             bibitem['publisher'] = clean_bibitem_string(m2[2])
-
-    if len(m2) > 3:
-        bibitem['number'] = clean_bibitem_string(m2[3])
+        if len(m2) > 4:
+            a = clean_bibitem_string(m2[4])
+            if a[-1] == '.':
+                a = a[:-1]
+            if len(a) == 4 and '-' not in a:
+                bibitem['year'] = a
+            else:
+                bibitem['pages'] = a
+    elif bibitem['type'] == 'inbook':
+        if len(m2) > 2:
+            bibitem['booktitle'] = clean_bibitem_string(m2[2])
 
     return bibitem
 
