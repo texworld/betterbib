@@ -91,11 +91,7 @@ $ ./betterbib mybibliography.bib out.bib
 
 To run the BetterBib unit tests, check out this repository and type
 ```
-nosetests
-```
-or
-```
-nose2 -s test
+pytest
 ```
 
 

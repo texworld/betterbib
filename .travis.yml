@@ -31,7 +31,7 @@ script:
   # cd into test directory to make sure we're using the pip-installed
   # betterbib.
   - cd test
-  - nosetests --with-coverage --cover-package=betterbib
+  - pytest --cov betterbib
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
