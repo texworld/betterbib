@@ -50,6 +50,7 @@ class Crossref(object):
         _crossref_to_bibtex_type = {
             'book': 'book',
             'journal-article': 'article',
+            'monograph': 'book',
             'other': 'misc',
             'proceedings': 'proceedings',
             'proceedings-article': 'inproceedings',
@@ -72,14 +73,14 @@ class Crossref(object):
                 )
 
         _bibtex_to_crossref_type = {
-            'article': 'journal-article',
-            'book': 'book',
-            'inbook': 'book-chapter',
-            'misc': 'other',
-            'incollection': 'book-chapter',
-            'inproceedings': 'proceedings-article',
-            'proceedings': 'proceedings',
-            'techreport': 'report'
+            'article': ['journal-article'],
+            'book': ['book', 'monograph'],
+            'inbook': ['book-chapter'],
+            'misc': ['other'],
+            'incollection': ['book-chapter'],
+            'inproceedings': ['proceedings-article'],
+            'proceedings': ['proceedings'],
+            'techreport': ['report'],
             }
         return _bibtex_to_crossref_type[bibtex_type]
 
@@ -145,12 +146,24 @@ class Crossref(object):
         # Simply plug the dict together to a search query. Typical query:
         # https://api.crossref.org/works?query=vanroose+schl%C3%B6mer&rows=5
         payload = latex_to_unicode(' '.join(l)).replace(' ', '+')
+        print('payload')
+        print(l)
+        print(payload)
+        print
 
         params = {
             'query': payload,
-            'filter': 'type:%s' % self._bibtex_to_crossref_type(entry.type),
+            'filter': ','.join(
+                'type:%s' % tp
+                for tp in self._bibtex_to_crossref_type(entry.type)
+                ),
             'rows': 2  # max number of results
             }
+
+        print(entry.type)
+        print(self._bibtex_to_crossref_type(entry.type))
+        print
+        print(payload)
 
         r = requests.get(self.api_url, params=params)
         assert r.ok
@@ -161,6 +174,12 @@ class Crossref(object):
 
         if len(results) == 1:
             return self._crossref_to_pybtex(results[0])
+
+        print(len(results))
+        for result in results:
+            print
+            print(result['score'])
+            print(result)
 
         # Q: How to we find the correct solution if there's more than one
         #    search result?
