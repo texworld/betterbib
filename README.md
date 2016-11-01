@@ -73,7 +73,6 @@ notably:
 
 * [Pybtex](http://pybtex.sourceforge.net/),
 * [requests](http://docs.python-requests.org/en/latest/),
-* [Beautiful Soup 4](http://www.crummy.com/software/BeautifulSoup/).
 
 Additionally, BetterBib requires
 
