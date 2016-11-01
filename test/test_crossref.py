@@ -48,7 +48,7 @@ def test_crossref_article0():
             'title': u'A Framework for Deflated and Augmented ' +
                 'Krylov Subspace Methods',
             'url': u'http://dx.doi.org/10.1137/110820713',
-            'journal': u'SIAM. J. Matrix Anal. & Appl.',
+            'journal': u'SIAM Journal on Matrix Analysis and Applications',
             'number': u'2',
             'month': 5,
             'volume': u'34',
@@ -318,7 +318,7 @@ def test_crossref_inproceedings0():
     reference = pybtex.database.Entry(
         'inproceedings',
         fields={
-            'publisher': 'Institute of Electrical & ' +
+            'publisher': 'Institute of Electrical and ' +
                          'Electronics Engineers (IEEE)',
             'doi': u'10.1109/aero.2008.4526230',
             'title': 'Global Warming is Unequivocal',
