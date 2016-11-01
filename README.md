@@ -73,7 +73,6 @@ notably:
 
 * [Pybtex](http://pybtex.sourceforge.net/),
 * [requests](http://docs.python-requests.org/en/latest/),
-* [Beautiful Soup 4](http://www.crummy.com/software/BeautifulSoup/).
 
 Additionally, BetterBib requires
 
@@ -91,11 +90,7 @@ $ ./betterbib mybibliography.bib out.bib
 
 To run the BetterBib unit tests, check out this repository and type
 ```
-nosetests
-```
-or
-```
-nose2 -s test
+pytest
 ```
 
 

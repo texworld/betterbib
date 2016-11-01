@@ -48,7 +48,7 @@ def test_crossref_article0():
             'title': u'A Framework for Deflated and Augmented ' +
                 'Krylov Subspace Methods',
             'url': u'http://dx.doi.org/10.1137/110820713',
-            'journal': u'SIAM. J. Matrix Anal. & Appl.',
+            'journal': u'SIAM Journal on Matrix Analysis and Applications',
             'number': u'2',
             'month': 5,
             'volume': u'34',
@@ -167,6 +167,47 @@ def test_crossref_book0():
         persons=pybtex.database.OrderedCaseInsensitiveDict({
             'author': [
                 pybtex.database.Person(u'Butcher, J.C.'),
+                ]
+            }))
+
+    # Comparing the Entry object as a whole doesn't work, unfortunately.
+    assert _bibtex_equals(bt, reference)
+
+    return
+
+
+def test_crossref_book1():
+
+    source = betterbib.Crossref()
+
+    test_entry = pybtex.database.Entry(
+            'book',
+            fields={
+                'title': 'Matrices, Moments and Quadrature with Applications',
+            },
+            persons={'author': [
+                pybtex.database.Person('Golub'),
+                pybtex.database.Person('Meurant'),
+                ]}
+            )
+
+    bt = source.find_unique(test_entry)
+
+    reference = pybtex.database.Entry(
+        'book',
+        fields={
+            'title': u'Matrices, Moments and Quadrature with Applications',
+            'source': u'CrossRef',
+            'publisher': u'Walter de Gruyter GmbH',
+            'year': 2009,
+            'month': 1,
+            'doi': '10.1515/9781400833887',
+            'url': u'http://dx.doi.org/10.1515/9781400833887',
+            },
+        persons=pybtex.database.OrderedCaseInsensitiveDict({
+            'author': [
+                pybtex.database.Person(u'Golub, Gene H.'),
+                pybtex.database.Person(u'Meurant, G\xe9rard'),
                 ]
             }))
 
@@ -318,7 +359,7 @@ def test_crossref_inproceedings0():
     reference = pybtex.database.Entry(
         'inproceedings',
         fields={
-            'publisher': 'Institute of Electrical & ' +
+            'publisher': 'Institute of Electrical and ' +
                          'Electronics Engineers (IEEE)',
             'doi': u'10.1109/aero.2008.4526230',
             'title': 'Global Warming is Unequivocal',

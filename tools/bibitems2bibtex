@@ -21,7 +21,10 @@ def _main():
         # If the author entry contains a vrule, assume that this is a
         # placeholder for the authors from the previous paper.
         if (
-           'authors' in bibitem and '\\vrule' in bibitem['authors'] and
+           'authors' in bibitem and
+           ('\\vrule' in bibitem['authors'] or
+            '\\sameauthor' in bibitem['authors']
+            ) and
            previous_author
            ):
             bibitem['authors'] = previous_author
@@ -70,10 +73,15 @@ def create_bibtex_string(bibitem):
         entries.append('  title = {%s}' % clean(bibitem['title']))
     if 'journal' in bibitem:
         entries.append('  journal = {%s}' % clean(bibitem['journal']))
+    if 'publisher' in bibitem:
+        entries.append('  publisher = {%s}' % clean(bibitem['publisher']))
     if 'pages' in bibitem:
         entries.append('  pages = {%s}' % clean_pages(bibitem['pages']))
+    if 'year' in bibitem:
+        entries.append('  year = {%s}' % clean(bibitem['year']))
 
-    entry = '@article{%s,\n%s\n}' % (bibitem['key'], ',\n'.join(entries))
+    entry = '@%s{%s,\n%s\n}' \
+        % (bibitem['type'], bibitem['key'], ',\n'.join(entries))
     return entry
 
 
@@ -85,17 +93,37 @@ def my_split(s):
     bracket_level = 0
     current = []
     # trick to remove special-case of trailing chars
-    for c in (s + ","):
-        if c == "," and bracket_level == 0:
-            parts.append("".join(current))
+    for c in (s + ','):
+        if c == ',' and bracket_level == 0:
+            parts.append(''.join(current))
             current = []
         else:
-            if c == "{":
+            if c == '{':
                 bracket_level += 1
-            elif c == "}":
+            elif c == '}':
                 bracket_level -= 1
             current.append(c)
     return parts
+
+
+def _get_entry_type(m2):
+    if len(m2) > 2:
+        a = clean_bibitem_string(m2[2])
+        if a[:3] == 'in:':
+            return'inbook'
+
+    if len(m2) > 4:
+        a = clean_bibitem_string(m2[4])
+        if a[-1] == '.':
+            a = a[:-1]
+
+        if len(a) == 4 and '-' not in a:
+            return 'book'
+        else:
+            return 'article'
+
+    # fallback
+    return 'article'
 
 
 def parse_bibitem_string(bibitem_string):
@@ -113,18 +141,56 @@ def parse_bibitem_string(bibitem_string):
 
     # Now the heuristics.
     bibitem = {
-        'key': m.group(1),
-        'authors': m2[0],
-        'title': m2[1],
+        'key': m.group(1).strip(),
+        'authors': clean_bibitem_string(m2[0]),
+        'title': clean_bibitem_string(m2[1]),
+        'type': _get_entry_type(m2),
         }
-    if len(m2) > 2:
-        bibitem['journal'] = m2[2]
-    if len(m2) > 3:
-        bibitem['number'] = m2[3]
-    if len(m2) > 4:
-        bibitem['pages'] = m2[4]
+
+    if bibitem['type'] == 'article':
+        if len(m2) > 2:
+            bibitem['journal'] = clean_bibitem_string(m2[2])
+        if len(m2) > 3:
+            a = clean_bibitem_string(m2[3])
+            c = a.split(' ')
+            if len(c) > 0:
+                bibitem['number'] = c[0]
+            if len(c) > 1 and c[1][0] == '(' and c[1][-1] == ')':
+                bibitem['year'] = c[1][1:-1]
+        if len(m2) > 4:
+            a = clean_bibitem_string(m2[4])
+            if a[-1] == '.':
+                a = a[:-1]
+            bibitem['pages'] = a
+    elif bibitem['type'] == 'book':
+        if len(m2) > 2:
+            bibitem['publisher'] = clean_bibitem_string(m2[2])
+        if len(m2) > 4:
+            a = clean_bibitem_string(m2[4])
+            if a[-1] == '.':
+                a = a[:-1]
+            if len(a) == 4 and '-' not in a:
+                bibitem['year'] = a
+            else:
+                bibitem['pages'] = a
+    elif bibitem['type'] == 'inbook':
+        if len(m2) > 2:
+            bibitem['booktitle'] = clean_bibitem_string(m2[2])
 
     return bibitem
+
+
+def clean_bibitem_string(string):
+    '''Removes surrounding whitespace, surrounding \emph brackets etc.
+    '''
+    out = string
+    out = out.strip()
+    if out[:6] == '\\emph{' and out[-1] == '}':
+        out = out[6:-1]
+    if out[:8] == '\\textsc{' and out[-1] == '}':
+        out = out[8:-1]
+
+    return out
 
 
 def extract_bibitems(filename):

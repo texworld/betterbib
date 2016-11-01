@@ -50,6 +50,7 @@ class Crossref(object):
         _crossref_to_bibtex_type = {
             'book': 'book',
             'journal-article': 'article',
+            'monograph': 'book',
             'other': 'misc',
             'proceedings': 'proceedings',
             'proceedings-article': 'inproceedings',
@@ -72,14 +73,14 @@ class Crossref(object):
                 )
 
         _bibtex_to_crossref_type = {
-            'article': 'journal-article',
-            'book': 'book',
-            'inbook': 'book-chapter',
-            'misc': 'other',
-            'incollection': 'book-chapter',
-            'inproceedings': 'proceedings-article',
-            'proceedings': 'proceedings',
-            'techreport': 'report'
+            'article': ['journal-article'],
+            'book': ['book', 'monograph'],
+            'inbook': ['book-chapter'],
+            'misc': ['other'],
+            'incollection': ['book-chapter'],
+            'inproceedings': ['proceedings-article'],
+            'proceedings': ['proceedings'],
+            'techreport': ['report'],
             }
         return _bibtex_to_crossref_type[bibtex_type]
 
@@ -148,7 +149,10 @@ class Crossref(object):
 
         params = {
             'query': payload,
-            'filter': 'type:%s' % self._bibtex_to_crossref_type(entry.type),
+            'filter': ','.join(
+                'type:%s' % tp
+                for tp in self._bibtex_to_crossref_type(entry.type)
+                ),
             'rows': 2  # max number of results
             }
 
@@ -167,17 +171,31 @@ class Crossref(object):
         # As a heuristic, assume that the top result is the unique answer if
         # its score is at least 1.5 times the score of the the second-best
         # result.
-        # If that doesn't work, check if the DOI matches exactly with the
-        # input.
         if len(results) > 1:
             if results[0]['score'] > 1.5 * results[1]['score']:
                 return self._crossref_to_pybtex(results[0])
 
-            # Check if any of the DOIs matches exactly
+            # If that doesn't work, check if the DOI matches exactly with the
+            # input.
             if 'doi' in d:
                 for result in results:
                     if result['DOI'].lower() == d['doi'].lower():
                         return self._crossref_to_pybtex(result)
+
+            # If that doesn't work, check if the page range matches exactly
+            # with the input.
+            if 'pages' in d:
+                for result in results:
+                    if result['page'] == d['pages']:
+                        return self._crossref_to_pybtex(result)
+
+            # If that doesn't work, check if the second entry is a JSTOR copy
+            # of the original article -- yes, that happens --, and take the
+            # first one.
+            if results[1]['publisher'] == 'JSTOR' and \
+                    results[0]['title'][0].lower() == \
+                    results[1]['title'][0].lower():
+                return self._crossref_to_pybtex(results[0])
 
         raise RuntimeError('Could not find a positively unique match.')
 

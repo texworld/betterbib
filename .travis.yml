@@ -19,19 +19,21 @@ addons:
       - python-requests
       - python3-requests
 
-install:
+before_install:
   - pip install -r requirements.txt
+  - pip install pytest-cov
+
+install:
   # Alternative: setup.py install.
   # Using pip makes sure that the package is pip-compatible, too.
   - pip install .
-  - pip install coverage
 
 # run tests
 script:
   # cd into test directory to make sure we're using the pip-installed
   # betterbib.
   - cd test
-  - nosetests --with-coverage --cover-package=betterbib
+  - pytest --cov betterbib
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
