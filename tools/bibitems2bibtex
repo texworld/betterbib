@@ -78,7 +78,7 @@ def create_bibtex_string(bibitem):
     if 'pages' in bibitem:
         entries.append('  pages = {%s}' % clean_pages(bibitem['pages']))
     if 'year' in bibitem:
-        entries.append('  year = {%s}' % clean_pages(bibitem['year']))
+        entries.append('  year = {%s}' % clean(bibitem['year']))
 
     entry = '@%s{%s,\n%s\n}' \
         % (bibitem['type'], bibitem['key'], ',\n'.join(entries))
@@ -151,15 +151,17 @@ def parse_bibitem_string(bibitem_string):
         if len(m2) > 2:
             bibitem['journal'] = clean_bibitem_string(m2[2])
         if len(m2) > 3:
-            bibitem['number'] = clean_bibitem_string(m2[3])
+            a = clean_bibitem_string(m2[3])
+            c = a.split(' ')
+            if len(c) > 0:
+                bibitem['number'] = c[0]
+            if len(c) > 1 and c[1][0] == '(' and c[1][-1] == ')':
+                bibitem['year'] = c[1][1:-1]
         if len(m2) > 4:
             a = clean_bibitem_string(m2[4])
             if a[-1] == '.':
                 a = a[:-1]
-            if len(a) == 4 and '-' not in a:
-                bibitem['year'] = a
-            else:
-                bibitem['pages'] = a
+            bibitem['pages'] = a
     elif bibitem['type'] == 'book':
         if len(m2) > 2:
             bibitem['publisher'] = clean_bibitem_string(m2[2])
