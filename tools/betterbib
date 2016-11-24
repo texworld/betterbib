@@ -6,8 +6,8 @@ from betterbib import pybtex_to_bibtex_string
 
 import collections
 from pybtex.database.input import bibtex
+import sys
 from tqdm import tqdm
-
 
 def _main():
     args = _parse_cmd_arguments()
@@ -54,18 +54,17 @@ def _main():
 
         if result:
             # Found; write it out to a file.
-            out.write(
-                pybtex_to_bibtex_string(result, bib_id).encode('utf8') +
-                '\n\n'
-                )
+            a = pybtex_to_bibtex_string(result, bib_id)
         else:
             # Nothing found; write out the old entry to file.
             a = pybtex_to_bibtex_string(entry, bib_id)
             out.write(
-                '%%comment{Error when fetching the following entry (%s).}\n'
-                % e.message
+                '%comment{Error when fetching the following entry.}\n'
                 )
-            out.write(a.encode('utf8') + '\n\n')
+
+        if sys.version_info[0] == 2:
+            a = a.encode('utf8')
+        out.write(a + '\n\n')
 
     out.close()
     print

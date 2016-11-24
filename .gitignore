@@ -5,3 +5,4 @@ build/
 dist/
 example/
 betterbib.egg-info/
+.cache/
