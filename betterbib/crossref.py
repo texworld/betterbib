@@ -186,7 +186,7 @@ class Crossref(object):
             # with the input.
             if 'pages' in d:
                 for result in results:
-                    if result['page'] == d['pages']:
+                    if 'page' in result and result['page'] == d['pages']:
                         return self._crossref_to_pybtex(result)
 
             # If that doesn't work, check if the second entry is a JSTOR copy
