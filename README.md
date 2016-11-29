@@ -76,7 +76,7 @@ notably:
 
 Additionally, BetterBib requires
 
-* [pandoc](http://pandoc.org/)
+* [pandoc](https://pandoc.org/)
 
 to be installed.
 
