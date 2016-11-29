@@ -31,6 +31,7 @@ setup(
     platforms='any',
     requires=[
         'pybtex',
+        'pypandoc',
         'requests',
         'tqdm'
         ],
