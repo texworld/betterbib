@@ -7,8 +7,11 @@ from io import open
 
 import collections
 from pybtex.database.input import bibtex
-import sys
 from tqdm import tqdm
+import sys
+if sys.version_info[0] == 2:
+    reload(sys)  
+    sys.setdefaultencoding('utf8')
 
 def _main():
     args = _parse_cmd_arguments()
@@ -63,8 +66,6 @@ def _main():
                 '%comment{Error when fetching the following entry.}\n'
                 )
 
-        if sys.version_info[0] == 2:
-            a = a.encode('utf8')
         out.write(a + u'\n\n')
 
     out.close()
