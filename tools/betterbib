@@ -3,6 +3,7 @@
 #
 import betterbib
 from betterbib import pybtex_to_bibtex_string
+from io import open
 
 import collections
 from pybtex.database.input import bibtex
@@ -26,7 +27,7 @@ def _main():
     print
 
     # Open output file for writing.
-    out = open(args.outfile, 'w')
+    out = open(args.outfile, mode='w', encoding="utf-8")
 
     # Write header to the output file.
     out.write(
