@@ -63,7 +63,7 @@ def _main():
             # Nothing found; write out the old entry to file.
             a = pybtex_to_bibtex_string(entry, bib_id)
             out.write(
-                '%comment{Error when fetching the following entry.}\n'
+                u'%comment{Error when fetching the following entry.}\n'
                 )
 
         out.write(a + u'\n\n')
