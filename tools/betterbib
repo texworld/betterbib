@@ -27,11 +27,11 @@ def _main():
     print
 
     # Open output file for writing.
-    out = open(args.outfile, mode='w', encoding="utf-8")
+    out = open(args.outfile, mode='w', encoding='utf-8')
 
     # Write header to the output file.
     out.write(
-        '%%comment{This file was created with BetterBib v%s.}\n\n' %
+        u'%%comment{This file was created with BetterBib v%s.}\n\n' %
         betterbib.__version__
         )
 
@@ -65,7 +65,7 @@ def _main():
 
         if sys.version_info[0] == 2:
             a = a.encode('utf8')
-        out.write(a + '\n\n')
+        out.write(a + u'\n\n')
 
     out.close()
     print
