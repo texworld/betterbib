@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
+from __future__ import unicode_literals
 import betterbib
 from betterbib import pybtex_to_bibtex_string
 from io import open
 
 import collections
 from pybtex.database.input import bibtex
-import sys
 from tqdm import tqdm
 
 def _main():
@@ -31,7 +31,7 @@ def _main():
 
     # Write header to the output file.
     out.write(
-        u'%%comment{This file was created with BetterBib v%s.}\n\n' %
+        '%%comment{This file was created with BetterBib v%s.}\n\n' %
         betterbib.__version__
         )
 
@@ -63,9 +63,7 @@ def _main():
                 '%comment{Error when fetching the following entry.}\n'
                 )
 
-        if sys.version_info[0] == 2:
-            a = a.encode('utf8')
-        out.write(a + u'\n\n')
+        out.write(a + '\n\n')
 
     out.close()
     print
