@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
+from __future__ import unicode_literals
 import betterbib
 from betterbib import pybtex_to_bibtex_string
 from io import open
@@ -8,10 +9,6 @@ from io import open
 import collections
 from pybtex.database.input import bibtex
 from tqdm import tqdm
-import sys
-if sys.version_info[0] == 2:
-    reload(sys)  
-    sys.setdefaultencoding('utf8')
 
 def _main():
     args = _parse_cmd_arguments()
@@ -34,7 +31,7 @@ def _main():
 
     # Write header to the output file.
     out.write(
-        u'%%comment{This file was created with BetterBib v%s.}\n\n' %
+        '%%comment{This file was created with BetterBib v%s.}\n\n' %
         betterbib.__version__
         )
 
@@ -63,10 +60,10 @@ def _main():
             # Nothing found; write out the old entry to file.
             a = pybtex_to_bibtex_string(entry, bib_id)
             out.write(
-                u'%comment{Error when fetching the following entry.}\n'
+                '%comment{Error when fetching the following entry.}\n'
                 )
 
-        out.write(a + u'\n\n')
+        out.write(a + '\n\n')
 
     out.close()
     print
