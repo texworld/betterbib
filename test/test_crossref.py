@@ -105,7 +105,7 @@ def test_crossref_article1():
             'publisher': u'Institute of Mathematical Statistics',
             'title': u'A significance test for the lasso',
             'url': u'http://dx.doi.org/10.1214/13-aos1175',
-            'journal': u'Ann. Statist.',
+            'journal': u'The Annals of Statistics',
             'number': u'2',
             'month': 4,
             'volume': u'42',
