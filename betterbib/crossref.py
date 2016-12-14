@@ -182,6 +182,13 @@ class Crossref(object):
                     if result['DOI'].lower() == d['doi'].lower():
                         return self._crossref_to_pybtex(result)
 
+            # If that doesn't work, check if the title matches exactly with the
+            # input.
+            if 'title' in d:
+                for result in results:
+                    if result['title'][0].lower() == d['title'].lower():
+                        return self._crossref_to_pybtex(result)
+
             # If that doesn't work, check if the page range matches exactly
             # with the input.
             if 'pages' in d:
