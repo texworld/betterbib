@@ -1,3 +1,4 @@
+appdirs  # for pipdate
 pipdated
 pybtex >= 0.19
 pypandoc
