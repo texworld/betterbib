@@ -13,6 +13,8 @@ addons:
       - pandoc
 
 before_install:
+  # pip doesn't do dependency resolution yet :(
+  - pip install appdirs
   - pip install -r requirements.txt
   - pip install pytest pytest-cov
 
