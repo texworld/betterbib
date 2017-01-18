@@ -8,9 +8,17 @@ from io import open
 
 import collections
 from pybtex.database.input import bibtex
+import pipdated
 from tqdm import tqdm
 
+
 def _main():
+    if pipdated.needs_checking(betterbib.__name__):
+        msg = pipdated.check('betterbib', betterbib.__version__)
+        print(msg)
+
+    exit(1)
+
     args = _parse_cmd_arguments()
     infile = args.infile
 
