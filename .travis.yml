@@ -1,27 +1,22 @@
-#sudo: false
-sudo: required
 dist: trusty
 
 language: python
 
 python:
-    - "2.7"
-    - "3.4"
-
-virtualenv:
-  system_site_packages: true
+    - '2.7'
+    - '3.4'
 
 # install dependencies
 addons:
   apt:
     packages:
       - pandoc
-      - python-requests
-      - python3-requests
 
 before_install:
+  # pip doesn't do dependency resolution yet :(
+  - pip install appdirs requests
   - pip install -r requirements.txt
-  - pip install pytest-cov
+  - pip install pytest pytest-cov
 
 install:
   # Alternative: setup.py install.

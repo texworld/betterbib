@@ -30,6 +30,7 @@ setup(
     license='License :: OSI Approved :: MIT License',
     platforms='any',
     requires=[
+        'pipdated',
         'pybtex',
         'pypandoc',
         'requests',
