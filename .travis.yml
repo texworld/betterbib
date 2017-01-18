@@ -14,7 +14,7 @@ addons:
 
 before_install:
   # pip doesn't do dependency resolution yet :(
-  - pip install appdirs
+  - pip install appdirs requests
   - pip install -r requirements.txt
   - pip install pytest pytest-cov
 
