@@ -5,12 +5,15 @@ from betterbib.bibtex import pybtex_to_dict, \
         latex_to_unicode
 from betterbib.crossref import Crossref
 
+from betterbib.__about__ import (
+    __version__,
+    __author__,
+    __author_email__,
+    __website__,
+    )
+
+
 __all__ = [
     'bibtex',
     'crossref',
     ]
-
-__version__ = '2.1.6'
-__author__ = 'Nico Schlömer'
-__author_email__ = 'nico.schloemer@gmail.com'
-__website__ = 'https://github.com/nschloe/betterbib'
