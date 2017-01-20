@@ -35,11 +35,11 @@ setup(
     license='License :: OSI Approved :: MIT License',
     platforms='any',
     install_requires=[
-        'pipdated',
-        'pybtex >= 0.19.0',
-        'pypandoc',
-        'requests',
-        'tqdm',
+        # 'pipdated',
+        # 'pybtex >= 0.19.0',
+        # 'pypandoc',
+        # 'requests',
+        # 'tqdm',
         ],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
