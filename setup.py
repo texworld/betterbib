@@ -34,13 +34,13 @@ setup(
     download_url='https://pypi.python.org/pypi/betterbib',
     license='License :: OSI Approved :: MIT License',
     platforms='any',
-    install_requires=[
-        # 'pipdated',
-        # 'pybtex >= 0.19.0',
-        # 'pypandoc',
-        # 'requests',
-        # 'tqdm',
-        ],
+    # install_requires=[
+    #     # 'pipdated',
+    #     # 'pybtex >= 0.19.0',
+    #     # 'pypandoc',
+    #     # 'requests',
+    #     # 'tqdm',
+    #     ],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Science/Research',
