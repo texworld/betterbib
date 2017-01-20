@@ -1,5 +1,0 @@
-pipdated
-pybtex >= 0.19
-pypandoc
-requests
-tqdm

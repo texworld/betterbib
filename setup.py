@@ -29,9 +29,9 @@ setup(
     download_url='https://pypi.python.org/pypi/betterbib',
     license='License :: OSI Approved :: MIT License',
     platforms='any',
-    requires=[
+    install_requires=[
         'pipdated',
-        'pybtex',
+        'pybtex >= 0.19',
         'pypandoc',
         'requests',
         'tqdm'
