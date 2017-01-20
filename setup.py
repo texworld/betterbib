@@ -39,7 +39,7 @@ setup(
         'pybtex >= 0.19.0',
         'pypandoc',
         'requests',
-        'tqdm'
+        'tqdm',
         ],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
