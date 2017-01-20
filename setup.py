@@ -36,7 +36,7 @@ setup(
     platforms='any',
     install_requires=[
         'pipdated',
-        'pybtex',  # >= 0.19
+        'pybtex >= 0.19.0',
         'pypandoc',
         'requests',
         'tqdm'
