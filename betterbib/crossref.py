@@ -88,16 +88,16 @@ class Crossref(object):
 
         d = pybtex_to_dict(entry)
 
-        l = []
+        L = []
 
         try:
-            l.append(d['title'])
+            L.append(d['title'])
         except KeyError:
             pass
 
         try:
             for au in d['author']:
-                l.extend([
+                L.extend([
                     ' '.join(au['first']), ' '.join(au['middle']),
                     ' '.join(au['prelast']), ' '.join(au['last']),
                     ' '.join(au['lineage'])
@@ -106,46 +106,46 @@ class Crossref(object):
             pass
 
         try:
-            l.append(d['journal'])
+            L.append(d['journal'])
         except KeyError:
             pass
 
         try:
-            l.append(d['doi'])
+            L.append(d['doi'])
         except KeyError:
             pass
 
         try:
-            l.append(d['pages'])
+            L.append(d['pages'])
         except KeyError:
             pass
 
         try:
-            l.append(d['year'])
+            L.append(d['year'])
         except KeyError:
             pass
 
         try:
-            l.append(d['volume'])
+            L.append(d['volume'])
         except KeyError:
             pass
 
         try:
-            l.append(d['number'])
+            L.append(d['number'])
         except KeyError:
             pass
 
         try:
-            l.append(d['publisher'])
+            L.append(d['publisher'])
         except KeyError:
             pass
 
         # kick out empty strings
-        l = filter(None, l)
+        L = filter(None, L)
 
         # Simply plug the dict together to a search query. Typical query:
         # https://api.crossref.org/works?query=vanroose+schl%C3%B6mer&rows=5
-        payload = latex_to_unicode(' '.join(l)).replace(' ', '+')
+        payload = latex_to_unicode(' '.join(L)).replace(' ', '+')
 
         params = {
             'query': payload,
@@ -186,7 +186,7 @@ class Crossref(object):
             if 'title' in d:
                 for result in results:
                     if len(result['title']) > 0 and \
-                        result['title'][0].lower() in d['title'].lower():
+                            result['title'][0].lower() in d['title'].lower():
                         return self._crossref_to_pybtex(result)
 
             # If that doesn't work, check if the page range matches exactly

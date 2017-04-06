@@ -32,7 +32,7 @@ setup(
     long_description=read('README.rst'),
     url='https://github.com/nschloe/betterbib',
     download_url='https://pypi.python.org/pypi/betterbib',
-    license='License :: OSI Approved :: MIT License',
+    license=about['__license__'],
     platforms='any',
     install_requires=[
         'pipdated',
@@ -42,9 +42,9 @@ setup(
         'tqdm',
         ],
     classifiers=[
-        'Development Status :: 5 - Production/Stable',
+        about['__status__'],
+        about['__license__'],
         'Intended Audience :: Science/Research',
-        'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',

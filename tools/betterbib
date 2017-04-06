@@ -14,9 +14,7 @@ from tqdm import tqdm
 
 def _main():
     if pipdated.needs_checking('betterbib'):
-        msg = pipdated.check('betterbib', betterbib.__version__)
-        if msg:
-            print(msg)
+        print(pipdated.check('betterbib', betterbib.__version__))
 
     args = _parse_cmd_arguments()
     infile = args.infile
