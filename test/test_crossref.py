@@ -6,19 +6,6 @@ import pybtex
 import pybtex.database
 
 
-def _bibtex_equals(obj0, obj1):
-    if obj0.persons != obj1.persons:
-        return False
-
-    for key, value in obj0.fields.iteritems():
-        if key not in obj1.fields:
-            return False
-        if value != obj1.fields[key]:
-            return False
-
-    return True
-
-
 def _serialize_bibtex(obj):
     string = ''''''
     for person_type, persons in obj.persons.iteritems():
@@ -91,7 +78,6 @@ def test_crossref_article0():
     # The two tests are almost redundant. The second is more accurate, the
     # first shows errors more clearly.
     assert _serialize_bibtex(bt) == _serialize_bibtex(reference)
-    assert _bibtex_equals(bt, reference)
 
     # test string conversion
     betterbib.pybtex_to_bibtex_string(reference, 'ABC')
@@ -149,7 +135,6 @@ def test_crossref_article1():
 
     # Comparing the Entry object as a whole doesn't work, unfortunately.
     assert _serialize_bibtex(bt) == _serialize_bibtex(reference)
-    assert _bibtex_equals(bt, reference)
 
     # test string conversion
     betterbib.pybtex_to_bibtex_string(reference, 'ABC')
@@ -198,7 +183,6 @@ def test_crossref_book0():
 
     # Comparing the Entry object as a whole doesn't work, unfortunately.
     assert _serialize_bibtex(bt) == _serialize_bibtex(reference)
-    assert _bibtex_equals(bt, reference)
 
     return
 
@@ -240,7 +224,6 @@ def test_crossref_book1():
 
     # Comparing the Entry object as a whole doesn't work, unfortunately.
     assert _serialize_bibtex(bt) == _serialize_bibtex(reference)
-    assert _bibtex_equals(bt, reference)
 
     return
 
@@ -279,7 +262,6 @@ def test_crossref_inbook0():
 
     # Comparing the Entry object as a whole doesn't work, unfortunately.
     assert _serialize_bibtex(bt) == _serialize_bibtex(reference)
-    assert _bibtex_equals(bt, reference)
 
     return
 
@@ -328,7 +310,6 @@ def test_crossref_incollection0():
 
     # Comparing the Entry object as a whole doesn't work, unfortunately.
     assert _serialize_bibtex(bt) == _serialize_bibtex(reference)
-    assert _bibtex_equals(bt, reference)
 
     return
 
@@ -368,7 +349,6 @@ def test_crossref_techreport0():
 
     # Comparing the Entry object as a whole doesn't work, unfortunately.
     assert _serialize_bibtex(bt) == _serialize_bibtex(reference)
-    assert _bibtex_equals(bt, reference)
 
     return
 
@@ -406,7 +386,6 @@ def test_crossref_inproceedings0():
 
     # Comparing the Entry object as a whole doesn't work, unfortunately.
     assert _serialize_bibtex(bt) == _serialize_bibtex(reference)
-    assert _bibtex_equals(bt, reference)
 
     return
 
@@ -440,7 +419,6 @@ def test_crossref_proceedings0():
 
     # Comparing the Entry object as a whole doesn't work, unfortunately.
     assert _serialize_bibtex(bt) == _serialize_bibtex(reference)
-    assert _bibtex_equals(bt, reference)
 
     return
 
