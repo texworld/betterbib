@@ -1,0 +1,10 @@
+[MESSAGES CONTROL]
+
+disable=
+    fixme,
+    invalid-name,
+    missing-docstring,
+    no-member,
+    too-few-public-methods,
+    too-many-branches,
+    too-many-statements
