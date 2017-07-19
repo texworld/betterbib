@@ -49,24 +49,47 @@ def _translate_month(month):
 
 
 _names = [
+    'Abrikosov',
     'Arnoldi',
     'Banach',
+    'Bernstein',
+    'Bose',
     'Cauchy',
+    'Caputo',
     'Chebyshev',
+    'Davidson',
+    'Einstein',
+    'Euler',
     'Fourier',
     'Galerkin',
+    'Gauss',
+    'Gross',
+    'Ginzburg',
+    'Hermite',
+    'Jacobi',
+    'Jordan',
+    'Kronrod',
     'Krylov',
     'Kutta',
+    'Landau',
+    'Laplace',
     'Magnus',
+    'Navier',
     'Lanczos',
+    'Lie',
     'Magnus',
     'Neumann',
     'Newton',
     'Peano',
+    'Pitaevskii',
+    'Richardson',
     'Ritz',
     'Runge',
     u'Schrödinger',
+    'Schur',
+    'Stokes',
     'Sylvester',
+    'Toeplitz',
     #
     'I',
     'II',
@@ -90,10 +113,24 @@ def _translate_word(word):
     if any(char.isupper() for char in word[1:]):
         return '{%s}' % word
 
+    # Einstein
     if word in _names:
         return '{%s}' % word
 
+    # Peano's
     if len(word) > 2 and word[-2:] == '\'s' and word[:-2] in _names:
+        return '{%s}' % word
+
+    # Gaussian
+    if len(word) > 3 and word[-3:] == 'ian' and word[:-3] in _names:
+        return '{%s}' % word
+
+    # Laplacian
+    if len(word) > 3 and word[-3:] == 'ian' and word[:-3] + 'e' in _names:
+        return '{%s}' % word
+
+    # Jacobian
+    if len(word) > 3 and word[-3:] == 'ian' and word[:-2] in _names:
         return '{%s}' % word
     return word
 
