@@ -1,10 +1,37 @@
 # -*- coding: utf-8 -*-
 #
+import re
+
 from betterbib.bibtex import pybtex_to_dict, latex_to_unicode
 
 import pybtex
-import re
 import requests
+
+
+def _bibtex_to_crossref_type(bibtex_type):
+    if bibtex_type in [
+            'booklet',
+            'conference',
+            'manual',
+            'mastersthesis',
+            'online',
+            'phdthesis',
+            'unpublished']:
+        raise RuntimeError(
+            'Crossref doesn''t contain %s data' % bibtex_type
+            )
+
+    _bibtex_to_crossref_map = {
+        'article': ['journal-article'],
+        'book': ['book', 'monograph'],
+        'inbook': ['book-chapter'],
+        'misc': ['other'],
+        'incollection': ['book-chapter'],
+        'inproceedings': ['proceedings-article'],
+        'proceedings': ['proceedings'],
+        'techreport': ['report'],
+        }
+    return _bibtex_to_crossref_map[bibtex_type]
 
 
 class Crossref(object):
@@ -57,32 +84,6 @@ class Crossref(object):
             'report': 'techreport'
             }
         return _crossref_to_bibtex_type[crossref_type]
-
-    def _bibtex_to_crossref_type(self, bibtex_type):
-        if bibtex_type in [
-                'booklet',
-                'conference',
-                'manual',
-                'mastersthesis',
-                'online',
-                'phdthesis',
-                'unpublished'
-                ]:
-            raise RuntimeError(
-                'Crossref doesn''t contain %s data' % bibtex_type
-                )
-
-        _bibtex_to_crossref_type = {
-            'article': ['journal-article'],
-            'book': ['book', 'monograph'],
-            'inbook': ['book-chapter'],
-            'misc': ['other'],
-            'incollection': ['book-chapter'],
-            'inproceedings': ['proceedings-article'],
-            'proceedings': ['proceedings'],
-            'techreport': ['report'],
-            }
-        return _bibtex_to_crossref_type[bibtex_type]
 
     def find_unique(self, entry):
 
@@ -151,7 +152,7 @@ class Crossref(object):
             'query': payload,
             'filter': ','.join(
                 'type:%s' % tp
-                for tp in self._bibtex_to_crossref_type(entry.type)
+                for tp in _bibtex_to_crossref_type(entry.type)
                 ),
             'rows': 2  # max number of results
             }
@@ -185,7 +186,7 @@ class Crossref(object):
             # If that doesn't work, check if the title appears in the input.
             if 'title' in d:
                 for result in results:
-                    if len(result['title']) > 0 and \
+                    if result['title'] and \
                             result['title'][0].lower() in d['title'].lower():
                         return self._crossref_to_pybtex(result)
 
@@ -289,7 +290,7 @@ class Crossref(object):
             # Take the first container names.
             # This is typically the abbreviated journal name in case of a
             # journal, and the full book title in case of a book.
-            if len(data['container-title']) > 0:
+            if data['container-title']:
                 container_title = data['container-title'][0]
             else:
                 container_title = None

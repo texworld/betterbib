@@ -48,10 +48,10 @@ def _translate_month(month):
     return month
 
 
-def pybtex_to_bibtex_string(entry, key):
+def pybtex_to_bibtex_string(entry, bibtex_key):
     '''String representation of BibTeX entry.
     '''
-    out = '@%s{%s,\n  ' % (entry.type, key)
+    out = '@%s{%s,\n  ' % (entry.type, bibtex_key)
     content = []
     for key, persons in entry.persons.items():
         persons_str = ' and '.join([_get_person_str(p) for p in persons])
