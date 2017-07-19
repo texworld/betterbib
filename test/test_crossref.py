@@ -375,7 +375,7 @@ def test_crossref_proceedings0():
         'proceedings',
         fields={
             'publisher': u'Wydawnictwo Uniwersytetu Ekonomicznego ' +
-                         'we Wrocławiu',
+                         u'we Wrocławiu',
             'doi': u'10.15611/amse.2014.17',
             'title': 'International Scientific Conference',
             'url': u'http://dx.doi.org/10.15611/amse.2014.17',
