@@ -23,7 +23,7 @@ def _serialize_bibtex(obj):
     sorted_keys = sorted(obj.fields.keys())
 
     string += '\n'.join(
-        '{}: {}'.format(key, obj.fields[key])
+        u'{}: {}'.format(key, obj.fields[key])
         for key in sorted_keys
         )
     return string
