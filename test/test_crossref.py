@@ -134,7 +134,7 @@ def test_crossref_article1():
             'number': u'2',
             'month': 4,
             'volume': u'42',
-            'source': u'CrossRef',
+            'source': u'Crossref',
             'year': 2014,
             'pages': u'413-468'
             },
@@ -148,6 +148,7 @@ def test_crossref_article1():
             }))
 
     # Comparing the Entry object as a whole doesn't work, unfortunately.
+    assert _serialize_bibtex(bt) == _serialize_bibtex(reference)
     assert _bibtex_equals(bt, reference)
 
     # test string conversion
@@ -182,11 +183,11 @@ def test_crossref_book0():
         'book',
         fields={
             'doi': u'10.1002/0470868279',
-            'publisher': u'Wiley-Blackwell',
+            'publisher': u'John Wiley & Sons, Ltd',
             'title': u'Numerical Methods for Ordinary Differential Equations',
             'url': u'http://dx.doi.org/10.1002/0470868279',
             'month': 6,
-            'source': u'CrossRef',
+            'source': u'Crossref',
             'year': 2003,
             },
         persons=pybtex.database.OrderedCaseInsensitiveDict({
@@ -196,6 +197,7 @@ def test_crossref_book0():
             }))
 
     # Comparing the Entry object as a whole doesn't work, unfortunately.
+    assert _serialize_bibtex(bt) == _serialize_bibtex(reference)
     assert _bibtex_equals(bt, reference)
 
     return
@@ -222,8 +224,8 @@ def test_crossref_book1():
         'book',
         fields={
             'title': u'Matrices, Moments and Quadrature with Applications',
-            'source': u'CrossRef',
-            'publisher': u'Walter de Gruyter GmbH',
+            'source': u'Crossref',
+            'publisher': u'Princeton University Press',
             'year': 2009,
             'month': 1,
             'doi': '10.1515/9781400833887',
@@ -237,6 +239,7 @@ def test_crossref_book1():
             }))
 
     # Comparing the Entry object as a whole doesn't work, unfortunately.
+    assert _serialize_bibtex(bt) == _serialize_bibtex(reference)
     assert _bibtex_equals(bt, reference)
 
     return
@@ -262,19 +265,20 @@ def test_crossref_inbook0():
         'inbook',
         fields={
             'doi': u'10.1002/0470868279.ch1',
-            'publisher': u'Wiley-Blackwell',
+            'publisher': u'John Wiley & Sons, Ltd',
             'chapter': u'Differential and Difference Equations',
             'url': u'http://dx.doi.org/10.1002/0470868279.ch1',
             'booktitle': u'Numerical Methods ' +
                          'for Ordinary Differential Equations',
             'month': 1,
-            'source': u'CrossRef',
+            'source': u'Crossref',
             'year': 2005,
             'pages': '1-44'
             }
         )
 
     # Comparing the Entry object as a whole doesn't work, unfortunately.
+    assert _serialize_bibtex(bt) == _serialize_bibtex(reference)
     assert _bibtex_equals(bt, reference)
 
     return
@@ -302,12 +306,12 @@ def test_crossref_incollection0():
     reference = pybtex.database.Entry(
         'inproceedings',
         fields={
-            'publisher': 'Elsevier BV',
+            'publisher': 'Elsevier',
             'doi': u'10.1016/s1874-575x(02)80025-x',
             'title': 'Numerical Continuation, and Computation of Normal Forms',
             'url': u'http://dx.doi.org/10.1016/s1874-575x(02)80025-x',
             'booktitle': 'Handbook of Dynamical Systems',
-            'source': u'CrossRef',
+            'source': u'Crossref',
             'year': 2002,
             'pages': u'149-219'
             },
@@ -323,6 +327,7 @@ def test_crossref_incollection0():
         )
 
     # Comparing the Entry object as a whole doesn't work, unfortunately.
+    assert _serialize_bibtex(bt) == _serialize_bibtex(reference)
     assert _bibtex_equals(bt, reference)
 
     return
@@ -348,11 +353,10 @@ def test_crossref_techreport0():
             'title': 'CT Scan of NASA Booster Nozzle',
             'url': u'http://dx.doi.org/10.2172/15014765',
             'month': 7,
-            'source': u'CrossRef',
+            'source': u'Crossref',
             'year': 2004,
             'institution': 'Office of Scientific ' +
-                           'and Technical Information (OSTI)',
-            'pages': '1-44'
+                           'and Technical Information  (OSTI)'
             },
         persons=pybtex.database.OrderedCaseInsensitiveDict({
             'author': [
@@ -363,6 +367,7 @@ def test_crossref_techreport0():
         )
 
     # Comparing the Entry object as a whole doesn't work, unfortunately.
+    assert _serialize_bibtex(bt) == _serialize_bibtex(reference)
     assert _bibtex_equals(bt, reference)
 
     return
@@ -384,14 +389,13 @@ def test_crossref_inproceedings0():
     reference = pybtex.database.Entry(
         'inproceedings',
         fields={
-            'publisher': 'Institute of Electrical and ' +
-                         'Electronics Engineers (IEEE)',
+            'publisher': 'IEEE',
             'doi': u'10.1109/aero.2008.4526230',
             'title': 'Global Warming is Unequivocal',
             'url': u'http://dx.doi.org/10.1109/aero.2008.4526230',
             'booktitle': '2008 IEEE Aerospace Conference',
             'month': 3,
-            'source': u'CrossRef',
+            'source': u'Crossref',
             'year': 2008,
             },
         persons=pybtex.database.OrderedCaseInsensitiveDict({
@@ -401,6 +405,7 @@ def test_crossref_inproceedings0():
         )
 
     # Comparing the Entry object as a whole doesn't work, unfortunately.
+    assert _serialize_bibtex(bt) == _serialize_bibtex(reference)
     assert _bibtex_equals(bt, reference)
 
     return
@@ -423,16 +428,18 @@ def test_crossref_proceedings0():
     reference = pybtex.database.Entry(
         'proceedings',
         fields={
-            'publisher': 'Wroclaw University of Economics',
+            'publisher': u'Wydawnictwo Uniwersytetu Ekonomicznego ' +
+                         'we Wrocławiu',
             'doi': u'10.15611/amse.2014.17',
             'title': 'International Scientific Conference',
             'url': u'http://dx.doi.org/10.15611/amse.2014.17',
-            'source': u'CrossRef',
+            'source': u'Crossref',
             'year': 2014,
             }
         )
 
     # Comparing the Entry object as a whole doesn't work, unfortunately.
+    assert _serialize_bibtex(bt) == _serialize_bibtex(reference)
     assert _bibtex_equals(bt, reference)
 
     return
