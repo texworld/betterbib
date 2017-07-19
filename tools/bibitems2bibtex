@@ -5,6 +5,7 @@
 Parses a number of bibitems into a proper BibTeX bibliography.  Since bibitems
 don't have semantic information, certain heuristics have to be applied.
 '''
+from __future__ import print_function
 
 import argparse
 import re
@@ -21,12 +22,11 @@ def _main():
         # If the author entry contains a vrule, assume that this is a
         # placeholder for the authors from the previous paper.
         if (
-           'authors' in bibitem and
-           ('\\vrule' in bibitem['authors'] or
-            '\\sameauthor' in bibitem['authors']
-            ) and
-           previous_author
-           ):
+                'authors' in bibitem and
+                ('\\vrule' in bibitem['authors'] or
+                 '\\sameauthor' in bibitem['authors']
+                ) and
+                previous_author):
             bibitem['authors'] = previous_author
         entry = create_bibtex_string(bibitem)
         print(entry)
@@ -52,16 +52,15 @@ def clean(entry):
         new = new[1:-1].strip()
 
     # Replace multiple white space by a simple space.
-    new = re.sub('\s+', ' ', new)
+    new = re.sub('\\s+', ' ', new)
     return new
 
 
 def clean_pages(entry):
     new = clean(entry)
     m = re.match('^[^0-9]*([0-9]+[-]+[0-9]+).*', entry)
-    if m and len(m.groups()) > 0:
-        new = m.group(1) \
-            .replace('--', '-')
+    if m and m.groups():
+        new = m.group(1).replace('--', '-')
     return new
 
 
@@ -93,7 +92,7 @@ def my_split(s):
     bracket_level = 0
     current = []
     # trick to remove special-case of trailing chars
-    for c in (s + ','):
+    for c in s + ',':
         if c == ',' and bracket_level == 0:
             parts.append(''.join(current))
             current = []
@@ -119,8 +118,7 @@ def _get_entry_type(m2):
 
         if len(a) == 4 and '-' not in a:
             return 'book'
-        else:
-            return 'article'
+        return 'article'
 
     # fallback
     return 'article'
@@ -131,8 +129,7 @@ def parse_bibitem_string(bibitem_string):
     information. Of course, heuristics are needed.
     '''
     # Extract the reference key
-    re.DOTALL
-    regex = re.compile('^\\\\bibitem{(\w+)}\s*(.*)', re.DOTALL)
+    regex = re.compile('^\\\\bibitem{(\\w+)}\\s*(.*)', re.DOTALL)
     m = re.match(regex, bibitem_string)
 
     # Explode the rest of the string around commas, except the commas
@@ -153,6 +150,7 @@ def parse_bibitem_string(bibitem_string):
         if len(m2) > 3:
             a = clean_bibitem_string(m2[3])
             c = a.split(' ')
+            # pylint: disable=len-as-condition
             if len(c) > 0:
                 bibitem['number'] = c[0]
             if len(c) > 1 and c[1][0] == '(' and c[1][-1] == ')':
@@ -181,7 +179,7 @@ def parse_bibitem_string(bibitem_string):
 
 
 def clean_bibitem_string(string):
-    '''Removes surrounding whitespace, surrounding \emph brackets etc.
+    '''Removes surrounding whitespace, surrounding \\emph brackets etc.
     '''
     out = string
     out = out.strip()
@@ -202,7 +200,7 @@ def extract_bibitems(filename):
     with open(filename, 'r') as f:
         for line in f:
             # Get first non-whitespace character
-            m = re.match('^\s*(\S)', line)
+            m = re.match('^\\s*(\\S)', line)
             # Skip commented-out lines
             if m and m.group(1) == '%':
                 continue
@@ -215,7 +213,7 @@ def extract_bibitems(filename):
                 if '\\bibitem' in line:
                     # Create new bibitem entry
                     bibitems.append(line)
-                elif len(bibitems) > 0:
+                elif bibitems:
                     # Append to last bibitem entry
                     bibitems[-1] += line
     return bibitems

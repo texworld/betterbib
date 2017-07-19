@@ -12,12 +12,16 @@ addons:
       - pandoc
 
 before_install:
-  - pip install pytest pytest-cov
+  - pip install pytest pytest-cov pylint
 
 install:
   - pip install .
 
 script:
+  - pylint betterbib
+  - pylint test/*.py
+  - pylint tools/betterbib
+  - pylint tools/bibitems2bibtex
   # cd into test directory to make sure we're using the pip-installed
   # betterbib.
   - cd test && pytest --cov betterbib

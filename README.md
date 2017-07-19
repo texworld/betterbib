@@ -2,7 +2,6 @@
 
 [![Build Status](https://travis-ci.org/nschloe/betterbib.svg?branch=master)](https://travis-ci.org/nschloe/betterbib)
 [![codecov](https://codecov.io/gh/nschloe/betterbib/branch/master/graph/badge.svg)](https://codecov.io/gh/nschloe/betterbib)
-[![Code Health](https://landscape.io/github/nschloe/betterbib/master/landscape.png)](https://landscape.io/github/nschloe/betterbib/master)
 [![PyPi Version](https://img.shields.io/pypi/v/betterbib.svg)](https://pypi.python.org/pypi/betterbib)
 [![GitHub stars](https://img.shields.io/github/stars/nschloe/betterbib.svg?style=social&label=Star&maxAge=2592000)](https://github.com/nschloe/betterbib)
 
@@ -17,7 +16,7 @@ the input BibTex
 ```
 @article {krylov,
   author = {Liesen and Gaul and Nabben},
-  title = {Deflation Krylov Augmented}
+  title = {Framework Deflation Krylov Augmented}
 }
 ```
 is converted into
@@ -26,13 +25,13 @@ is converted into
   author = {Gaul, André and Gutknecht, Martin H. and Liesen, Jörg and Nabben, Reinhard},
   publisher = {Society for Industrial & Applied Mathematics (SIAM)},
   doi = {10.1137/110820713},
-  title = {A Framework for Deflated and Augmented Krylov Subspace Methods},
+  title = {A Framework for Deflated and Augmented {Krylov} Subspace Methods},
   url = {http://dx.doi.org/10.1137/110820713},
-  journal = {SIAM. J. Matrix Anal. & Appl.},
+  journal = {SIAM Journal on Matrix Analysis and Applications},
   number = {2},
-  month = apr,
+  month = jan,
   volume = {34},
-  source = {CrossRef},
+  source = {Crossref},
   year = {2013},
   pages = {495-518}
 }

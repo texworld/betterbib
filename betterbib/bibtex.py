@@ -48,17 +48,126 @@ def _translate_month(month):
     return month
 
 
-def pybtex_to_bibtex_string(entry, key):
+_names = [
+    'Abrikosov',
+    'Arnoldi',
+    'Banach',
+    'Bernstein',
+    'Bose',
+    'Cauchy',
+    'Caputo',
+    'Chebyshev',
+    'Davidson',
+    'Einstein',
+    'Euler',
+    'Fourier',
+    'Galerkin',
+    'Gauss',
+    'Gross',
+    'Ginzburg',
+    'Hermite',
+    'Jacobi',
+    'Jordan',
+    'Kronrod',
+    'Krylov',
+    'Kutta',
+    'Landau',
+    'Laplace',
+    'Magnus',
+    'Navier',
+    'Lanczos',
+    'Lie',
+    'Magnus',
+    'Neumann',
+    'Newton',
+    'Peano',
+    'Pitaevskii',
+    'Richardson',
+    'Ritz',
+    'Runge',
+    u'Schrödinger',
+    'Schur',
+    'Stokes',
+    'Sylvester',
+    'Toeplitz',
+    #
+    'I',
+    'II',
+    'III',
+    'IV',
+    'V',
+    'VI',
+    'VII',
+    'VIII',
+    'IX',
+    'X'
+    ]
+
+
+def _translate_word(word):
+    # Check if the word has a capital letter in a position other than
+    # the first. If yes, protect it.
+    if word[0] == '{' and word[-1] == '}':
+        out = word
+    elif any(char.isupper() for char in word[1:]):
+        out = '{%s}' % word
+    elif word in _names:
+        # Einstein
+        out = '{%s}' % word
+    elif len(word) > 2 and word[-2:] == '\'s' and word[:-2] in _names:
+        # Peano's
+        out = '{%s}' % word
+    elif len(word) > 3 and word[-3:] == 'ian' and word[:-3] in _names:
+        # Gaussian
+        out = '{%s}' % word
+    elif len(word) > 3 and word[-3:] == 'ian' and word[:-3] + 'e' in _names:
+        # Laplacian
+        out = '{%s}' % word
+    elif len(word) > 3 and word[-3:] == 'ian' and word[:-2] in _names:
+        # Jacobian
+        out = '{%s}' % word
+    else:
+        out = word
+    return out
+
+
+def _translate_title(val):
+    '''The capitalization of BibTeX entries is handled by the style, so names
+    (Newton) or abbreviations (GMRES) may not be capitalized. This is unless
+    they are wrapped in curly brackets.
+    This function takes a raw title string as input and {}-protects those parts
+    whose capitalization should not change.
+    '''
+    words = val.split()
+    # pylint: disable=consider-using-enumerate
+    for k in range(len(words)):
+        if k > 0 and words[k-1][-1] == ':':
+            # Algorithm 694: {A} collection...
+            words[k] = '{%s}' % words[k].capitalize()
+
+    for k in range(len(words)):
+        words[k] = '-'.join([_translate_word(w) for w in words[k].split('-')])
+
+    return ' '.join(words)
+
+
+def pybtex_to_bibtex_string(entry, bibtex_key):
     '''String representation of BibTeX entry.
     '''
-    out = '@%s{%s,\n  ' % (entry.type, key)
+    out = '@%s{%s,\n  ' % (entry.type, bibtex_key)
     content = []
     for key, persons in entry.persons.items():
         persons_str = ' and '.join([_get_person_str(p) for p in persons])
         content.append('%s = {%s}' % (key, persons_str))
-    for field, value in entry.fields.iteritems():
+
+    # Make sure the fields always come out in the same order
+    sorted_fields = sorted(entry.fields.keys())
+    for field in sorted_fields:
+        value = entry.fields[field]
         if field == 'month':
-            content.append('%s = %s' % (field, _translate_month(value)))
+            content.append('month = %s' % _translate_month(value))
+        elif field == 'title':
+            content.append('title = {%s}' % _translate_title(value))
         else:
             content.append('%s = {%s}' % (field, value))
     out += ',\n  '.join(content)
