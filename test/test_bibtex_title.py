@@ -3,6 +3,7 @@
 import betterbib
 
 
+# pylint: disable=protected-access
 def test():
     assert betterbib.bibtex._translate_title(
         'The Magnus expansion and some of its applications'

@@ -24,19 +24,19 @@ def test_crossref_article0():
     source = betterbib.Crossref()
 
     test_entry = pybtex.database.Entry(
-            'article',
-            fields={
-                'title': 'A Framework for Deflated and Augmented ' +
-                         'Krylov Subspace Methods',
-                'year': '2013'
+        'article',
+        fields={
+            'title': 'A Framework for Deflated and Augmented ' +
+                     'Krylov Subspace Methods',
+            'year': '2013'
             },
-            persons={'author': [
-                pybtex.database.Person('Gaul'),
-                pybtex.database.Person('Liesen'),
-                pybtex.database.Person('Gutknecht'),
-                pybtex.database.Person('Nabben'),
-                ]}
-            )
+        persons={'author': [
+            pybtex.database.Person('Gaul'),
+            pybtex.database.Person('Liesen'),
+            pybtex.database.Person('Gutknecht'),
+            pybtex.database.Person('Nabben'),
+            ]}
+        )
 
     bt = source.find_unique(test_entry)
     reference = pybtex.database.Entry(
@@ -46,7 +46,7 @@ def test_crossref_article0():
             'publisher':
                 u'Society for Industrial & Applied Mathematics (SIAM)',
             'title': u'A Framework for Deflated and Augmented ' +
-                'Krylov Subspace Methods',
+                     'Krylov Subspace Methods',
             'url': u'http://dx.doi.org/10.1137/110820713',
             'journal': u'SIAM Journal on Matrix Analysis and Applications',
             'number': u'2',
@@ -86,15 +86,15 @@ def test_crossref_article1():
     source = betterbib.Crossref()
 
     test_entry = pybtex.database.Entry(
-            'article',
-            fields={
-                'title': 'A significance test for the lasso',
-                'doi': '10.1214/13-AOS1175'
+        'article',
+        fields={
+            'title': 'A significance test for the lasso',
+            'doi': '10.1214/13-AOS1175'
             },
-            persons={'author': [
-                pybtex.database.Person('Tibshirani')
-                ]}
-            )
+        persons={'author': [
+            pybtex.database.Person('Tibshirani')
+            ]}
+        )
 
     bt = source.find_unique(test_entry)
 
@@ -141,15 +141,15 @@ def test_crossref_book0():
     source = betterbib.Crossref()
 
     test_entry = pybtex.database.Entry(
-            'book',
-            fields={
-                'title': 'Numerical Ordinary Differential Equations',
-                'doi': '10.1002/0470868279',
-            },
-            persons={'author': [
-                pybtex.database.Person('Butcher'),
-                ]}
-            )
+        'book',
+        fields={
+            'title': 'Numerical Ordinary Differential Equations',
+            'doi': '10.1002/0470868279',
+        },
+        persons={'author': [
+            pybtex.database.Person('Butcher'),
+            ]}
+        )
 
     bt = source.find_unique(test_entry)
 
@@ -181,15 +181,15 @@ def test_crossref_book1():
     source = betterbib.Crossref()
 
     test_entry = pybtex.database.Entry(
-            'book',
-            fields={
-                'title': 'Matrices, Moments and Quadrature with Applications',
-            },
-            persons={'author': [
-                pybtex.database.Person('Golub'),
-                pybtex.database.Person('Meurant'),
-                ]}
-            )
+        'book',
+        fields={
+            'title': 'Matrices, Moments and Quadrature with Applications',
+        },
+        persons={'author': [
+            pybtex.database.Person('Golub'),
+            pybtex.database.Person('Meurant'),
+            ]}
+        )
 
     bt = source.find_unique(test_entry)
 
@@ -222,14 +222,14 @@ def test_crossref_inbook0():
     source = betterbib.Crossref()
 
     test_entry = pybtex.database.Entry(
-            'inbook',
-            fields={
-                'title': 'Differential and Difference Equations Ordinary'
+        'inbook',
+        fields={
+            'title': 'Differential and Difference Equations Ordinary'
             },
-            persons={'author': [
-                pybtex.database.Person('Butcher'),
-                ]}
-            )
+        persons={'author': [
+            pybtex.database.Person('Butcher'),
+            ]}
+        )
 
     bt = source.find_unique(test_entry)
 
@@ -260,17 +260,17 @@ def test_crossref_incollection0():
     source = betterbib.Crossref()
 
     test_entry = pybtex.database.Entry(
-            'incollection',
-            fields={
-                'title': 'Numerical continuation, ' +
-                         'and computation of normal forms'
-                },
-            persons=pybtex.database.OrderedCaseInsensitiveDict({
-                'author': [
-                    pybtex.database.Person(u'Beyn'),
-                    pybtex.database.Person(u'Champneys'),
-                    ]
-                }))
+        'incollection',
+        fields={
+            'title': 'Numerical continuation, ' +
+                     'and computation of normal forms'
+            },
+        persons=pybtex.database.OrderedCaseInsensitiveDict({
+            'author': [
+                pybtex.database.Person(u'Beyn'),
+                pybtex.database.Person(u'Champneys'),
+                ]
+            }))
 
     bt = source.find_unique(test_entry)
 
@@ -308,11 +308,11 @@ def test_crossref_techreport0():
     source = betterbib.Crossref()
 
     test_entry = pybtex.database.Entry(
-            'techreport',
-            fields={
-                'title': 'CT Scan of NASA Booster Nozzle'
+        'techreport',
+        fields={
+            'title': 'CT Scan of NASA Booster Nozzle'
             }
-            )
+        )
 
     bt = source.find_unique(test_entry)
 
@@ -348,11 +348,11 @@ def test_crossref_inproceedings0():
     source = betterbib.Crossref()
 
     test_entry = pybtex.database.Entry(
-            'inproceedings',
-            fields={
-                'title': 'Global Warming is Unequivocal'
+        'inproceedings',
+        fields={
+            'title': 'Global Warming is Unequivocal'
             }
-            )
+        )
 
     bt = source.find_unique(test_entry)
 
@@ -386,12 +386,12 @@ def test_crossref_proceedings0():
     source = betterbib.Crossref()
 
     test_entry = pybtex.database.Entry(
-            'proceedings',
-            fields={
-                'title': 'International Scientific Conference',
-                'doi': '10.15611/amse.2014.17'
+        'proceedings',
+        fields={
+            'title': 'International Scientific Conference',
+            'doi': '10.15611/amse.2014.17'
             }
-            )
+        )
 
     bt = source.find_unique(test_entry)
 
