@@ -50,17 +50,47 @@ def _translate_month(month):
 
 _names = [
     'Arnoldi',
+    'Banach',
+    'Cauchy',
     'Chebyshev',
+    'Fourier',
+    'Galerkin',
     'Krylov',
-    'Kutta'
+    'Kutta',
     'Magnus',
     'Lanczos',
+    'Magnus',
+    'Neumann',
     'Newton',
     'Peano',
     'Ritz',
     'Runge',
+    u'Schrödinger',
     'Sylvester',
+    #
+    'I',
+    'II',
+    'III',
+    'IV',
+    'V',
+    'VI',
+    'VII',
+    'VIII',
+    'IX',
+    'X'
     ]
+
+
+def _translate_word(word):
+    # Check if the word has a capital letter in a position other than
+    # the first. If yes, protect it.
+    if word[0] == '{' and word[-1] == '}':
+        return word
+
+    if any(char.isupper() for char in word[1:]) \
+            or word in _names:
+        return '{%s}' % word
+    return word
 
 
 def _translate_title(val):
@@ -72,14 +102,12 @@ def _translate_title(val):
     '''
     words = val.split()
     for k in range(len(words)):
-        # Check if the word has a capital letter in a position other than the
-        # first. If yes, protect it.
-        if any(char.isupper() for char in words[k][1:]) \
-                or words[k] in _names:
-            words[k] = '{%s}' % words[k]
-        elif k > 0 and words[k-1][-1] == ':':
+        if k > 0 and words[k-1][-1] == ':':
             # Algorithm 694: {A} collection...
             words[k] = '{%s}' % words[k].capitalize()
+
+    for k in range(len(words)):
+        words[k] = '-'.join([_translate_word(w) for w in words[k].split('-')])
 
     return ' '.join(words)
 
