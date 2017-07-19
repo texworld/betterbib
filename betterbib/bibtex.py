@@ -87,8 +87,13 @@ def _translate_word(word):
     if word[0] == '{' and word[-1] == '}':
         return word
 
-    if any(char.isupper() for char in word[1:]) \
-            or word in _names:
+    if any(char.isupper() for char in word[1:]):
+        return '{%s}' % word
+
+    if word in _names:
+        return '{%s}' % word
+
+    if len(word) > 2 and word[-2:] == '\'s' and word[:-2] in _names:
         return '{%s}' % word
     return word
 
