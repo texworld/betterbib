@@ -1,12 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-from __future__ import unicode_literals
-import betterbib
-from betterbib import pybtex_to_bibtex_string
-from io import open
+from __future__ import print_function, unicode_literals
 
 import collections
+from io import open as io_open
+
+# pylint: disable=import-self
+import betterbib
+from betterbib import pybtex_to_bibtex_string
+
 from pybtex.database.input import bibtex
 import pipdated
 from tqdm import tqdm
@@ -25,14 +28,12 @@ def _main():
     n = len(data.entries)
 
     sources = [betterbib.Crossref()]
-    source_names = ['crossref']
 
     print('Reading from: %s' % infile)
-    print('Saving to: %s' % args.outfile)
-    print
+    print('Saving to: %s\n' % args.outfile)
 
     # Open output file for writing.
-    out = open(args.outfile, mode='w', encoding='utf-8')
+    out = io_open(args.outfile, mode='w', encoding='utf-8')
 
     # Write header to the output file.
     out.write(
@@ -48,11 +49,11 @@ def _main():
 
     for bib_id, entry in tqdm(od.items()):
         result = None
-        for source, source_name in zip(sources, source_names):
+        for source in sources:
             # TODO don't make the sources throw when nothing has been found
             try:
                 result = source.find_unique(entry)
-            except RuntimeError as e:
+            except RuntimeError:
                 pass
             else:
                 num_success += 1
@@ -71,9 +72,7 @@ def _main():
         out.write(a + '\n\n')
 
     out.close()
-    print
-    print
-    print('Total number of entries: %d' % n)
+    print('\n\nTotal number of entries: %d' % n)
     print('Found: %d' % num_success)
 
     return
@@ -86,15 +85,15 @@ def _parse_cmd_arguments():
         'with information from online sources.'
         )
     parser.add_argument(
-            'infile',
-            type=str,
-            help='input BibTeX file'
-            )
+        'infile',
+        type=str,
+        help='input BibTeX file'
+        )
     parser.add_argument(
-            'outfile',
-            type=str,
-            help='output BibTeX file'
-            )
+        'outfile',
+        type=str,
+        help='output BibTeX file'
+        )
     return parser.parse_args()
 
 
