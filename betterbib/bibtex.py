@@ -48,6 +48,42 @@ def _translate_month(month):
     return month
 
 
+_names = [
+    'Arnoldi',
+    'Chebyshev',
+    'Krylov',
+    'Kutta'
+    'Magnus',
+    'Lanczos',
+    'Newton',
+    'Peano',
+    'Ritz',
+    'Runge',
+    'Sylvester',
+    ]
+
+
+def _translate_title(val):
+    '''The capitalization of BibTeX entries is handled by the style, so names
+    (Newton) or abbreviations (GMRES) may not be capitalized. This is unless
+    they are wrapped in curly brackets.
+    This function takes a raw title string as input and {}-protects those parts
+    whose capitalization should not change.
+    '''
+    words = val.split()
+    for k in range(len(words)):
+        # Check if the word has a capital letter in a position other than the
+        # first. If yes, protect it.
+        if any(char.isupper() for char in words[k][1:]) \
+                or words[k] in _names:
+            words[k] = '{%s}' % words[k]
+        elif k > 0 and words[k-1][-1] == ':':
+            # Algorithm 694: {A} collection...
+            words[k] = '{%s}' % words[k].capitalize()
+
+    return ' '.join(words)
+
+
 def pybtex_to_bibtex_string(entry, bibtex_key):
     '''String representation of BibTeX entry.
     '''
@@ -58,7 +94,9 @@ def pybtex_to_bibtex_string(entry, bibtex_key):
         content.append('%s = {%s}' % (key, persons_str))
     for field, value in entry.fields.iteritems():
         if field == 'month':
-            content.append('%s = %s' % (field, _translate_month(value)))
+            content.append('month = %s' % _translate_month(value))
+        elif field == 'title':
+            content.append('title = {%s}' % _translate_title(value))
         else:
             content.append('%s = {%s}' % (field, value))
     out += ',\n  '.join(content)
