@@ -16,7 +16,7 @@ the input BibTex
 ```
 @article {krylov,
   author = {Liesen and Gaul and Nabben},
-  title = {Deflation Krylov Augmented}
+  title = {Framework Deflation Krylov Augmented}
 }
 ```
 is converted into
@@ -25,13 +25,13 @@ is converted into
   author = {Gaul, André and Gutknecht, Martin H. and Liesen, Jörg and Nabben, Reinhard},
   publisher = {Society for Industrial & Applied Mathematics (SIAM)},
   doi = {10.1137/110820713},
-  title = {A Framework for Deflated and Augmented Krylov Subspace Methods},
+  title = {A Framework for Deflated and Augmented {Krylov} Subspace Methods},
   url = {http://dx.doi.org/10.1137/110820713},
-  journal = {SIAM. J. Matrix Anal. & Appl.},
+  journal = {SIAM Journal on Matrix Analysis and Applications},
   number = {2},
-  month = apr,
+  month = jan,
   volume = {34},
-  source = {CrossRef},
+  source = {Crossref},
   year = {2013},
   pages = {495-518}
 }
