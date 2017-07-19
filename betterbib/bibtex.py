@@ -108,31 +108,27 @@ def _translate_word(word):
     # Check if the word has a capital letter in a position other than
     # the first. If yes, protect it.
     if word[0] == '{' and word[-1] == '}':
-        return word
-
-    if any(char.isupper() for char in word[1:]):
-        return '{%s}' % word
-
-    # Einstein
-    if word in _names:
-        return '{%s}' % word
-
-    # Peano's
-    if len(word) > 2 and word[-2:] == '\'s' and word[:-2] in _names:
-        return '{%s}' % word
-
-    # Gaussian
-    if len(word) > 3 and word[-3:] == 'ian' and word[:-3] in _names:
-        return '{%s}' % word
-
-    # Laplacian
-    if len(word) > 3 and word[-3:] == 'ian' and word[:-3] + 'e' in _names:
-        return '{%s}' % word
-
-    # Jacobian
-    if len(word) > 3 and word[-3:] == 'ian' and word[:-2] in _names:
-        return '{%s}' % word
-    return word
+        out = word
+    elif any(char.isupper() for char in word[1:]):
+        out = '{%s}' % word
+    elif word in _names:
+        # Einstein
+        out = '{%s}' % word
+    elif len(word) > 2 and word[-2:] == '\'s' and word[:-2] in _names:
+        # Peano's
+        out = '{%s}' % word
+    elif len(word) > 3 and word[-3:] == 'ian' and word[:-3] in _names:
+        # Gaussian
+        out = '{%s}' % word
+    elif len(word) > 3 and word[-3:] == 'ian' and word[:-3] + 'e' in _names:
+        # Laplacian
+        out = '{%s}' % word
+    elif len(word) > 3 and word[-3:] == 'ian' and word[:-2] in _names:
+        # Jacobian
+        out = '{%s}' % word
+    else:
+        out = word
+    return out
 
 
 def _translate_title(val):
@@ -143,6 +139,7 @@ def _translate_title(val):
     whose capitalization should not change.
     '''
     words = val.split()
+    # pylint: disable=consider-using-enumerate
     for k in range(len(words)):
         if k > 0 and words[k-1][-1] == ':':
             # Algorithm 694: {A} collection...
