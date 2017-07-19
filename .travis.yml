@@ -20,7 +20,7 @@ install:
 script:
   # cd into test directory to make sure we're using the pip-installed
   # betterbib.
-  - pylint bibtex/
+  - pylint betterbib
   - pylint test/*.py
   - pylint tools/betterbib
   - pylint tools/bibitems2bibtex
