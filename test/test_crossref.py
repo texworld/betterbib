@@ -19,6 +19,28 @@ def _bibtex_equals(obj0, obj1):
     return True
 
 
+def _serialize_bibtex(obj):
+    string = ''''''
+    for person_type, persons in obj.persons.iteritems():
+        string += person_type + ': '
+        string += ', '.join(' '.join(
+            p.first_names +
+            p.middle_names +
+            p.prelast_names +
+            p.last_names +
+            p.lineage_names
+            ) for p in persons)
+        string += '.\n'
+
+    sorted_keys = sorted(obj.fields.keys())
+
+    string += '\n'.join(
+        '{}: {}'.format(key, obj.fields[key])
+        for key in sorted_keys
+        )
+    return string
+
+
 def test_crossref_article0():
 
     source = betterbib.Crossref()
@@ -52,7 +74,7 @@ def test_crossref_article0():
             'number': u'2',
             'month': 1,
             'volume': u'34',
-            'source': u'CrossRef',
+            'source': u'Crossref',
             'year': 2013,
             'pages': u'495-518'
             },
@@ -66,6 +88,9 @@ def test_crossref_article0():
             }))
 
     # Comparing the Entry object as a whole doesn't work, unfortunately.
+    # The two tests are almost redundant. The second is more accurate, the
+    # first shows errors more clearly.
+    assert _serialize_bibtex(bt) == _serialize_bibtex(reference)
     assert _bibtex_equals(bt, reference)
 
     # test string conversion
