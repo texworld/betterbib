@@ -36,14 +36,11 @@ def test_crossref_article0():
     test_entry = pybtex.database.Entry(
         'article',
         fields={
-            'title': 'A Framework for Deflated and Augmented ' +
-                     'Krylov Subspace Methods',
-            'year': '2013'
+            'title': 'Framework Deflation Krylov Augmented'
             },
         persons={'author': [
-            pybtex.database.Person('Gaul'),
             pybtex.database.Person('Liesen'),
-            pybtex.database.Person('Gutknecht'),
+            pybtex.database.Person('Gaul'),
             pybtex.database.Person('Nabben'),
             ]}
         )
