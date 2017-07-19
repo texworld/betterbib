@@ -7,28 +7,6 @@ import pybtex
 import pybtex.database
 
 
-def _serialize_bibtex(obj):
-    string = ''''''
-    for person_type, persons in obj.persons.iteritems():
-        string += person_type + ': '
-        string += ', '.join(' '.join(
-            p.first_names +
-            p.middle_names +
-            p.prelast_names +
-            p.last_names +
-            p.lineage_names
-            ) for p in persons)
-        string += '.\n'
-
-    sorted_keys = sorted(obj.fields.keys())
-
-    string += '\n'.join(
-        u'{}: {}'.format(key, obj.fields[key])
-        for key in sorted_keys
-        )
-    return string
-
-
 def test_crossref_article0():
 
     source = betterbib.Crossref()
@@ -72,18 +50,8 @@ def test_crossref_article0():
                 ]
             }))
 
-    # Comparing the Entry object as a whole doesn't work, unfortunately.
-    # The two tests are almost redundant. The second is more accurate, the
-    # first shows errors more clearly.
-    assert _serialize_bibtex(bt) == _serialize_bibtex(reference)
-
-    # test string conversion
-    betterbib.pybtex_to_bibtex_string(reference, 'ABC')
-    # No assertions here yet.
-    # What we'd like to do: Take the string, parse it back into a PybTeX entry,
-    # and make sure it's the original. This doesn't quite work yet since
-    # months are transposed from, e.g., 5, to "May" by PybTeX; see
-    # <https://bitbucket.org/pybtex-devs/pybtex/issues/84/handling-of-month-year-in-bibtex-entry>.
+    assert betterbib.pybtex_to_bibtex_string(bt, 'key') \
+        == betterbib.pybtex_to_bibtex_string(reference, 'key')
 
     return
 
@@ -145,8 +113,8 @@ def test_crossref_book0():
                 ]
             }))
 
-    # Comparing the Entry object as a whole doesn't work, unfortunately.
-    assert _serialize_bibtex(bt) == _serialize_bibtex(reference)
+    assert betterbib.pybtex_to_bibtex_string(bt, 'key') \
+        == betterbib.pybtex_to_bibtex_string(reference, 'key')
 
     return
 
@@ -186,8 +154,8 @@ def test_crossref_book1():
                 ]
             }))
 
-    # Comparing the Entry object as a whole doesn't work, unfortunately.
-    assert _serialize_bibtex(bt) == _serialize_bibtex(reference)
+    assert betterbib.pybtex_to_bibtex_string(bt, 'key') \
+        == betterbib.pybtex_to_bibtex_string(reference, 'key')
 
     return
 
@@ -224,8 +192,8 @@ def test_crossref_inbook0():
             }
         )
 
-    # Comparing the Entry object as a whole doesn't work, unfortunately.
-    assert _serialize_bibtex(bt) == _serialize_bibtex(reference)
+    assert betterbib.pybtex_to_bibtex_string(bt, 'key') \
+        == betterbib.pybtex_to_bibtex_string(reference, 'key')
 
     return
 
@@ -250,7 +218,7 @@ def test_crossref_incollection0():
     bt = source.find_unique(test_entry)
 
     reference = pybtex.database.Entry(
-        'inproceedings',
+        'incollection',
         fields={
             'publisher': 'Elsevier',
             'doi': u'10.1016/s1874-575x(02)80025-x',
@@ -272,8 +240,8 @@ def test_crossref_incollection0():
                 ]})
         )
 
-    # Comparing the Entry object as a whole doesn't work, unfortunately.
-    assert _serialize_bibtex(bt) == _serialize_bibtex(reference)
+    assert betterbib.pybtex_to_bibtex_string(bt, 'key') \
+        == betterbib.pybtex_to_bibtex_string(reference, 'key')
 
     return
 
@@ -311,8 +279,8 @@ def test_crossref_techreport0():
                 ]})
         )
 
-    # Comparing the Entry object as a whole doesn't work, unfortunately.
-    assert _serialize_bibtex(bt) == _serialize_bibtex(reference)
+    assert betterbib.pybtex_to_bibtex_string(bt, 'key') \
+        == betterbib.pybtex_to_bibtex_string(reference, 'key')
 
     return
 
@@ -348,8 +316,8 @@ def test_crossref_inproceedings0():
                 ]})
         )
 
-    # Comparing the Entry object as a whole doesn't work, unfortunately.
-    assert _serialize_bibtex(bt) == _serialize_bibtex(reference)
+    assert betterbib.pybtex_to_bibtex_string(bt, 'key') \
+        == betterbib.pybtex_to_bibtex_string(reference, 'key')
 
     return
 
@@ -381,8 +349,8 @@ def test_crossref_proceedings0():
             }
         )
 
-    # Comparing the Entry object as a whole doesn't work, unfortunately.
-    assert _serialize_bibtex(bt) == _serialize_bibtex(reference)
+    assert betterbib.pybtex_to_bibtex_string(bt, 'key') \
+        == betterbib.pybtex_to_bibtex_string(reference, 'key')
 
     return
 

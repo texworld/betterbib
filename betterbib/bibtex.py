@@ -159,7 +159,11 @@ def pybtex_to_bibtex_string(entry, bibtex_key):
     for key, persons in entry.persons.items():
         persons_str = ' and '.join([_get_person_str(p) for p in persons])
         content.append('%s = {%s}' % (key, persons_str))
-    for field, value in entry.fields.iteritems():
+
+    # Make sure the fields always come out in the same order
+    sorted_fields = sorted(entry.fields.keys())
+    for field in sorted_fields:
+        value = entry.fields[field]
         if field == 'month':
             content.append('month = %s' % _translate_month(value))
         elif field == 'title':
