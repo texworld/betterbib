@@ -53,6 +53,7 @@ setup(
         'Topic :: Utilities'
         ],
     scripts=[
-        'tools/betterbib'
+        'tools/betterbib',
+        'tools/doi2bibtex'
         ]
     )

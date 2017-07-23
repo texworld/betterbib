@@ -22,6 +22,7 @@ script:
   - pylint test/*.py
   - pylint tools/betterbib
   - pylint tools/bibitems2bibtex
+  - pylint tools/doi2bibtex
   # cd into test directory to make sure we're using the pip-installed
   # betterbib.
   - cd test && pytest --cov betterbib
