@@ -28,6 +28,7 @@ def test_crossref_article0():
         'article',
         fields={
             'doi': u'10.1137/110820713',
+            'issn': u'0895-4798, 1095-7162',
             'publisher':
                 u'Society for Industrial & Applied Mathematics (SIAM)',
             'title': u'A Framework for Deflated and Augmented ' +
@@ -222,6 +223,7 @@ def test_crossref_incollection0():
         fields={
             'publisher': 'Elsevier',
             'doi': u'10.1016/s1874-575x(02)80025-x',
+            'issn': u'1874-575X',
             'title': 'Numerical Continuation, and Computation of Normal Forms',
             'url': u'http://dx.doi.org/10.1016/s1874-575x(02)80025-x',
             'booktitle': 'Handbook of Dynamical Systems',
@@ -303,6 +305,7 @@ def test_crossref_inproceedings0():
         fields={
             'publisher': 'IEEE',
             'doi': u'10.1109/aero.2008.4526230',
+            'issn': u'1095-323X',
             'title': 'Global Warming is Unequivocal',
             'url': u'http://dx.doi.org/10.1109/aero.2008.4526230',
             'booktitle': '2008 IEEE Aerospace Conference',
@@ -355,5 +358,42 @@ def test_crossref_proceedings0():
     return
 
 
+def test_doi_only():
+    source = betterbib.Crossref()
+
+    bt = source.get_by_doi(u'10.1137/110820713')
+    reference = pybtex.database.Entry(
+        'article',
+        fields={
+            'doi': u'10.1137/110820713',
+            'issn': u'0895-4798, 1095-7162',
+            'publisher':
+                u'Society for Industrial & Applied Mathematics (SIAM)',
+            'title': u'A Framework for Deflated and Augmented ' +
+                     'Krylov Subspace Methods',
+            'url': u'http://dx.doi.org/10.1137/110820713',
+            'journal': u'SIAM Journal on Matrix Analysis and Applications',
+            'number': u'2',
+            'month': 1,
+            'volume': u'34',
+            'source': u'Crossref',
+            'year': 2013,
+            'pages': u'495-518'
+            },
+        persons=pybtex.database.OrderedCaseInsensitiveDict({
+            'author': [
+                pybtex.database.Person(u'Gaul, Andr\xe9'),
+                pybtex.database.Person(u'Gutknecht, Martin H.'),
+                pybtex.database.Person(u'Liesen, J\xf6rg'),
+                pybtex.database.Person(u'Nabben, Reinhard')
+                ]
+            }))
+
+    assert betterbib.pybtex_to_bibtex_string(bt, 'key') \
+        == betterbib.pybtex_to_bibtex_string(reference, 'key')
+
+    return
+
+
 if __name__ == '__main__':
-    test_crossref_article0()
+    test_doi_only()

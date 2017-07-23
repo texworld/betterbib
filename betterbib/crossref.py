@@ -5,6 +5,7 @@ import re
 from betterbib.bibtex import pybtex_to_dict, latex_to_unicode
 
 import pybtex
+import pybtex.database
 import requests
 
 
@@ -36,8 +37,8 @@ def _bibtex_to_crossref_type(bibtex_type):
 
 class Crossref(object):
     '''
-    Documentation of the CrossRef Search API:
-    <https://github.com/CrossRef/rest-api-doc/blob/master/rest_api.md>.
+    Documentation of the Crossref Search API:
+    <https://github.com/Crossref/rest-api-doc/blob/master/rest_api.md>.
     '''
 
     def __init__(self):
@@ -84,6 +85,14 @@ class Crossref(object):
             'report': 'techreport'
             }
         return _crossref_to_bibtex_type[crossref_type]
+
+    def get_by_doi(self, doi):
+        # https://api.crossref.org/works/10.1137/110820713
+        r = requests.get(self.api_url + '/' + doi)
+        assert r.ok
+        data = r.json()
+        result = data['message']
+        return self._crossref_to_pybtex(result)
 
     def find_unique(self, entry):
 
@@ -226,7 +235,7 @@ class Crossref(object):
         #   u'reference-count': 55,
         #   u'ISSN': [u'0895-4798', u'1095-7162'],
         #   u'member': u'http://id.crossref.org/member/351',
-        #   u'source': u'CrossRef',
+        #   u'source': u'Crossref',
         #   u'score': 3.3665228,
         #   u'deposited': {
         #     u'timestamp': 1372345787000,
@@ -346,16 +355,21 @@ class Crossref(object):
                 fields_dict['publisher'] = publisher
             if title:
                 fields_dict['title'] = title
-        elif bibtex_type == 'techreport':
+        else:
+            assert bibtex_type == 'techreport', \
+                'Unknown type \'{}\''.format(bibtex_type)
             if publisher:
                 fields_dict['institution'] = publisher
             if title:
                 fields_dict['title'] = title
-        else:
-            raise ValueError('Unknown type \'%s\'' % bibtex_type)
 
         try:
             fields_dict['volume'] = data['volume']
+        except KeyError:
+            pass
+
+        try:
+            fields_dict['issn'] = ', '.join(data['ISSN'])
         except KeyError:
             pass
 
