@@ -346,13 +346,13 @@ class Crossref(object):
                 fields_dict['publisher'] = publisher
             if title:
                 fields_dict['title'] = title
-        elif bibtex_type == 'techreport':
+        else:
+            assert bibtex_type == 'techreport', \
+                'Unknown type \'{}\''.format(bibtex_type)
             if publisher:
                 fields_dict['institution'] = publisher
             if title:
                 fields_dict['title'] = title
-        else:
-            raise ValueError('Unknown type \'%s\'' % bibtex_type)
 
         try:
             fields_dict['volume'] = data['volume']
