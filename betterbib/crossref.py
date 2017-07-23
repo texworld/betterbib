@@ -85,6 +85,14 @@ class Crossref(object):
             }
         return _crossref_to_bibtex_type[crossref_type]
 
+    def get_by_doi(self, doi):
+        # https://api.crossref.org/works/10.1137/110820713
+        r = requests.get(self.api_url + '/' + doi)
+        assert r.ok
+        data = r.json()
+        result = data['message']
+        return self._crossref_to_pybtex(result)
+
     def find_unique(self, entry):
 
         d = pybtex_to_dict(entry)
