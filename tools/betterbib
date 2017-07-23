@@ -11,14 +11,10 @@ import betterbib
 from betterbib import pybtex_to_bibtex_string
 
 from pybtex.database.input import bibtex
-import pipdated
 from tqdm import tqdm
 
 
 def _main():
-    if pipdated.needs_checking('betterbib'):
-        print(pipdated.check('betterbib', betterbib.__version__))
-
     args = _parse_cmd_arguments()
     infile = args.infile
 

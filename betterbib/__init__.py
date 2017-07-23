@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 #
+from __future__ import print_function
 from betterbib.bibtex import pybtex_to_dict, \
         pybtex_to_bibtex_string, \
         latex_to_unicode
@@ -12,8 +13,6 @@ from betterbib.__about__ import (
     __website__,
     )
 
-
-__all__ = [
-    'bibtex',
-    'crossref',
-    ]
+import pipdated
+if pipdated.needs_checking(__name__):
+    print(pipdated.check(__name__, __version__))
