@@ -28,6 +28,7 @@ def test_crossref_article0():
         'article',
         fields={
             'doi': u'10.1137/110820713',
+            'issn': u'0895-4798, 1095-7162',
             'publisher':
                 u'Society for Industrial & Applied Mathematics (SIAM)',
             'title': u'A Framework for Deflated and Augmented ' +
@@ -222,6 +223,7 @@ def test_crossref_incollection0():
         fields={
             'publisher': 'Elsevier',
             'doi': u'10.1016/s1874-575x(02)80025-x',
+            'issn': u'1874-575X',
             'title': 'Numerical Continuation, and Computation of Normal Forms',
             'url': u'http://dx.doi.org/10.1016/s1874-575x(02)80025-x',
             'booktitle': 'Handbook of Dynamical Systems',
@@ -303,6 +305,7 @@ def test_crossref_inproceedings0():
         fields={
             'publisher': 'IEEE',
             'doi': u'10.1109/aero.2008.4526230',
+            'issn': u'1095-323X',
             'title': 'Global Warming is Unequivocal',
             'url': u'http://dx.doi.org/10.1109/aero.2008.4526230',
             'booktitle': '2008 IEEE Aerospace Conference',
