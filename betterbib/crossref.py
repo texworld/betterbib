@@ -5,6 +5,7 @@ import re
 from betterbib.bibtex import pybtex_to_dict, latex_to_unicode
 
 import pybtex
+import pybtex.database
 import requests
 
 
