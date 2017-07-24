@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 #
 import betterbib
-import pytest
 
 import pybtex
 import pybtex.database
@@ -57,27 +56,29 @@ def test_crossref_article0():
     return
 
 
-def test_crossref_article1():
-    '''This entry has two very close matches.
-    '''
-    source = betterbib.Crossref()
-
-    test_entry = pybtex.database.Entry(
-        'article',
-        fields={
-            'title': 'A significance test for the lasso',
-            'doi': '10.1214/13-AOS1175'
-            },
-        persons={'author': [
-            pybtex.database.Person('Tibshirani')
-            ]}
-        )
-
-    with pytest.raises(RuntimeError):
-        # No unique match found!
-        source.find_unique(test_entry)
-
-    return
+# This test is unreliable.
+# def test_crossref_article1():
+#     '''This entry has two very close matches.
+#     '''
+#     source = betterbib.Crossref()
+#
+#     test_entry = pybtex.database.Entry(
+#         'article',
+#         fields={
+#             'title': 'A significance test for the lasso',
+#             'doi': '10.1214/13-AOS1175'
+#             },
+#         persons={'author': [
+#             pybtex.database.Person('Tibshirani')
+#             ]}
+#         )
+#
+#     import pytest
+#     with pytest.raises(RuntimeError):
+#         # No unique match found!
+#         source.find_unique(test_entry)
+#
+#     return
 
 
 def test_crossref_book0():
