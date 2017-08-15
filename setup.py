@@ -35,7 +35,7 @@ setup(
     license=about['__license__'],
     platforms='any',
     install_requires=[
-        'pipdated',
+        'pipdate',
         'pybtex >= 0.19.0',
         'pypandoc',
         'requests',
