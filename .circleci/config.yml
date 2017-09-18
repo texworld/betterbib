@@ -23,7 +23,7 @@ jobs:
       - run: pip2 install docutils pygments
       - run: python setup.py check -r -s
       # The tests
-      - run: cd test/ && MPLBACKEND=Agg pytest --cov betterbib
+      - run: cd test/ && MPLBACKEND=Agg pytest --maxfail=1 --cov betterbib
       # submit to codecov
       - run: apt-get install -y curl
       - run: bash <(curl -s https://codecov.io/bash)
