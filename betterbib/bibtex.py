@@ -27,24 +27,21 @@ def pybtex_to_dict(entry):
     return d
 
 
-def _translate_month(month):
+def _translate_month(key):
     '''The month value can take weird forms. Sometimes, it's given as an int,
     sometimes as a string representing an int, and sometimes the name of the
     month is spelled out. Try to handle most of this here.
     '''
+    months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul',
+              'aug', 'sep', 'oct', 'nov', 'dec']
     try:
-        index_to_month = {
-            1: 'jan', 2: 'feb', 3: 'mar', 4: 'apr', 5: 'may', 6: 'jun',
-            7: 'jul', 8: 'aug', 9: 'sep', 10: 'oct', 11: 'nov', 12: 'dec'
-            }
-        return index_to_month[int(month)]
-    except ValueError:
-        # ValueError: invalid literal for int() with base 10: 'Nov'
+        return months[key-1]
+    except TypeError:
+        # TypeError: unsupported operand type(s) for -: 'str' and 'int'
         pass
 
-    month = month[:3].lower()
-    assert(month in ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul',
-                     'aug', 'sep', 'oct', 'nov', 'dec'])
+    month = key[:3].lower()
+    assert month in months
     return month
 
 
