@@ -3,6 +3,7 @@
 #
 from __future__ import print_function, unicode_literals
 
+import argparse
 import collections
 from io import open as io_open
 
@@ -23,7 +24,7 @@ def _main():
 
     n = len(data.entries)
 
-    sources = [betterbib.Crossref()]
+    sources = [betterbib.Crossref(args.long_journal_name)]
 
     print('Reading from: %s' % infile)
     print('Saving to: %s\n' % args.outfile)
@@ -75,7 +76,6 @@ def _main():
 
 
 def _parse_cmd_arguments():
-    import argparse
     parser = argparse.ArgumentParser(
         description='Improve BibTeX libraries '
         'with information from online sources.'
@@ -89,6 +89,11 @@ def _parse_cmd_arguments():
         'outfile',
         type=str,
         help='output BibTeX file'
+        )
+    parser.add_argument(
+        '--long-journal-name', '-l',
+        action='store_true',
+        help='prefer long journal names (default: false)'
         )
     return parser.parse_args()
 

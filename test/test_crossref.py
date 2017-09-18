@@ -33,7 +33,8 @@ def test_crossref_article0():
             'title': u'A Framework for Deflated and Augmented ' +
                      'Krylov Subspace Methods',
             'url': u'http://dx.doi.org/10.1137/110820713',
-            'journal': u'SIAM Journal on Matrix Analysis and Applications',
+            # 'journal': u'SIAM Journal on Matrix Analysis and Applications',
+            'journal': u'SIAM. J. Matrix Anal. & Appl.',
             'number': u'2',
             'month': 1,
             'volume': u'34',
@@ -360,7 +361,7 @@ def test_crossref_proceedings0():
 
 
 def test_doi_only():
-    source = betterbib.Crossref()
+    source = betterbib.Crossref(prefer_long_journal_name=True)
 
     bt = source.get_by_doi(u'10.1137/110820713')
     reference = pybtex.database.Entry(
@@ -373,6 +374,7 @@ def test_doi_only():
             'title': u'A Framework for Deflated and Augmented ' +
                      'Krylov Subspace Methods',
             'url': u'http://dx.doi.org/10.1137/110820713',
+            # 'journal': u'SIAM. J. Matrix Anal. & Appl.',
             'journal': u'SIAM Journal on Matrix Analysis and Applications',
             'number': u'2',
             'month': 1,

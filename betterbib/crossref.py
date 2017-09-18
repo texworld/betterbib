@@ -10,17 +10,15 @@ import requests
 
 
 def _bibtex_to_crossref_type(bibtex_type):
-    if bibtex_type in [
-            'booklet',
-            'conference',
-            'manual',
-            'mastersthesis',
-            'online',
-            'phdthesis',
-            'unpublished']:
-        raise RuntimeError(
-            'Crossref doesn''t contain %s data' % bibtex_type
-            )
+    assert bibtex_type not in [
+        'booklet',
+        'conference',
+        'manual',
+        'mastersthesis',
+        'online',
+        'phdthesis',
+        'unpublished'
+        ], 'Crossref doesn''t provide {} data'.format(bibtex_type)
 
     _bibtex_to_crossref_map = {
         'article': ['journal-article'],
@@ -41,8 +39,9 @@ class Crossref(object):
     <https://github.com/Crossref/rest-api-doc/blob/master/rest_api.md>.
     '''
 
-    def __init__(self):
+    def __init__(self, prefer_long_journal_name=False):
         self.api_url = 'https://api.crossref.org/works'
+        self.prefer_long_journal_name = prefer_long_journal_name
         return
 
     def _crossref_to_bibtex_type(self, entry):
@@ -181,38 +180,39 @@ class Crossref(object):
         # As a heuristic, assume that the top result is the unique answer if
         # its score is at least 1.5 times the score of the the second-best
         # result.
-        if len(results) > 1:
-            if results[0]['score'] > 1.5 * results[1]['score']:
-                return self._crossref_to_pybtex(results[0])
+        assert len(results) > 1, 'No match'
 
-            # If that doesn't work, check if the DOI matches exactly with the
-            # input.
-            if 'doi' in d:
-                for result in results:
-                    if result['DOI'].lower() == d['doi'].lower():
-                        return self._crossref_to_pybtex(result)
+        if results[0]['score'] > 1.5 * results[1]['score']:
+            return self._crossref_to_pybtex(results[0])
 
-            # If that doesn't work, check if the title appears in the input.
-            if 'title' in d:
-                for result in results:
-                    if result['title'] and \
-                            result['title'][0].lower() in d['title'].lower():
-                        return self._crossref_to_pybtex(result)
+        # If that doesn't work, check if the DOI matches exactly with the
+        # input.
+        if 'doi' in d:
+            for result in results:
+                if result['DOI'].lower() == d['doi'].lower():
+                    return self._crossref_to_pybtex(result)
 
-            # If that doesn't work, check if the page range matches exactly
-            # with the input.
-            if 'pages' in d:
-                for result in results:
-                    if 'page' in result and result['page'] == d['pages']:
-                        return self._crossref_to_pybtex(result)
+        # If that doesn't work, check if the title appears in the input.
+        if 'title' in d:
+            for result in results:
+                if result['title'] and \
+                        result['title'][0].lower() in d['title'].lower():
+                    return self._crossref_to_pybtex(result)
 
-            # If that doesn't work, check if the second entry is a JSTOR copy
-            # of the original article -- yes, that happens --, and take the
-            # first one.
-            if results[1]['publisher'] == 'JSTOR' and \
-                    results[0]['title'][0].lower() == \
-                    results[1]['title'][0].lower():
-                return self._crossref_to_pybtex(results[0])
+        # If that doesn't work, check if the page range matches exactly
+        # with the input.
+        if 'pages' in d:
+            for result in results:
+                if 'page' in result and result['page'] == d['pages']:
+                    return self._crossref_to_pybtex(result)
+
+        # If that doesn't work, check if the second entry is a JSTOR copy
+        # of the original article -- yes, that happens --, and take the
+        # first one.
+        if results[1]['publisher'] == 'JSTOR' and \
+                results[0]['title'][0].lower() == \
+                results[1]['title'][0].lower():
+            return self._crossref_to_pybtex(results[0])
 
         raise RuntimeError('Could not find a positively unique match.')
 
@@ -295,16 +295,14 @@ class Crossref(object):
         except KeyError:
             pass
 
-        try:
-            # Take the first container names.
-            # This is typically the abbreviated journal name in case of a
-            # journal, and the full book title in case of a book.
-            if data['container-title']:
-                container_title = data['container-title'][0]
-            else:
-                container_title = None
-        except (KeyError, ValueError):
-            container_title = None
+        container_title = None
+        keys = ['short-container-title', 'container-title']
+        if self.prefer_long_journal_name:
+            keys = reversed(keys)
+        for key in keys:
+            if key in data and data[key]:
+                container_title = data[key][0]
+                break
 
         try:
             title = data['title'][0]
