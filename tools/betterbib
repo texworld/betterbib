@@ -91,9 +91,10 @@ def _parse_cmd_arguments():
         help='output BibTeX file'
         )
     parser.add_argument(
-            '--long-journal-name', '-l',
-            action='store_true'
-            )
+        '--long-journal-name', '-l',
+        action='store_true',
+        help='prefer long journal names (default: false)'
+        )
     return parser.parse_args()
 
 
