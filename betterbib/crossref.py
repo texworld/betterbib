@@ -11,14 +11,14 @@ import requests
 
 def _bibtex_to_crossref_type(bibtex_type):
     assert bibtex_type not in [
-            'booklet',
-            'conference',
-            'manual',
-            'mastersthesis',
-            'online',
-            'phdthesis',
-            'unpublished'
-            ], 'Crossref doesn''t provide {} data'.format(bibtex_type)
+        'booklet',
+        'conference',
+        'manual',
+        'mastersthesis',
+        'online',
+        'phdthesis',
+        'unpublished'
+        ], 'Crossref doesn''t provide {} data'.format(bibtex_type)
 
     _bibtex_to_crossref_map = {
         'article': ['journal-article'],
@@ -39,8 +39,9 @@ class Crossref(object):
     <https://github.com/Crossref/rest-api-doc/blob/master/rest_api.md>.
     '''
 
-    def __init__(self):
+    def __init__(self, prefer_long_journal_name=False):
         self.api_url = 'https://api.crossref.org/works'
+        self.prefer_long_journal_name = prefer_long_journal_name
         return
 
     def _crossref_to_bibtex_type(self, entry):
@@ -294,16 +295,14 @@ class Crossref(object):
         except KeyError:
             pass
 
-        try:
-            # Take the first container names.
-            # This is typically the abbreviated journal name in case of a
-            # journal, and the full book title in case of a book.
-            if data['container-title']:
-                container_title = data['container-title'][0]
-            else:
-                container_title = None
-        except (KeyError, ValueError):
-            container_title = None
+        container_title = None
+        keys = ['short-container-title', 'container-title']
+        if self.prefer_long_journal_name:
+            keys = reversed(keys)
+        for key in keys:
+            if key in data and data[key]:
+                container_title = data[key][0]
+                break
 
         try:
             title = data['title'][0]
