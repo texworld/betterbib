@@ -19,7 +19,7 @@ jobs:
       - run: pylint betterbib/
       - run: pylint test/*.py
       # make sure that rst converts correctly
-      - run: pandoc /tmp/README.md -o README.rst
+      - run: pandoc README.md -o README.rst
       - run: pip2 install docutils pygments
       - run: python setup.py check -r -s
       # The tests
