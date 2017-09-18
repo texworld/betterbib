@@ -27,7 +27,7 @@ is converted into
   doi = {10.1137/110820713},
   title = {A Framework for Deflated and Augmented {Krylov} Subspace Methods},
   url = {http://dx.doi.org/10.1137/110820713},
-  journal = {SIAM Journal on Matrix Analysis and Applications},
+  journal = {SIAM J. Matrix Anal. & Appl.},
   number = {2},
   month = jan,
   volume = {34},
@@ -36,6 +36,7 @@ is converted into
   pages = {495-518}
 }
 ```
+(If you prefer long journal names, add the option `--long-journal-name`/`-l`.)
 
 BetterBib fetches data from [Crossref](http://www.crossref.org/).
 
