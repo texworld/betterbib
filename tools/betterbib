@@ -39,8 +39,12 @@ def _main():
         )
 
     # Use an ordered dictionary to make sure that the entries are written out
-    # sorted by their BibTeX key.
-    od = collections.OrderedDict(sorted(data.entries.items()))
+    # sorted by their BibTeX key if
+    od = (
+        collections.OrderedDict(sorted(data.entries.items()))
+        if args.sort_by_bibkey
+        else data.entries
+        )
 
     num_success = 0
 
@@ -94,6 +98,11 @@ def _parse_cmd_arguments():
         '--long-journal-name', '-l',
         action='store_true',
         help='prefer long journal names (default: false)'
+        )
+    parser.add_argument(
+        '--sort-by-bibkey', '-s',
+        action='store_true',
+        help='sort entries by BibTeX key (default: false)'
         )
     return parser.parse_args()
 
