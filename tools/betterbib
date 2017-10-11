@@ -6,6 +6,7 @@ from __future__ import print_function, unicode_literals
 import argparse
 import collections
 from io import open as io_open
+import sys
 
 # pylint: disable=import-self
 import betterbib
@@ -103,6 +104,14 @@ def _parse_cmd_arguments():
         '--sort-by-bibkey', '-s',
         action='store_true',
         help='sort entries by BibTeX key (default: false)'
+        )
+    parser.add_argument(
+        '--version', '-v',
+        help='display version information',
+        action='version',
+        version='%(prog)s {}, Python {}'.format(
+            betterbib.__version__, sys.version
+            )
         )
     return parser.parse_args()
 
