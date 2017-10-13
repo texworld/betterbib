@@ -104,7 +104,9 @@ _names = [
 def _translate_word(word):
     # Check if the word has a capital letter in a position other than
     # the first. If yes, protect it.
-    if word[0] == '{' and word[-1] == '}':
+    if not word:
+        out = word
+    elif word[0] == '{' and word[-1] == '}':
         out = word
     elif any(char.isupper() for char in word[1:]):
         out = '{%s}' % word
