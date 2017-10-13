@@ -54,7 +54,10 @@ def _main():
         for source in sources:
             try:
                 result = source.find_unique(entry)
-            except betterbib.crossref.UniqueError:
+            except (
+                    betterbib.crossref.UniqueError,
+                    betterbib.crossref.HttpError,
+                    ):
                 pass
             else:
                 num_success += 1

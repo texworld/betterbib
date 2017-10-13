@@ -13,6 +13,10 @@ class UniqueError(Exception):
     pass
 
 
+class HttpError(Exception):
+    pass
+
+
 def _bibtex_to_crossref_type(bibtex_type):
     assert bibtex_type not in [
         'booklet',
@@ -170,7 +174,8 @@ class Crossref(object):
             }
 
         r = requests.get(self.api_url, params=params)
-        assert r.ok
+        if not r.ok:
+            raise HttpError('Failed request to {}'.format(self.api_url))
 
         data = r.json()
 
