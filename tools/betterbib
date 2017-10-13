@@ -55,7 +55,7 @@ def _main():
             # TODO don't make the sources throw when nothing has been found
             try:
                 result = source.find_unique(entry)
-            except RuntimeError:
+            except betterbib.crossref.UniqueError:
                 pass
             else:
                 num_success += 1
