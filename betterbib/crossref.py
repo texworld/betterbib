@@ -175,13 +175,13 @@ class Crossref(object):
         if len(results) == 1:
             return self._crossref_to_pybtex(results[0])
 
+        assert len(results) > 1, 'No match'
+
         # Q: How to we find the correct solution if there's more than one
         #    search result?
         # As a heuristic, assume that the top result is the unique answer if
         # its score is at least 1.5 times the score of the the second-best
         # result.
-        assert len(results) > 1, 'No match'
-
         if results[0]['score'] > 1.5 * results[1]['score']:
             return self._crossref_to_pybtex(results[0])
 
@@ -195,7 +195,7 @@ class Crossref(object):
         # If that doesn't work, check if the title appears in the input.
         if 'title' in d:
             for result in results:
-                if result['title'] and \
+                if 'title' in result and result['title'] and \
                         result['title'][0].lower() in d['title'].lower():
                     return self._crossref_to_pybtex(result)
 
