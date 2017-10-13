@@ -388,8 +388,8 @@ class Crossref(object):
         try:
             persons = {'author': [
                 pybtex.database.Person(u'{}, {}'.format(
-                    au['family'], au['given'])
-                    )
+                    au['family'], au['given']
+                    ))
                 for au in data['author']
                 ]}
         except KeyError:

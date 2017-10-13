@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 #
-import pypandoc
 import re
+
+import pypandoc
 
 
 def latex_to_unicode(latex_string):
@@ -171,8 +172,8 @@ def pybtex_to_bibtex_string(entry, bibtex_key, bracket_delimeters=True):
             content.append('month = {}'.format(_translate_month(value)))
         elif field == 'title':
             content.append(u'title = {}{}{}'.format(
-                left, _translate_title(value), right)
-                )
+                left, _translate_title(value), right
+                ))
         else:
             content.append(u'{} = {}{}{}'.format(field, left, value, right))
 
@@ -186,7 +187,7 @@ def sanitize_doi_url(entry):
     '''See if the entry contains a DOI url and convert it to the new form
     https://doi.org/<DOI>.
     '''
-    m = re.match('https?://(?:dx\.)?doi\.org/(.*)', entry.fields['url'])
+    m = re.match('https?://(?:dx\\.)?doi\\.org/(.*)', entry.fields['url'])
     if m:
         entry.fields['url'] = 'https://doi.org/{}'.format(m.group(1))
     return entry
