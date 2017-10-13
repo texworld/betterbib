@@ -35,7 +35,7 @@ def _main():
 
     # Write header to the output file.
     out.write(
-        '%%comment{This file was created with BetterBib v%s.}\n\n' %
+        '%%comment{This file was created with betterbib v%s.}\n\n' %
         betterbib.__version__
         )
 
