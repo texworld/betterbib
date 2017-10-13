@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 #
+from __future__ import print_function
+
 import re
 
 import pypandoc
@@ -157,6 +159,7 @@ def _translate_title(val):
     return ' '.join(words)
 
 
+# pylint: disable=too-many-locals
 def pybtex_to_bibtex_string(entry, bibtex_key, bracket_delimeters=True):
     '''String representation of BibTeX entry.
     '''

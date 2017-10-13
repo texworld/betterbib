@@ -187,7 +187,7 @@ class Crossref(object):
 
         results = data['message']['items']
 
-        if len(results) == 0:
+        if not results:
             raise NotFoundError('No match')
 
         if len(results) == 1:
