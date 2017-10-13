@@ -163,7 +163,7 @@ class Crossref(object):
         params = {
             'query': payload,
             'filter': ','.join(
-                'type:%s' % tp
+                'type:{}'.format(tp)
                 for tp in _bibtex_to_crossref_type(entry.type)
                 ),
             'rows': 2  # max number of results
@@ -387,7 +387,9 @@ class Crossref(object):
 
         try:
             persons = {'author': [
-                pybtex.database.Person('%s, %s' % (au['family'], au['given']))
+                pybtex.database.Person(u'{}, {}'.format(
+                    au['family'], au['given'])
+                    )
                 for au in data['author']
                 ]}
         except KeyError:

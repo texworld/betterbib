@@ -109,22 +109,22 @@ def _translate_word(word):
     elif word[0] == '{' and word[-1] == '}':
         out = word
     elif any(char.isupper() for char in word[1:]):
-        out = '{%s}' % word
+        out = '{' + word + '}'
     elif word in _names:
         # Einstein
-        out = '{%s}' % word
+        out = '{' + word + '}'
     elif len(word) > 2 and word[-2:] == '\'s' and word[:-2] in _names:
         # Peano's
-        out = '{%s}' % word
+        out = '{' + word + '}'
     elif len(word) > 3 and word[-3:] == 'ian' and word[:-3] in _names:
         # Gaussian
-        out = '{%s}' % word
+        out = '{' + word + '}'
     elif len(word) > 3 and word[-3:] == 'ian' and word[:-3] + 'e' in _names:
         # Laplacian
-        out = '{%s}' % word
+        out = '{' + word + '}'
     elif len(word) > 3 and word[-3:] == 'ian' and word[:-2] in _names:
         # Jacobian
-        out = '{%s}' % word
+        out = '{' + word + '}'
     else:
         out = word
     return out
@@ -142,7 +142,7 @@ def _translate_title(val):
     for k in range(len(words)):
         if k > 0 and words[k-1][-1] == ':':
             # Algorithm 694: {A} collection...
-            words[k] = '{%s}' % words[k].capitalize()
+            words[k] = '{' + words[k].capitalize() + '}'
 
     for k in range(len(words)):
         words[k] = '-'.join([_translate_word(w) for w in words[k].split('-')])
@@ -153,14 +153,14 @@ def _translate_title(val):
 def pybtex_to_bibtex_string(entry, bibtex_key, bracket_delimeters=True):
     '''String representation of BibTeX entry.
     '''
-    out = '@%s{%s,\n ' % (entry.type, bibtex_key)
+    out = '@{}{{{},\n '.format(entry.type, bibtex_key)
     content = []
 
     left, right = ['{', '}'] if bracket_delimeters else ['"', '"']
 
     for key, persons in entry.persons.items():
         persons_str = ' and '.join([_get_person_str(p) for p in persons])
-        content.append('{} = {}{}{}'.format(key, left, persons_str, right))
+        content.append(u'{} = {}{}{}'.format(key, left, persons_str, right))
 
     # Make sure the fields always come out in the same order
     sorted_fields = sorted(entry.fields.keys())
@@ -169,11 +169,11 @@ def pybtex_to_bibtex_string(entry, bibtex_key, bracket_delimeters=True):
         if field == 'month':
             content.append('month = {}'.format(_translate_month(value)))
         elif field == 'title':
-            content.append('title = {}{}{}'.format(
+            content.append(u'title = {}{}{}'.format(
                 left, _translate_title(value), right)
                 )
         else:
-            content.append('{} = {}{}{}'.format(field, left, value, right))
+            content.append(u'{} = {}{}{}'.format(field, left, value, right))
 
     # Make sure that every line ends with a comma
     out += ' '.join([line + ',\n' for line in content])

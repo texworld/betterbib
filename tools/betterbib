@@ -27,8 +27,8 @@ def _main():
 
     sources = [betterbib.Crossref(args.long_journal_name)]
 
-    print('Reading from: %s' % infile)
-    print('Saving to: %s\n' % args.outfile)
+    print('Reading from: {}'.format(infile))
+    print('Saving to: {}\n'.format(args.outfile))
 
     # Open output file for writing.
     out = io_open(args.outfile, mode='w', encoding='utf-8')
@@ -78,8 +78,8 @@ def _main():
         out.write(a + '\n\n')
 
     out.close()
-    print('\n\nTotal number of entries: %d' % n)
-    print('Found: %d' % num_success)
+    print('\n\nTotal number of entries: {}'.format(n))
+    print('Found: {}'.format(num_success))
 
     return
 
