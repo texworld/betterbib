@@ -153,7 +153,7 @@ def _translate_title(val):
 def pybtex_to_bibtex_string(entry, bibtex_key, bracket_delimeters=True):
     '''String representation of BibTeX entry.
     '''
-    out = '@%s{%s,\n  ' % (entry.type, bibtex_key)
+    out = '@%s{%s,\n ' % (entry.type, bibtex_key)
     content = []
 
     left, right = ['{', '}'] if bracket_delimeters else ['"', '"']
@@ -174,8 +174,10 @@ def pybtex_to_bibtex_string(entry, bibtex_key, bracket_delimeters=True):
                 )
         else:
             content.append('{} = {}{}{}'.format(field, left, value, right))
-    out += ',\n  '.join(content)
-    out += '\n}'
+
+    # Make sure that every line ends with a comma
+    out += ' '.join([line + ',\n' for line in content])
+    out += '}'
     return out
 
 
