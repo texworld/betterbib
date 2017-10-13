@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 #
+from __future__ import print_function
+
 import re
 
 import pypandoc
@@ -43,7 +45,12 @@ def _translate_month(key):
         pass
 
     month = key[:3].lower()
-    assert month in months
+
+    # Month values like '????' appear -- skip them
+    if month not in months:
+        print('Unknown month value \'{}\'. Skipping.'.format(key))
+        return None
+
     return month
 
 
@@ -152,6 +159,7 @@ def _translate_title(val):
     return ' '.join(words)
 
 
+# pylint: disable=too-many-locals
 def pybtex_to_bibtex_string(entry, bibtex_key, bracket_delimeters=True):
     '''String representation of BibTeX entry.
     '''
@@ -169,7 +177,9 @@ def pybtex_to_bibtex_string(entry, bibtex_key, bracket_delimeters=True):
     for field in sorted_fields:
         value = entry.fields[field]
         if field == 'month':
-            content.append('month = {}'.format(_translate_month(value)))
+            month_string = _translate_month(value)
+            if month_string:
+                content.append('month = {}'.format(month_string))
         elif field == 'title':
             content.append(u'title = {}{}{}'.format(
                 left, _translate_title(value), right
@@ -187,9 +197,10 @@ def sanitize_doi_url(entry):
     '''See if the entry contains a DOI url and convert it to the new form
     https://doi.org/<DOI>.
     '''
-    m = re.match('https?://(?:dx\\.)?doi\\.org/(.*)', entry.fields['url'])
-    if m:
-        entry.fields['url'] = 'https://doi.org/{}'.format(m.group(1))
+    if 'url' in entry.fields:
+        m = re.match('https?://(?:dx\\.)?doi\\.org/(.*)', entry.fields['url'])
+        if m:
+            entry.fields['url'] = 'https://doi.org/{}'.format(m.group(1))
     return entry
 
 

@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 #
+from __future__ import print_function
+
 import re
 
 from betterbib.bibtex import pybtex_to_dict, latex_to_unicode
@@ -9,7 +11,15 @@ import pybtex.database
 import requests
 
 
+class NotFoundError(Exception):
+    pass
+
+
 class UniqueError(Exception):
+    pass
+
+
+class HttpError(Exception):
     pass
 
 
@@ -170,16 +180,18 @@ class Crossref(object):
             }
 
         r = requests.get(self.api_url, params=params)
-        assert r.ok
+        if not r.ok:
+            raise HttpError('Failed request to {}'.format(self.api_url))
 
         data = r.json()
 
         results = data['message']['items']
 
+        if not results:
+            raise NotFoundError('No match')
+
         if len(results) == 1:
             return self._crossref_to_pybtex(results[0])
-
-        assert len(results) > 1, 'No match'
 
         # Q: How to we find the correct solution if there's more than one
         #    search result?

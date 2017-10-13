@@ -16,6 +16,7 @@ from pybtex.database.input import bibtex
 from tqdm import tqdm
 
 
+# pylint: disable=too-many-locals
 def _main():
     args = _parse_cmd_arguments()
     infile = args.infile
@@ -54,8 +55,11 @@ def _main():
         for source in sources:
             try:
                 result = source.find_unique(entry)
-            except betterbib.crossref.UniqueError:
+            except (betterbib.crossref.NotFoundError,
+                    betterbib.crossref.UniqueError):
                 pass
+            except betterbib.crossref.HttpError as e:
+                print(e.args[0])
             else:
                 num_success += 1
                 break
