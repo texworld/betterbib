@@ -60,9 +60,10 @@ def _main():
                 num_success += 1
                 break
 
+        d = betterbib.bibtex.sanitize_doi_url(result if result else entry)
+
         a = pybtex_to_bibtex_string(
-            result if result else entry,
-            bib_id, bracket_delimeters=not args.quote_delimeters
+            d, bib_id, bracket_delimeters=not args.quote_delimeters
             )
 
         if not result:

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 import pypandoc
+import re
 
 
 def latex_to_unicode(latex_string):
@@ -179,6 +180,16 @@ def pybtex_to_bibtex_string(entry, bibtex_key, bracket_delimeters=True):
     out += ' '.join([line + ',\n' for line in content])
     out += '}'
     return out
+
+
+def sanitize_doi_url(entry):
+    '''See if the entry contains a DOI url and convert it to the new form
+    https://doi.org/<DOI>.
+    '''
+    m = re.match('https?://(?:dx\.)?doi\.org/(.*)', entry.fields['url'])
+    if m:
+        entry.fields['url'] = 'https://doi.org/{}'.format(m.group(1))
+    return entry
 
 
 def _get_person_str(p):
