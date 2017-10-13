@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 #
+from __future__ import print_function
+
 import re
 
 from betterbib.bibtex import pybtex_to_dict, latex_to_unicode
@@ -175,7 +177,9 @@ class Crossref(object):
 
         r = requests.get(self.api_url, params=params)
         if not r.ok:
-            raise HttpError('Failed request to {}'.format(self.api_url))
+            msg = 'Failed request to {}'.format(self.api_url)
+            print(msg)
+            raise HttpError(msg)
 
         data = r.json()
 
