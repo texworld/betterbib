@@ -150,25 +150,30 @@ def _translate_title(val):
     return ' '.join(words)
 
 
-def pybtex_to_bibtex_string(entry, bibtex_key):
+def pybtex_to_bibtex_string(entry, bibtex_key, bracket_delimeters=True):
     '''String representation of BibTeX entry.
     '''
     out = '@%s{%s,\n  ' % (entry.type, bibtex_key)
     content = []
+
+    left, right = ['{', '}'] if bracket_delimeters else ['"', '"']
+
     for key, persons in entry.persons.items():
         persons_str = ' and '.join([_get_person_str(p) for p in persons])
-        content.append('%s = {%s}' % (key, persons_str))
+        content.append('{} = {}{}{}'.format(key, left, persons_str, right))
 
     # Make sure the fields always come out in the same order
     sorted_fields = sorted(entry.fields.keys())
     for field in sorted_fields:
         value = entry.fields[field]
         if field == 'month':
-            content.append('month = %s' % _translate_month(value))
+            content.append('month = {}'.format(_translate_month(value)))
         elif field == 'title':
-            content.append('title = {%s}' % _translate_title(value))
+            content.append('title = {}{}{}'.format(
+                left, _translate_title(value), right)
+                )
         else:
-            content.append('%s = {%s}' % (field, value))
+            content.append('{} = {}{}{}'.format(field, left, value, right))
     out += ',\n  '.join(content)
     out += '\n}'
     return out

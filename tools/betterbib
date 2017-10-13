@@ -63,10 +63,14 @@ def _main():
 
         if result:
             # Found; write it out to a file.
-            a = pybtex_to_bibtex_string(result, bib_id)
+            a = pybtex_to_bibtex_string(
+                result, bib_id, bracket_delimeters=not args.quote_delimeters
+                )
         else:
             # Nothing found; write out the old entry to file.
-            a = pybtex_to_bibtex_string(entry, bib_id)
+            a = pybtex_to_bibtex_string(
+                entry, bib_id, bracket_delimeters=not args.quote_delimeters
+                )
             out.write(
                 '%comment{Error when fetching the following entry.}\n'
                 )
@@ -99,6 +103,11 @@ def _parse_cmd_arguments():
         '--long-journal-name', '-l',
         action='store_true',
         help='prefer long journal names (default: false)'
+        )
+    parser.add_argument(
+        '--quote-delimeters', '-d',
+        action='store_true',
+        help='use quote delimeters in output file (default: curly brackets)',
         )
     parser.add_argument(
         '--sort-by-bibkey', '-s',
