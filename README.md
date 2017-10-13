@@ -50,13 +50,10 @@ All BetterBib command-line options are explained in `betterbib -h`.
 BetterBib is [available from the Python Package
 Index](https://pypi.python.org/pypi/betterbib/), so simply type
 ```
-pip install betterbib
+pip install -U betterbib
 ```
-to install or
-```
-pip install betterbib -U
-```
-to upgrade.
+to install or upgrade. Use `sudo -H` to install as root or the `--user` option
+of `pip` to install in `$HOME`.
 
 #### Manual installation
 
