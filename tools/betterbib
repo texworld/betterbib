@@ -52,7 +52,6 @@ def _main():
     for bib_id, entry in tqdm(od.items()):
         result = None
         for source in sources:
-            # TODO don't make the sources throw when nothing has been found
             try:
                 result = source.find_unique(entry)
             except betterbib.crossref.UniqueError:
@@ -61,16 +60,12 @@ def _main():
                 num_success += 1
                 break
 
-        if result:
-            # Found; write it out to a file.
-            a = pybtex_to_bibtex_string(
-                result, bib_id, bracket_delimeters=not args.quote_delimeters
-                )
-        else:
-            # Nothing found; write out the old entry to file.
-            a = pybtex_to_bibtex_string(
-                entry, bib_id, bracket_delimeters=not args.quote_delimeters
-                )
+        a = pybtex_to_bibtex_string(
+            result if result else entry,
+            bib_id, bracket_delimeters=not args.quote_delimeters
+            )
+
+        if not result:
             out.write(
                 '%comment{Error when fetching the following entry.}\n'
                 )
