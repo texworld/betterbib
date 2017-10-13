@@ -13,7 +13,7 @@ correcting whatever entries are found faulty. For example, with
 ```
 $ betterbib in.bib out.bib
 ```
-the input BibTex
+the input BibTeX
 ```
 @article {krylov,
   author = {Liesen and Gaul and Nabben},
@@ -27,7 +27,7 @@ is converted into
   publisher = {Society for Industrial & Applied Mathematics (SIAM)},
   doi = {10.1137/110820713},
   title = {A Framework for Deflated and Augmented {Krylov} Subspace Methods},
-  url = {http://dx.doi.org/10.1137/110820713},
+  url = {https://doi.org/10.1137/110820713},
   journal = {SIAM J. Matrix Anal. & Appl.},
   number = {2},
   month = jan,
