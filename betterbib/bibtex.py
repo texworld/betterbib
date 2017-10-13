@@ -187,9 +187,10 @@ def sanitize_doi_url(entry):
     '''See if the entry contains a DOI url and convert it to the new form
     https://doi.org/<DOI>.
     '''
-    m = re.match('https?://(?:dx\\.)?doi\\.org/(.*)', entry.fields['url'])
-    if m:
-        entry.fields['url'] = 'https://doi.org/{}'.format(m.group(1))
+    if 'url' in entry.fields:
+        m = re.match('https?://(?:dx\\.)?doi\\.org/(.*)', entry.fields['url'])
+        if m:
+            entry.fields['url'] = 'https://doi.org/{}'.format(m.group(1))
     return entry
 
 
