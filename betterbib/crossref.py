@@ -107,8 +107,7 @@ class Crossref(object):
         result = data['message']
         return self._crossref_to_pybtex(result)
 
-    def find_unique(self, entry):
-
+    def prepare_request_params(self, entry):
         d = pybtex_to_dict(entry)
 
         L = []
@@ -178,12 +177,12 @@ class Crossref(object):
                 ),
             'rows': 2  # max number of results
             }
+        return params
 
-        r = requests.get(self.api_url, params=params)
-        if not r.ok:
-            raise HttpError('Failed request to {}'.format(self.api_url))
+    def extract_unique(self, entry, response):
+        d = pybtex_to_dict(entry)
 
-        data = r.json()
+        data = response.json()
 
         results = data['message']['items']
 
@@ -231,6 +230,16 @@ class Crossref(object):
             return self._crossref_to_pybtex(results[0])
 
         raise UniqueError('Could not find a positively unique match.')
+        return
+
+    def find_unique(self, entry):
+        params = self.prepare_request_params(entry)
+
+        response = requests.get(self.api_url, params=params)
+        if not response.ok:
+            raise HttpError('Failed request to {}'.format(self.api_url))
+
+        return self.extract_unique(entry, response)
 
     def _crossref_to_pybtex(self, data):
         '''Translate a given data set into the bibtex data structure.

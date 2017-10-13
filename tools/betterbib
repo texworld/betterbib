@@ -6,6 +6,7 @@ from __future__ import print_function, unicode_literals
 import argparse
 import collections
 from io import open as io_open
+from requests_futures.sessions import FuturesSession
 import sys
 
 # pylint: disable=import-self
@@ -25,8 +26,6 @@ def _main():
     data = parser.parse_file(infile)
 
     n = len(data.entries)
-
-    sources = [betterbib.Crossref(args.long_journal_name)]
 
     print('Reading from: {}'.format(infile))
     print('Saving to: {}\n'.format(args.outfile))
@@ -50,32 +49,60 @@ def _main():
 
     num_success = 0
 
-    for bib_id, entry in tqdm(od.items()):
-        result = None
-        for source in sources:
-            try:
-                result = source.find_unique(entry)
-            except (betterbib.crossref.NotFoundError,
-                    betterbib.crossref.UniqueError):
-                pass
-            except betterbib.crossref.HttpError as e:
-                print(e.args[0])
-            else:
-                num_success += 1
-                break
+    source = betterbib.Crossref(args.long_journal_name)
 
-        d = betterbib.bibtex.sanitize_doi_url(result if result else entry)
+    # def find_unique(self, entry):
+    #     params = self.prepare_request_params(entry)
 
-        a = pybtex_to_bibtex_string(
-            d, bib_id, bracket_delimeters=not args.quote_delimeters
-            )
+    #     response = requests.get(self.api_url, params=params)
+    #     if not response.ok:
+    #         raise HttpError('Failed request to {}'.format(self.api_url))
 
-        if not result:
-            out.write(
-                '%comment{Error when fetching the following entry.}\n'
-                )
+    #     return self.extract_unique(entry, response)
 
-        out.write(a + '\n\n')
+    print('Prepare requests')
+    params = []
+    for entry in tqdm(od.values()):
+        params += [source.prepare_request_params(entry)]
+
+    print
+    print('HTTPS requests')
+    with FuturesSession(max_workers=20) as session:
+        futures = [
+            session.get(source.api_url, params=p)
+            for p in params
+            ]
+        responses = []
+        for f in tqdm(futures):
+            responses += [f.result()]
+
+    exit(1)
+
+    # for bib_id, entry in tqdm(od.items()):
+    #     result = None
+
+    #     try:
+    #         result = source.find_unique(entry)
+    #     except (betterbib.crossref.NotFoundError,
+    #             betterbib.crossref.UniqueError):
+    #         pass
+    #     except betterbib.crossref.HttpError as e:
+    #         print(e.args[0])
+    #     else:
+    #         num_success += 1
+
+    #     d = betterbib.bibtex.sanitize_doi_url(result if result else entry)
+
+    #     a = pybtex_to_bibtex_string(
+    #         d, bib_id, bracket_delimeters=not args.quote_delimeters
+    #         )
+
+    #     if not result:
+    #         out.write(
+    #             '%comment{Error when fetching the following entry.}\n'
+    #             )
+
+    #     out.write(a + '\n\n')
 
     out.close()
     print('\n\nTotal number of entries: {}'.format(n))

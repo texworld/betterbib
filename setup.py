@@ -39,6 +39,7 @@ setup(
         'pybtex >= 0.19.0',
         'pypandoc',
         'requests',
+        'requests-futures',
         'tqdm',
         ],
     classifiers=[
