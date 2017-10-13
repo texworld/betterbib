@@ -67,20 +67,25 @@ def clean_pages(entry):
 def create_bibtex_string(bibitem):
     entries = []
     if 'authors' in bibitem:
-        entries.append('  author = {%s}' % clean(bibitem['authors']))
+        entries.append('  author = {{{}}}'.format(clean(bibitem['authors'])))
     if 'title' in bibitem:
-        entries.append('  title = {%s}' % clean(bibitem['title']))
+        entries.append('  title = {{{}}}'.format(clean(bibitem['title'])))
     if 'journal' in bibitem:
-        entries.append('  journal = {%s}' % clean(bibitem['journal']))
+        entries.append('  journal = {{{}}}'.format(clean(bibitem['journal'])))
     if 'publisher' in bibitem:
-        entries.append('  publisher = {%s}' % clean(bibitem['publisher']))
+        entries.append('  publisher = {{{}}}'.format(
+            clean(bibitem['publisher'])
+            ))
     if 'pages' in bibitem:
-        entries.append('  pages = {%s}' % clean_pages(bibitem['pages']))
+        entries.append('  pages = {{{}}}'.format(
+            clean_pages(bibitem['pages'])
+            ))
     if 'year' in bibitem:
-        entries.append('  year = {%s}' % clean(bibitem['year']))
+        entries.append('  year = {{{}}}'.format(clean(bibitem['year'])))
 
-    entry = '@%s{%s,\n%s\n}' \
-        % (bibitem['type'], bibitem['key'], ',\n'.join(entries))
+    entry = '@{}{{{},\n{}\n}}'.format(
+        bibitem['type'], bibitem['key'], ',\n'.join(entries)
+        )
     return entry
 
 

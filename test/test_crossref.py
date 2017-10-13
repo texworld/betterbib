@@ -4,6 +4,7 @@ import betterbib
 
 import pybtex
 import pybtex.database
+import pytest
 
 
 def test_crossref_article0():
@@ -23,6 +24,9 @@ def test_crossref_article0():
         )
 
     bt = source.find_unique(test_entry)
+
+    bt = betterbib.bibtex.sanitize_doi_url(bt)
+
     reference = pybtex.database.Entry(
         'article',
         fields={
@@ -32,7 +36,7 @@ def test_crossref_article0():
                 u'Society for Industrial & Applied Mathematics (SIAM)',
             'title': u'A Framework for Deflated and Augmented ' +
                      'Krylov Subspace Methods',
-            'url': u'http://dx.doi.org/10.1137/110820713',
+            'url': u'https://doi.org/10.1137/110820713',
             'journal': u'SIAM J. Matrix Anal. & Appl.',
             'number': u'2',
             'month': 1,
@@ -396,5 +400,28 @@ def test_doi_only():
     return
 
 
+def test_crossref_no_title():
+
+    source = betterbib.Crossref()
+
+    test_entry = pybtex.database.Entry(
+        'article',
+        fields={
+            'title': 'Stratified atmospheric boundary layers',
+            'journal': 'Boundary-Layer Meteorology',
+            'pages': '375--396',
+            },
+        persons={'author': [
+            pybtex.database.Person('Mahrt'),
+            ]}
+        )
+
+    # Make sure and exception is thrown when no finding a unique match
+    with pytest.raises(betterbib.crossref.UniqueError):
+        source.find_unique(test_entry)
+
+    return
+
+
 if __name__ == '__main__':
-    test_doi_only()
+    test_crossref_no_title()

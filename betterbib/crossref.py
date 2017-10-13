@@ -9,6 +9,10 @@ import pybtex.database
 import requests
 
 
+class UniqueError(Exception):
+    pass
+
+
 def _bibtex_to_crossref_type(bibtex_type):
     assert bibtex_type not in [
         'booklet',
@@ -159,7 +163,7 @@ class Crossref(object):
         params = {
             'query': payload,
             'filter': ','.join(
-                'type:%s' % tp
+                'type:{}'.format(tp)
                 for tp in _bibtex_to_crossref_type(entry.type)
                 ),
             'rows': 2  # max number of results
@@ -175,13 +179,13 @@ class Crossref(object):
         if len(results) == 1:
             return self._crossref_to_pybtex(results[0])
 
+        assert len(results) > 1, 'No match'
+
         # Q: How to we find the correct solution if there's more than one
         #    search result?
         # As a heuristic, assume that the top result is the unique answer if
         # its score is at least 1.5 times the score of the the second-best
         # result.
-        assert len(results) > 1, 'No match'
-
         if results[0]['score'] > 1.5 * results[1]['score']:
             return self._crossref_to_pybtex(results[0])
 
@@ -195,7 +199,7 @@ class Crossref(object):
         # If that doesn't work, check if the title appears in the input.
         if 'title' in d:
             for result in results:
-                if result['title'] and \
+                if 'title' in result and result['title'] and \
                         result['title'][0].lower() in d['title'].lower():
                     return self._crossref_to_pybtex(result)
 
@@ -214,7 +218,7 @@ class Crossref(object):
                 results[1]['title'][0].lower():
             return self._crossref_to_pybtex(results[0])
 
-        raise RuntimeError('Could not find a positively unique match.')
+        raise UniqueError('Could not find a positively unique match.')
 
     def _crossref_to_pybtex(self, data):
         '''Translate a given data set into the bibtex data structure.
@@ -383,7 +387,9 @@ class Crossref(object):
 
         try:
             persons = {'author': [
-                pybtex.database.Person('%s, %s' % (au['family'], au['given']))
+                pybtex.database.Person(u'{}, {}'.format(
+                    au['family'], au['given']
+                    ))
                 for au in data['author']
                 ]}
         except KeyError:

@@ -27,15 +27,15 @@ def _main():
 
     sources = [betterbib.Crossref(args.long_journal_name)]
 
-    print('Reading from: %s' % infile)
-    print('Saving to: %s\n' % args.outfile)
+    print('Reading from: {}'.format(infile))
+    print('Saving to: {}\n'.format(args.outfile))
 
     # Open output file for writing.
     out = io_open(args.outfile, mode='w', encoding='utf-8')
 
     # Write header to the output file.
     out.write(
-        '%%comment{This file was created with BetterBib v%s.}\n\n' %
+        '%%comment{This file was created with betterbib v%s.}\n\n' %
         betterbib.__version__
         )
 
@@ -52,21 +52,21 @@ def _main():
     for bib_id, entry in tqdm(od.items()):
         result = None
         for source in sources:
-            # TODO don't make the sources throw when nothing has been found
             try:
                 result = source.find_unique(entry)
-            except RuntimeError:
+            except betterbib.crossref.UniqueError:
                 pass
             else:
                 num_success += 1
                 break
 
-        if result:
-            # Found; write it out to a file.
-            a = pybtex_to_bibtex_string(result, bib_id)
-        else:
-            # Nothing found; write out the old entry to file.
-            a = pybtex_to_bibtex_string(entry, bib_id)
+        d = betterbib.bibtex.sanitize_doi_url(result if result else entry)
+
+        a = pybtex_to_bibtex_string(
+            d, bib_id, bracket_delimeters=not args.quote_delimeters
+            )
+
+        if not result:
             out.write(
                 '%comment{Error when fetching the following entry.}\n'
                 )
@@ -74,8 +74,8 @@ def _main():
         out.write(a + '\n\n')
 
     out.close()
-    print('\n\nTotal number of entries: %d' % n)
-    print('Found: %d' % num_success)
+    print('\n\nTotal number of entries: {}'.format(n))
+    print('Found: {}'.format(num_success))
 
     return
 
@@ -99,6 +99,11 @@ def _parse_cmd_arguments():
         '--long-journal-name', '-l',
         action='store_true',
         help='prefer long journal names (default: false)'
+        )
+    parser.add_argument(
+        '--quote-delimeters', '-d',
+        action='store_true',
+        help='use quote delimeters in output file (default: curly brackets)',
         )
     parser.add_argument(
         '--sort-by-bibkey', '-s',

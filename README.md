@@ -1,18 +1,19 @@
-# BetterBib
+# betterbib
 
 [![Build Status](https://travis-ci.org/nschloe/betterbib.svg?branch=master)](https://travis-ci.org/nschloe/betterbib)
 [![codecov](https://codecov.io/gh/nschloe/betterbib/branch/master/graph/badge.svg)](https://codecov.io/gh/nschloe/betterbib)
 [![PyPi Version](https://img.shields.io/pypi/v/betterbib.svg)](https://pypi.python.org/pypi/betterbib)
+[![awesome](https://img.shields.io/badge/awesome-yes-brightgreen.svg)](https://img.shields.io/badge/awesome-yes-brightgreen.svg)
 [![GitHub stars](https://img.shields.io/github/stars/nschloe/betterbib.svg?style=social&label=Stars&maxAge=2592000)](https://github.com/nschloe/betterbib)
 
 BibTeX files are typically manually maintained and thus often contain
-inconsistencies, mistakes, or are missing information. BetterBib helps
+inconsistencies, mistakes, or are missing information. betterbib helps
 maintaining your BibTeX files by comparing them with online sources and
 correcting whatever entries are found faulty. For example, with
 ```
 $ betterbib in.bib out.bib
 ```
-the input BibTex
+the input BibTeX
 ```
 @article {krylov,
   author = {Liesen and Gaul and Nabben},
@@ -26,7 +27,7 @@ is converted into
   publisher = {Society for Industrial & Applied Mathematics (SIAM)},
   doi = {10.1137/110820713},
   title = {A Framework for Deflated and Augmented {Krylov} Subspace Methods},
-  url = {http://dx.doi.org/10.1137/110820713},
+  url = {https://doi.org/10.1137/110820713},
   journal = {SIAM J. Matrix Anal. & Appl.},
   number = {2},
   month = jan,
@@ -38,29 +39,26 @@ is converted into
 ```
 (If you prefer long journal names, add the option `--long-journal-name`/`-l`.)
 
-BetterBib fetches data from [Crossref](http://www.crossref.org/).
+betterbib fetches data from [Crossref](http://www.crossref.org/).
 
-All BetterBib command-line options are explained in `betterbib -h`.
+All betterbib command-line options are explained in `betterbib -h`.
 
 
 ### Installation
 
 #### Python Package Index
 
-BetterBib is [available from the Python Package
+betterbib is [available from the Python Package
 Index](https://pypi.python.org/pypi/betterbib/), so simply type
 ```
-pip install betterbib
+pip install -U betterbib
 ```
-to install or
-```
-pip install betterbib -U
-```
-to upgrade.
+to install or upgrade. Use `sudo -H` to install as root or the `--user` option
+of `pip` to install in `$HOME`.
 
 #### Manual installation
 
-Download BetterBib from [GitHub](https://github.com/nschloe/betterbib) and
+Download betterbib from [GitHub](https://github.com/nschloe/betterbib) and
 install it with
 ```
 python setup.py install
@@ -68,13 +66,13 @@ python setup.py install
 
 ### Requirements
 
-BetterBib has a few Python dependencies, all listed in `requirement.txt`,
+betterbib has a few Python dependencies, all listed in `requirement.txt`,
 notably:
 
 * [Pybtex](http://pybtex.sourceforge.net/),
 * [requests](http://docs.python-requests.org/en/latest/),
 
-Additionally, BetterBib requires
+Additionally, betterbib requires
 
 * [pandoc](https://pandoc.org/)
 
@@ -88,7 +86,7 @@ $ ./betterbib mybibliography.bib out.bib
 
 ### Testing
 
-To run the BetterBib unit tests, check out this repository and type
+To run the betterbib unit tests, check out this repository and type
 ```
 pytest
 ```
@@ -106,4 +104,4 @@ To create a new release
 
 ### License
 
-BetterBib is published under the [MIT license](https://en.wikipedia.org/wiki/MIT_License).
+betterbib is published under the [MIT license](https://en.wikipedia.org/wiki/MIT_License).

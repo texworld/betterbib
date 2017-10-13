@@ -8,7 +8,7 @@ import time
 
 
 def _main():
-    args = _parse_cmd_arguments()
+    # args = _parse_cmd_arguments()
 
     source = betterbib.Crossref()
 
@@ -16,7 +16,7 @@ def _main():
         t = time.time()
         _test_connection(source)
         elapsed = time.time() - t
-        print('OK (%gs).' % elapsed)
+        print('OK ({}s).'.format(elapsed))
     except:
         print('FAILED.\n')
         raise
