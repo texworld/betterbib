@@ -9,6 +9,10 @@ import pybtex.database
 import requests
 
 
+class UniqueError(Exception):
+    pass
+
+
 def _bibtex_to_crossref_type(bibtex_type):
     assert bibtex_type not in [
         'booklet',
@@ -214,7 +218,7 @@ class Crossref(object):
                 results[1]['title'][0].lower():
             return self._crossref_to_pybtex(results[0])
 
-        raise RuntimeError('Could not find a positively unique match.')
+        raise UniqueError('Could not find a positively unique match.')
 
     def _crossref_to_pybtex(self, data):
         '''Translate a given data set into the bibtex data structure.
