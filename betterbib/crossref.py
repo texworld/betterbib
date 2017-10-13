@@ -177,9 +177,7 @@ class Crossref(object):
 
         r = requests.get(self.api_url, params=params)
         if not r.ok:
-            msg = 'Failed request to {}'.format(self.api_url)
-            print(msg)
-            raise HttpError(msg)
+            raise HttpError('Failed request to {}'.format(self.api_url))
 
         data = r.json()
 
