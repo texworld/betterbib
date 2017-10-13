@@ -18,6 +18,9 @@ jobs:
       # lint
       - run: pylint betterbib/
       - run: pylint test/*.py
+      - run: pylint tools/betterbib
+      - run: pylint tools/bibitems2bibtex
+      - run: pylint tools/doi2bibtex
       # make sure that rst converts correctly
       - run: pandoc README.md -o README.rst
       - run: pip2 install docutils pygments

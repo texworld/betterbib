@@ -25,7 +25,7 @@ def _main():
                 'authors' in bibitem and
                 ('\\vrule' in bibitem['authors'] or
                  '\\sameauthor' in bibitem['authors']
-                 ) and
+                ) and
                 previous_author):
             bibitem['authors'] = previous_author
         entry = create_bibtex_string(bibitem)
@@ -83,7 +83,7 @@ def create_bibtex_string(bibitem):
     if 'year' in bibitem:
         entries.append('  year = {{{}}}'.format(clean(bibitem['year'])))
 
-    entry = '@{}{{{},\n{}\n}'.format(
+    entry = '@{}{{{},\n{}\n}}'.format(
         bibitem['type'], bibitem['key'], ',\n'.join(entries)
         )
     return entry
