@@ -11,6 +11,10 @@ import pybtex.database
 import requests
 
 
+class NotFoundError(Exception):
+    pass
+
+
 class UniqueError(Exception):
     pass
 
@@ -183,10 +187,11 @@ class Crossref(object):
 
         results = data['message']['items']
 
+        if len(results) == 0:
+            raise NotFoundError('No match')
+
         if len(results) == 1:
             return self._crossref_to_pybtex(results[0])
-
-        assert len(results) > 1, 'No match'
 
         # Q: How to we find the correct solution if there's more than one
         #    search result?
