@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 #
 from __future__ import print_function
-from betterbib.bibtex import pybtex_to_dict, \
-        pybtex_to_bibtex_string, \
-        latex_to_unicode
-from betterbib.crossref import Crossref
 
 from betterbib.__about__ import (
     __version__,
@@ -12,6 +8,11 @@ from betterbib.__about__ import (
     __author_email__,
     __website__,
     )
+
+from betterbib.tools import pybtex_to_dict, \
+        pybtex_to_bibtex_string, \
+        latex_to_unicode
+from betterbib.crossref import Crossref
 
 try:
     import pipdate

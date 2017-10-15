@@ -3,6 +3,7 @@
 from __future__ import print_function
 
 import re
+import requests
 
 import pypandoc
 
@@ -193,15 +194,26 @@ def pybtex_to_bibtex_string(entry, bibtex_key, bracket_delimeters=True):
     return out
 
 
-def sanitize_doi_url(entry):
-    '''See if the entry contains a DOI url and convert it to the new form
-    https://doi.org/<DOI>.
+def doi_from_url(url):
+    '''See if this is a DOI URL and return the DOI.
     '''
-    if 'url' in entry.fields:
-        m = re.match('https?://(?:dx\\.)?doi\\.org/(.*)', entry.fields['url'])
-        if m:
-            entry.fields['url'] = 'https://doi.org/{}'.format(m.group(1))
-    return entry
+    m = re.match('https?://(?:dx\\.)?doi\\.org/(.*)', url)
+    if m:
+        return m.group(1)
+    return None
+
+
+def get_short_doi(doi):
+    url = 'http://shortdoi.org/' + doi
+    r = requests.get(url, params={'format': 'json'})
+    if not r.ok:
+        return None
+
+    data = r.json()
+    if 'ShortDOI' not in data:
+        return None
+
+    return data['ShortDOI']
 
 
 def _get_person_str(p):
