@@ -3,6 +3,7 @@
 from __future__ import print_function
 
 import re
+import requests
 
 import pypandoc
 
@@ -200,6 +201,19 @@ def doi_from_url(url):
     if m:
         return m.group(1)
     return None
+
+
+def get_short_doi(doi):
+    url = 'http://shortdoi.org/' + doi
+    r = requests.get(url, params={'format': 'json'})
+    if not r.ok:
+        return None
+
+    data = r.json()
+    if 'ShortDOI' not in data:
+        return None
+
+    return data['ShortDOI']
 
 
 def _get_person_str(p):

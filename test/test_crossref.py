@@ -25,8 +25,6 @@ def test_crossref_article0():
 
     bt = source.find_unique(test_entry)
 
-    bt = betterbib.bibtex.sanitize_doi_url(bt)
-
     reference = pybtex.database.Entry(
         'article',
         fields={
@@ -36,7 +34,7 @@ def test_crossref_article0():
                 u'Society for Industrial & Applied Mathematics (SIAM)',
             'title': u'A Framework for Deflated and Augmented ' +
                      'Krylov Subspace Methods',
-            'url': u'https://doi.org/10.1137/110820713',
+            'url': u'http://dx.doi.org/10.1137/110820713',
             'journal': u'SIAM J. Matrix Anal. & Appl.',
             'number': u'2',
             'month': 1,
@@ -56,6 +54,10 @@ def test_crossref_article0():
 
     assert betterbib.pybtex_to_bibtex_string(bt, 'key') \
         == betterbib.pybtex_to_bibtex_string(reference, 'key')
+
+    assert betterbib.tools.get_short_doi(
+            betterbib.tools.doi_from_url(bt.fields['url'])
+            ) == '10/f44kd7'
 
     return
 
