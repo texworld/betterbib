@@ -56,8 +56,8 @@ def test_crossref_article0():
         == betterbib.pybtex_to_bibtex_string(reference, 'key')
 
     assert betterbib.tools.get_short_doi(
-            betterbib.tools.doi_from_url(bt.fields['url'])
-            ) == '10/f44kd7'
+        betterbib.tools.doi_from_url(bt.fields['url'])
+        ) == '10/f44kd7'
 
     return
 
