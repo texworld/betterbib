@@ -51,15 +51,6 @@ def _main():
 
     source = betterbib.Crossref(args.long_journal_name)
 
-    # def find_unique(self, entry):
-    #     params = self.prepare_request_params(entry)
-
-    #     response = requests.get(self.api_url, params=params)
-    #     if not response.ok:
-    #         raise HttpError('Failed request to {}'.format(self.api_url))
-
-    #     return self.extract_unique(entry, response)
-
     # We can use a with statement to ensure threads are cleaned up promptly
     with concurrent.futures.ThreadPoolExecutor(
             max_workers=args.num_concurrent_requests
@@ -93,8 +84,8 @@ def _main():
                     out.write(
                         '%comment{Error when fetching the following entry.}\n'
                         )
-
                 out.write(a + '\n\n')
+
                 pbar.update(1)
 
     out.close()
