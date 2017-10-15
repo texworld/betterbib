@@ -52,6 +52,7 @@ def _main():
     source = betterbib.Crossref(args.long_journal_name)
 
     # We can use a with statement to ensure threads are cleaned up promptly
+    # pylint: disable=bad-continuation
     with concurrent.futures.ThreadPoolExecutor(
             max_workers=args.num_concurrent_requests
             ) as executor:

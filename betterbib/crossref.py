@@ -107,6 +107,7 @@ class Crossref(object):
         result = data['message']
         return self._crossref_to_pybtex(result)
 
+    # pylint: disable=too-many-return-statements
     def find_unique(self, entry):
         d = pybtex_to_dict(entry)
 
@@ -231,7 +232,6 @@ class Crossref(object):
             return self._crossref_to_pybtex(results[0])
 
         raise UniqueError('Could not find a positively unique match.')
-        return
 
     def _crossref_to_pybtex(self, data):
         '''Translate a given data set into the bibtex data structure.
