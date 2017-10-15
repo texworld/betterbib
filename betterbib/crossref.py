@@ -107,8 +107,8 @@ class Crossref(object):
         result = data['message']
         return self._crossref_to_pybtex(result)
 
+    # pylint: disable=too-many-return-statements
     def find_unique(self, entry):
-
         d = pybtex_to_dict(entry)
 
         L = []
@@ -225,7 +225,8 @@ class Crossref(object):
         # If that doesn't work, check if the second entry is a JSTOR copy
         # of the original article -- yes, that happens --, and take the
         # first one.
-        if results[1]['publisher'] == 'JSTOR' and \
+        if 'publisher' in results[1] and results[1]['publisher'] == 'JSTOR' \
+                and 'title' in results[0] and 'title' in results[1] and \
                 results[0]['title'][0].lower() == \
                 results[1]['title'][0].lower():
             return self._crossref_to_pybtex(results[0])
