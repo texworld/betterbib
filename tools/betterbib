@@ -13,8 +13,8 @@ import sys
 # pylint: disable=import-self
 import betterbib
 from betterbib import pybtex_to_bibtex_string
-
 from pybtex.database.input import bibtex
+import requests
 from tqdm import tqdm
 
 
@@ -76,7 +76,22 @@ def _main():
                 else:
                     num_success += 1
 
-                d = betterbib.bibtex.sanitize_doi_url(data if data else entry)
+                d = data if data else entry
+
+                if 'url' in d.fields:
+                    doi = betterbib.bibtex.doi_from_url(d.fields['url'])
+                    if doi:
+                        if args.doi_url_type == 'new':
+                            # Make sure to use the new DOI URL
+                            d.fields['url'] = 'https://doi.org/' + doi
+                        elif args.doi_url_type == 'short':
+                            url = 'http://shortdoi.org/' + doi
+                            r = requests.get(url, params={'format': 'json'})
+                            if r.ok:
+                                data = r.json()
+                                if 'ShortDOI' in data:
+                                    d.fields['url'] = \
+                                        'https://doi.org/' + data['ShortDOI']
 
                 a = pybtex_to_bibtex_string(
                     d, bib_id, bracket_delimeters=not args.quote_delimeters
@@ -131,6 +146,19 @@ def _parse_cmd_arguments():
         '--num-concurrent-requests', '-c',
         default=10,
         help='number of concurrent HTTPS requests (default: 10)',
+        )
+    parser.add_argument(
+        '--doi-url-type', '-u',
+        choices=[
+            'unchanged',
+            'new',
+            'short'
+            ],
+        default='new',
+        help=(
+            'DOI URL (new: https://doi.org/<DOI> (default), '
+            'short: https://doi.org/abcde)'
+            ),
         )
     parser.add_argument(
         '--version', '-v',
