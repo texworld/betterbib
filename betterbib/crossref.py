@@ -4,7 +4,7 @@ from __future__ import print_function
 
 import re
 
-from betterbib.tools import pybtex_to_dict, latex_to_unicode
+from betterbib.tools import pybtex_to_dict, latex_to_unicode, doi_from_url
 
 import pybtex
 import pybtex.database
@@ -204,8 +204,12 @@ class Crossref(object):
         # If that doesn't work, check if the DOI matches exactly with the
         # input.
         if 'doi' in d:
+            # sometimes, the doi field contains a doi url
+            doi = doi_from_url(d['doi'])
+            if not doi:
+                doi = d['doi']
             for result in results:
-                if result['DOI'].lower() == d['doi'].lower():
+                if result['DOI'].lower() == doi.lower():
                     return self._crossref_to_pybtex(result)
 
         # If that doesn't work, check if the title appears in the input.
@@ -405,7 +409,7 @@ class Crossref(object):
                     ))
                 for au in data['author']
                 ]}
-        except KeyError:
+        except (KeyError, pybtex.database.InvalidNameString):
             persons = None
 
         return pybtex.database.Entry(
