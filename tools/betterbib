@@ -139,6 +139,7 @@ def _parse_cmd_arguments():
     parser.add_argument(
         '--num-concurrent-requests', '-c',
         default=10,
+        type=int,
         help='number of concurrent HTTPS requests (default: 10)',
         )
     parser.add_argument(
