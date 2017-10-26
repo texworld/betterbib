@@ -49,7 +49,11 @@ def _main():
 
     num_success = 0
 
-    source = betterbib.Crossref(args.long_journal_name)
+    if args.source == 'crossref':
+        source = betterbib.Crossref(args.long_journal_name)
+    else:
+        assert args.source == 'dblp', 'Illegal source.'
+        source = betterbib.Dblp()
 
     # We can use a with statement to ensure threads are cleaned up promptly
     # pylint: disable=bad-continuation
@@ -68,10 +72,10 @@ def _main():
             data = None
             try:
                 data = future.result()
-            except (betterbib.crossref.NotFoundError,
-                    betterbib.crossref.UniqueError):
+            except (betterbib.errors.NotFoundError,
+                    betterbib.errors.UniqueError):
                 pass
-            except betterbib.crossref.HttpError as e:
+            except betterbib.errors.HttpError as e:
                 print(e.args[0])
             else:
                 num_success += 1
@@ -89,8 +93,9 @@ def _main():
                         if short_doi:
                             d.fields['url'] = 'https://doi.org/' + short_doi
 
+            bracket_delimeters = args.delimeter_type == 'curly'
             a = pybtex_to_bibtex_string(
-                d, bib_id, bracket_delimeters=not args.quote_delimeters
+                d, bib_id, bracket_delimeters=bracket_delimeters
                 )
 
             if not data:
@@ -108,7 +113,7 @@ def _main():
 
 def _parse_cmd_arguments():
     parser = argparse.ArgumentParser(
-        description='Improve BibTeX libraries '
+        description='Improve BibTeX files '
         'with information from online sources.'
         )
     parser.add_argument(
@@ -117,33 +122,58 @@ def _parse_cmd_arguments():
         help='input BibTeX file'
         )
     parser.add_argument(
+        '-v', '--version',
+        help='display version information',
+        action='version',
+        version='%(prog)s {}, Python {}'.format(
+            betterbib.__version__, sys.version
+            )
+        )
+    parser.add_argument(
         'outfile',
         type=str,
         help='output BibTeX file'
         )
     parser.add_argument(
-        '--long-journal-name', '-l',
+        '-s', '--source',
+        choices=[
+            'crossref',
+            'dblp',
+            ],
+        default='crossref',
+        help='data source (default: crossref)',
+        )
+    parser.add_argument(
+        '-l', '--long-journal-name',
         action='store_true',
         help='prefer long journal names (default: false)'
         )
     parser.add_argument(
-        '--quote-delimeters', '-d',
-        action='store_true',
-        help='use quote delimeters in output file (default: curly brackets)',
-        )
-    parser.add_argument(
-        '--sort-by-bibkey', '-s',
+        '-b', '--sort-by-bibkey',
         action='store_true',
         help='sort entries by BibTeX key (default: false)'
         )
     parser.add_argument(
-        '--num-concurrent-requests', '-c',
-        default=10,
+        '-d', '--delimeter-type',
+        choices=[
+            'curly',
+            'quote',
+            ],
+        default='curly',
+        help=(
+            'which delimeters to use in the output file '
+            '(default: curly brackets)'
+            ),
+        )
+    parser.add_argument(
+        '-c', '--num-concurrent-requests',
         type=int,
+        default=10,
+        metavar='N',
         help='number of concurrent HTTPS requests (default: 10)',
         )
     parser.add_argument(
-        '--doi-url-type', '-u',
+        '-u', '--doi-url-type',
         choices=[
             'unchanged',
             'new',
@@ -154,14 +184,6 @@ def _parse_cmd_arguments():
             'DOI URL (new: https://doi.org/<DOI> (default), '
             'short: https://doi.org/abcde)'
             ),
-        )
-    parser.add_argument(
-        '--version', '-v',
-        help='display version information',
-        action='version',
-        version='%(prog)s {}, Python {}'.format(
-            betterbib.__version__, sys.version
-            )
         )
     return parser.parse_args()
 

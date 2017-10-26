@@ -2,23 +2,12 @@
 #
 from __future__ import print_function
 
-from betterbib.tools import pybtex_to_dict, latex_to_unicode, doi_from_url
+from .errors import NotFoundError, UniqueError, HttpError
+from .tools import pybtex_to_dict, latex_to_unicode, doi_from_url
 
 import pybtex
 import pybtex.database
 import requests
-
-
-class NotFoundError(Exception):
-    pass
-
-
-class UniqueError(Exception):
-    pass
-
-
-class HttpError(Exception):
-    pass
 
 
 class Dblp(object):
@@ -108,17 +97,15 @@ class Dblp(object):
             'h': 2  # max number of results (hits)
             }
 
-        print(params)
-
         r = requests.get(self.api_url, params=params)
         if not r.ok:
             raise HttpError('Failed request to {}'.format(self.api_url))
 
         data = r.json()
 
-        results = data['result']['hits']['hit']
-
-        if not results:
+        try:
+            results = data['result']['hits']['hit']
+        except KeyError:
             raise NotFoundError('No match')
 
         if len(results) == 1:
@@ -187,9 +174,6 @@ class Dblp(object):
         #
         # translate the type
         bibtex_type = self._to_bibtex_type(data)
-
-        from pprint import pprint
-        pprint(data)
 
         fields_dict = {}
         try:

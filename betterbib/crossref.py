@@ -4,23 +4,12 @@ from __future__ import print_function
 
 import re
 
-from betterbib.tools import pybtex_to_dict, latex_to_unicode, doi_from_url
+from .errors import NotFoundError, UniqueError, HttpError
+from .tools import pybtex_to_dict, latex_to_unicode, doi_from_url
 
 import pybtex
 import pybtex.database
 import requests
-
-
-class NotFoundError(Exception):
-    pass
-
-
-class UniqueError(Exception):
-    pass
-
-
-class HttpError(Exception):
-    pass
 
 
 def _bibtex_to_crossref_type(bibtex_type):
