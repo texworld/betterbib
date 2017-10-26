@@ -13,6 +13,7 @@ from betterbib.tools import pybtex_to_dict, \
         pybtex_to_bibtex_string, \
         latex_to_unicode
 from betterbib.crossref import Crossref
+from betterbib.dblp import Dblp
 
 try:
     import pipdate
