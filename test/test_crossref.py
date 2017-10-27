@@ -402,6 +402,38 @@ def test_doi_only():
     return
 
 
+def test_standard():
+
+    source = betterbib.Crossref()
+
+    test_entry = pybtex.database.Entry(
+        'misc',
+        fields={
+            'title': (
+                '{STD 42}: {A} Standard for the transmission of {IP} '
+                'datagrams over experimental {Ethernet} Networks'
+                ),
+            'doi': '10.5594/s9781614827788',
+            },
+        )
+
+    reference = pybtex.database.Entry(
+        'misc',
+        fields={
+            'doi': u'10.5594/s9781614827788',
+            'url': u'http://dx.doi.org/10.5594/s9781614827788',
+            'source': u'Crossref',
+            }
+        )
+
+    bt = source.find_unique(test_entry)
+
+    assert betterbib.pybtex_to_bibtex_string(bt, 'key') \
+        == betterbib.pybtex_to_bibtex_string(reference, 'key')
+
+    return
+
+
 def test_crossref_no_title():
 
     source = betterbib.Crossref()
@@ -426,4 +458,4 @@ def test_crossref_no_title():
 
 
 if __name__ == '__main__':
-    test_crossref_no_title()
+    test_standard()
