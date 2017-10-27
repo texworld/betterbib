@@ -320,11 +320,14 @@ class Crossref(object):
                 fields_dict['publisher'] = publisher
             if title:
                 fields_dict['title'] = title
-        else:
-            assert bibtex_type == 'techreport', \
-                'Unknown type \'{}\''.format(bibtex_type)
+        elif bibtex_type == 'techreport':
             if publisher:
                 fields_dict['institution'] = publisher
+            if title:
+                fields_dict['title'] = title
+        else:
+            assert bibtex_type == 'misc', \
+                'Unknown type \'{}\''.format(bibtex_type)
             if title:
                 fields_dict['title'] = title
 
