@@ -39,7 +39,10 @@ is converted into
 ```
 (If you prefer long journal names, add the option `--long-journal-name`/`-l`.)
 
-betterbib fetches data from [Crossref](http://www.crossref.org/).
+betterbib fetches data from
+
+   * [Crossref](http://www.crossref.org/) (default) or
+   * [DBLP](http://dblp.uni-trier.de/) (`--source dblp`).
 
 All betterbib command-line options are explained in `betterbib -h`.
 
@@ -56,23 +59,10 @@ pip install -U betterbib
 to install or upgrade. Use `sudo -H` to install as root or the `--user` option
 of `pip` to install in `$HOME`.
 
-#### Manual installation
-
-Download betterbib from [GitHub](https://github.com/nschloe/betterbib) and
-install it with
-```
-python setup.py install
-```
 
 ### Requirements
 
-betterbib has a few Python dependencies, all listed in `requirement.txt`,
-notably:
-
-* [Pybtex](http://pybtex.sourceforge.net/),
-* [requests](http://docs.python-requests.org/en/latest/),
-
-Additionally, betterbib requires
+betterbib requires
 
 * [pandoc](https://pandoc.org/)
 
@@ -81,7 +71,7 @@ to be installed.
 
 ### Usage
 ```
-$ ./betterbib mybibliography.bib out.bib
+$ betterbib mybibliography.bib out.bib
 ```
 
 ### Testing
@@ -90,7 +80,6 @@ To run the betterbib unit tests, check out this repository and type
 ```
 pytest
 ```
-
 
 ### Distribution
 To create a new release
