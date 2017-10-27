@@ -19,15 +19,8 @@ from tqdm import tqdm
 
 def _main():
     args = _parse_cmd_arguments()
-    infile = args.infile
 
-    parser = bibtex.Parser()
-    data = parser.parse_file(infile)
-
-    n = len(data.entries)
-
-    print('Reading from: {}'.format(infile))
-    print('Saving to: {}\n'.format(args.outfile))
+    data = bibtex.Parser().parse_file(args.infile)
 
     # Use an ordered dictionary to make sure that the entries are written out
     # sorted by their BibTeX key if demanded.
@@ -37,14 +30,13 @@ def _main():
         else data.entries.items()
         )
 
-    num_success = 0
-
     if args.source == 'crossref':
         source = betterbib.Crossref(args.long_journal_name)
     else:
         assert args.source == 'dblp', 'Illegal source.'
         source = betterbib.Dblp()
 
+    print()
     od, num_success = \
         _update_from_source(od, source, args.num_concurrent_requests)
 
@@ -52,7 +44,7 @@ def _main():
 
     _write(od, args.outfile, args.delimeter_type)
 
-    print('\n\nTotal number of entries: {}'.format(n))
+    print('\n\nTotal number of entries: {}'.format(len(data.entries)))
     print('Found: {}'.format(num_success))
     return
 
@@ -85,9 +77,7 @@ def _update_doi_url(od, url_from_doi):
 
 
 def _update_from_source(od, source, num_concurrent_requests):
-
     num_success = 0
-    # We can use a with statement to ensure threads are cleaned up promptly
     # pylint: disable=bad-continuation
     with concurrent.futures.ThreadPoolExecutor(
             max_workers=num_concurrent_requests
