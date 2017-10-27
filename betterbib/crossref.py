@@ -320,13 +320,21 @@ class Crossref(object):
                 fields_dict['publisher'] = publisher
             if title:
                 fields_dict['title'] = title
-        else:
-            assert bibtex_type == 'techreport', \
-                'Unknown type \'{}\''.format(bibtex_type)
+        elif bibtex_type == 'techreport':
             if publisher:
                 fields_dict['institution'] = publisher
             if title:
                 fields_dict['title'] = title
+        else:
+            assert bibtex_type == 'misc', \
+                'Unknown type \'{}\''.format(bibtex_type)
+            if publisher:
+                fields_dict['publisher'] = publisher
+            # Standards have the title in container_title
+            if title:
+                fields_dict['title'] = title
+            elif container_title:
+                fields_dict['title'] = container_title
 
         try:
             fields_dict['volume'] = data['volume']
@@ -339,12 +347,21 @@ class Crossref(object):
             pass
 
         try:
-            fields_dict['year'] = data['issued']['date-parts'][0][0]
+            fields_dict['isbn'] = ', '.join(data['ISBN'])
+        except KeyError:
+            pass
+
+        try:
+            year = data['issued']['date-parts'][0][0]
+            if year is not None:
+                fields_dict['year'] = year
         except (KeyError, IndexError):
             pass
 
         try:
-            fields_dict['month'] = data['issued']['date-parts'][0][1]
+            month = data['issued']['date-parts'][0][1]
+            if month is not None:
+                fields_dict['month'] = month
         except (IndexError, KeyError):
             pass
 

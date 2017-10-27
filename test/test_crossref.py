@@ -114,6 +114,7 @@ def test_crossref_book0():
             'month': 6,
             'source': u'Crossref',
             'year': 2003,
+            'isbn': '9780470868270, 9780471967583'
             },
         persons=pybtex.database.OrderedCaseInsensitiveDict({
             'author': [
@@ -154,6 +155,7 @@ def test_crossref_book1():
             'month': 1,
             'doi': '10.1515/9781400833887',
             'url': u'http://dx.doi.org/10.1515/9781400833887',
+            'isbn': '9781400833887',
             },
         persons=pybtex.database.OrderedCaseInsensitiveDict({
             'author': [
@@ -196,7 +198,8 @@ def test_crossref_inbook0():
             'month': 1,
             'source': u'Crossref',
             'year': 2005,
-            'pages': '1-44'
+            'pages': '1-44',
+            'isbn': '9780470868270, 9780471967583',
             }
         )
 
@@ -236,7 +239,8 @@ def test_crossref_incollection0():
             'booktitle': 'Handbook of Dynamical Systems',
             'source': u'Crossref',
             'year': 2002,
-            'pages': u'149-219'
+            'pages': u'149-219',
+            'isbn': u'9780444501684',
             },
         persons=pybtex.database.OrderedCaseInsensitiveDict({
             'author': [
@@ -312,6 +316,7 @@ def test_crossref_inproceedings0():
         fields={
             'publisher': 'IEEE',
             'doi': u'10.1109/aero.2008.4526230',
+            'isbn': u'9781424414871, 9781424414888',
             'issn': u'1095-323X',
             'title': 'Global Warming is Unequivocal',
             'url': u'http://dx.doi.org/10.1109/aero.2008.4526230',
@@ -402,6 +407,47 @@ def test_doi_only():
     return
 
 
+def test_standard():
+
+    source = betterbib.Crossref()
+
+    test_entry = pybtex.database.Entry(
+        'misc',
+        fields={
+            'title': (
+                '{STD 42}: {A} Standard for the transmission of {IP} '
+                'datagrams over experimental {Ethernet} Networks'
+                ),
+            'doi': '10.5594/s9781614827788',
+            },
+        )
+
+    reference = pybtex.database.Entry(
+        'misc',
+        fields={
+            'title': (
+                '{ST} 2022-7:2013 : {Seamless} Protection Switching '
+                'of {SMPTE} {ST} 2022 {IP} Datagrams'
+                ),
+            'doi': u'10.5594/s9781614827788',
+            'url': u'http://dx.doi.org/10.5594/s9781614827788',
+            'isbn': '9781614827788',
+            'publisher': (
+                'The Society of Motion Picture '
+                'and Television Engineers'
+                ),
+            'source': u'Crossref',
+            }
+        )
+
+    bt = source.find_unique(test_entry)
+
+    assert betterbib.pybtex_to_bibtex_string(bt, 'key') \
+        == betterbib.pybtex_to_bibtex_string(reference, 'key')
+
+    return
+
+
 def test_crossref_no_title():
 
     source = betterbib.Crossref()
@@ -426,4 +472,4 @@ def test_crossref_no_title():
 
 
 if __name__ == '__main__':
-    test_crossref_no_title()
+    test_standard()

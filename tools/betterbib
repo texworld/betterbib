@@ -17,37 +17,18 @@ from pybtex.database.input import bibtex
 from tqdm import tqdm
 
 
-# pylint: disable=too-many-locals
 def _main():
     args = _parse_cmd_arguments()
-    infile = args.infile
 
-    parser = bibtex.Parser()
-    data = parser.parse_file(infile)
-
-    n = len(data.entries)
-
-    print('Reading from: {}'.format(infile))
-    print('Saving to: {}\n'.format(args.outfile))
-
-    # Open output file for writing.
-    out = io_open(args.outfile, mode='w', encoding='utf-8')
-
-    # Write header to the output file.
-    out.write(
-        '%%comment{This file was created with betterbib v%s.}\n\n' %
-        betterbib.__version__
-        )
+    data = bibtex.Parser().parse_file(args.infile)
 
     # Use an ordered dictionary to make sure that the entries are written out
-    # sorted by their BibTeX key if
-    od = (
-        collections.OrderedDict(sorted(data.entries.items()))
+    # sorted by their BibTeX key if demanded.
+    od = collections.OrderedDict(
+        sorted(data.entries.items())
         if args.sort_by_bibkey
-        else data.entries
+        else data.entries.items()
         )
-
-    num_success = 0
 
     if args.source == 'crossref':
         source = betterbib.Crossref(args.long_journal_name)
@@ -55,10 +36,51 @@ def _main():
         assert args.source == 'dblp', 'Illegal source.'
         source = betterbib.Dblp()
 
-    # We can use a with statement to ensure threads are cleaned up promptly
+    print()
+    od, num_success = \
+        _update_from_source(od, source, args.num_concurrent_requests)
+
+    od = _adapt_doi_urls(od, args.doi_url_type)
+
+    _write(od, args.outfile, args.delimeter_type)
+
+    print('\n\nTotal number of entries: {}'.format(len(data.entries)))
+    print('Found: {}'.format(num_success))
+    return
+
+
+def _adapt_doi_urls(od, doi_url_type):
+    if doi_url_type == 'new':
+        od = _update_doi_url(od, lambda doi: 'https://doi.org/' + doi)
+    elif doi_url_type == 'short':
+        def update_to_short_doi(doi):
+            short_doi = betterbib.tools.get_short_doi(doi)
+            if short_doi:
+                return 'https://doi.org/' + short_doi
+            return None
+        od = _update_doi_url(od, update_to_short_doi)
+    else:
+        assert doi_url_type == 'unchanged'
+
+    return od
+
+
+def _update_doi_url(od, url_from_doi):
+    for bib_id in od:
+        if 'url' in od[bib_id].fields:
+            doi = betterbib.tools.doi_from_url(od[bib_id].fields['url'])
+            if doi:
+                new_url = url_from_doi(doi)
+                if new_url:
+                    od[bib_id].fields['url'] = new_url
+    return od
+
+
+def _update_from_source(od, source, num_concurrent_requests):
+    num_success = 0
     # pylint: disable=bad-continuation
     with concurrent.futures.ThreadPoolExecutor(
-            max_workers=args.num_concurrent_requests
+            max_workers=num_concurrent_requests
             ) as executor:
         responses = {
             executor.submit(source.find_unique, entry): (bib_id, entry)
@@ -80,34 +102,30 @@ def _main():
             else:
                 num_success += 1
 
-            d = data if data else entry
+            od[bib_id] = data if data else entry
 
-            if 'url' in d.fields:
-                doi = betterbib.tools.doi_from_url(d.fields['url'])
-                if doi:
-                    if args.doi_url_type == 'new':
-                        # Make sure to use the new DOI URL
-                        d.fields['url'] = 'https://doi.org/' + doi
-                    elif args.doi_url_type == 'short':
-                        short_doi = betterbib.tools.get_short_doi(doi)
-                        if short_doi:
-                            d.fields['url'] = 'https://doi.org/' + short_doi
+    return od, num_success
 
-            bracket_delimeters = args.delimeter_type == 'curly'
-            a = pybtex_to_bibtex_string(
-                d, bib_id, bracket_delimeters=bracket_delimeters
-                )
 
-            if not data:
-                out.write(
-                    '%comment{Error when fetching the following entry.}\n'
-                    )
-            out.write(a + '\n\n')
+def _write(od, filename, delimeter_type):
+    # Open output file for writing.
+    out = io_open(filename, mode='w', encoding='utf-8')
+
+    # Write header to the output file.
+    out.write(
+        '%%comment{This file was created with betterbib v%s.}\n\n' %
+        betterbib.__version__
+        )
+
+    # write the data out sequentially to respect ordering
+    for bib_id, d in od.items():
+        bracket_delimeters = delimeter_type == 'curly'
+        a = pybtex_to_bibtex_string(
+            d, bib_id, bracket_delimeters=bracket_delimeters
+            )
+        out.write(a + '\n\n')
 
     out.close()
-    print('\n\nTotal number of entries: {}'.format(n))
-    print('Found: {}'.format(num_success))
-
     return
 
 

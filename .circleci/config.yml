@@ -6,7 +6,7 @@ jobs:
   build:
     working_directory: ~/betterbib
     docker:
-      - image: ubuntu:17.04
+      - image: ubuntu:17.10
     steps:
       - run: apt-get update
       # don't install sympy with apt: it pulls in texlive which takes for ever
@@ -36,7 +36,7 @@ jobs:
 #   build:
 #     working_directory: ~/frentos
 #     docker:
-#       - image: ubuntu:17.04
+#       - image: ubuntu:17.10
 #     steps:
 #       - run: apt-get update
 #       - run: apt-get install -y libcgal-dev libeigen3-dev pandoc python3-numpy python3-pip
