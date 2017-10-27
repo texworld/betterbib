@@ -328,6 +328,8 @@ class Crossref(object):
         else:
             assert bibtex_type == 'misc', \
                 'Unknown type \'{}\''.format(bibtex_type)
+            if publisher:
+                fields_dict['publisher'] = publisher
             if title:
                 fields_dict['title'] = title
 
@@ -338,6 +340,11 @@ class Crossref(object):
 
         try:
             fields_dict['issn'] = ', '.join(data['ISSN'])
+        except KeyError:
+            pass
+
+        try:
+            fields_dict['isbn'] = ', '.join(data['ISBN'])
         except KeyError:
             pass
 

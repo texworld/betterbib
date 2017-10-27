@@ -114,6 +114,7 @@ def test_crossref_book0():
             'month': 6,
             'source': u'Crossref',
             'year': 2003,
+            'isbn': '9780470868270, 9780471967583'
             },
         persons=pybtex.database.OrderedCaseInsensitiveDict({
             'author': [
@@ -154,6 +155,7 @@ def test_crossref_book1():
             'month': 1,
             'doi': '10.1515/9781400833887',
             'url': u'http://dx.doi.org/10.1515/9781400833887',
+            'isbn': '9781400833887',
             },
         persons=pybtex.database.OrderedCaseInsensitiveDict({
             'author': [
@@ -196,7 +198,8 @@ def test_crossref_inbook0():
             'month': 1,
             'source': u'Crossref',
             'year': 2005,
-            'pages': '1-44'
+            'pages': '1-44',
+            'isbn': '9780470868270, 9780471967583',
             }
         )
 
@@ -236,7 +239,8 @@ def test_crossref_incollection0():
             'booktitle': 'Handbook of Dynamical Systems',
             'source': u'Crossref',
             'year': 2002,
-            'pages': u'149-219'
+            'pages': u'149-219',
+            'isbn': u'9780444501684',
             },
         persons=pybtex.database.OrderedCaseInsensitiveDict({
             'author': [
@@ -312,6 +316,7 @@ def test_crossref_inproceedings0():
         fields={
             'publisher': 'IEEE',
             'doi': u'10.1109/aero.2008.4526230',
+            'isbn': u'9781424414871, 9781424414888',
             'issn': u'1095-323X',
             'title': 'Global Warming is Unequivocal',
             'url': u'http://dx.doi.org/10.1109/aero.2008.4526230',
@@ -422,6 +427,11 @@ def test_standard():
         fields={
             'doi': u'10.5594/s9781614827788',
             'url': u'http://dx.doi.org/10.5594/s9781614827788',
+            'isbn': '9781614827788',
+            'publisher': (
+                'The Society of Motion Picture '
+                'and Television Engineers'
+                ),
             'source': u'Crossref',
             }
         )
