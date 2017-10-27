@@ -7,6 +7,8 @@ import requests
 
 import pypandoc
 
+from .errors import UniqueError
+
 
 def latex_to_unicode(latex_string):
     '''Convert a LaTeX string to unicode.
@@ -226,3 +228,57 @@ def _get_person_str(p):
         if s:
             person_str.append(s)
     return ', '.join(person_str)
+
+
+def heuristic_unique_result(results, d):
+    # Q: How to we find the correct solution if there's more than one
+    #    search result?
+    # As a heuristic, assume that the top result is the unique answer if
+    # its score is at least 1.5 times the score of the the second-best
+    # result.
+    for score in 'score', '@score':
+        try:
+            if float(results[0][score]) > 1.5 * float(results[1][score]):
+                return results[0]
+        except KeyError:
+            pass
+
+    # If that doesn't work, check if the DOI matches exactly with the
+    # input.
+    if 'doi' in d:
+        # sometimes, the doi field contains a doi url
+        doi = doi_from_url(d['doi'])
+        if not doi:
+            doi = d['doi']
+        for result in results:
+            for doi_key in 'doi', 'DOI':
+                try:
+                    if result[doi_key].lower() == doi.lower():
+                        return result
+                except KeyError:
+                    pass
+
+    # If that doesn't work, check if the title appears in the input.
+    if 'title' in d:
+        for result in results:
+            if 'title' in result and result['title'] and \
+                    result['title'][0].lower() in d['title'].lower():
+                return result
+
+    # If that doesn't work, check if the page range matches exactly
+    # with the input.
+    if 'pages' in d:
+        for result in results:
+            if 'page' in result and result['page'] == d['pages']:
+                return result
+
+    # If that doesn't work, check if the second entry is a JSTOR copy
+    # of the original article -- yes, that happens --, and take the
+    # first one.
+    if 'publisher' in results[1] and results[1]['publisher'] == 'JSTOR' \
+            and 'title' in results[0] and 'title' in results[1] and \
+            results[0]['title'][0].lower() == \
+            results[1]['title'][0].lower():
+        return results[0]
+
+    raise UniqueError('Could not find a positively unique match.')

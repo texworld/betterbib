@@ -4,12 +4,12 @@ from __future__ import print_function
 
 import re
 
-from .errors import NotFoundError, UniqueError, HttpError
-from .tools import pybtex_to_dict, latex_to_unicode, doi_from_url
-
 import pybtex
 import pybtex.database
 import requests
+
+from .errors import NotFoundError, HttpError
+from .tools import pybtex_to_dict, latex_to_unicode, heuristic_unique_result
 
 
 def _bibtex_to_crossref_type(bibtex_type):
@@ -182,49 +182,7 @@ class Crossref(object):
         if len(results) == 1:
             return self._crossref_to_pybtex(results[0])
 
-        # Q: How to we find the correct solution if there's more than one
-        #    search result?
-        # As a heuristic, assume that the top result is the unique answer if
-        # its score is at least 1.5 times the score of the the second-best
-        # result.
-        if results[0]['score'] > 1.5 * results[1]['score']:
-            return self._crossref_to_pybtex(results[0])
-
-        # If that doesn't work, check if the DOI matches exactly with the
-        # input.
-        if 'doi' in d:
-            # sometimes, the doi field contains a doi url
-            doi = doi_from_url(d['doi'])
-            if not doi:
-                doi = d['doi']
-            for result in results:
-                if result['DOI'].lower() == doi.lower():
-                    return self._crossref_to_pybtex(result)
-
-        # If that doesn't work, check if the title appears in the input.
-        if 'title' in d:
-            for result in results:
-                if 'title' in result and result['title'] and \
-                        result['title'][0].lower() in d['title'].lower():
-                    return self._crossref_to_pybtex(result)
-
-        # If that doesn't work, check if the page range matches exactly
-        # with the input.
-        if 'pages' in d:
-            for result in results:
-                if 'page' in result and result['page'] == d['pages']:
-                    return self._crossref_to_pybtex(result)
-
-        # If that doesn't work, check if the second entry is a JSTOR copy
-        # of the original article -- yes, that happens --, and take the
-        # first one.
-        if 'publisher' in results[1] and results[1]['publisher'] == 'JSTOR' \
-                and 'title' in results[0] and 'title' in results[1] and \
-                results[0]['title'][0].lower() == \
-                results[1]['title'][0].lower():
-            return self._crossref_to_pybtex(results[0])
-
-        raise UniqueError('Could not find a positively unique match.')
+        return self._crossref_to_pybtex(heuristic_unique_result(results, d))
 
     def _crossref_to_pybtex(self, data):
         '''Translate a given data set into the bibtex data structure.

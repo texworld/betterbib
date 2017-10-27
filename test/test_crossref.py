@@ -419,7 +419,7 @@ def test_crossref_no_title():
         )
 
     # Make sure and exception is thrown when not finding a unique match
-    with pytest.raises(betterbib.crossref.UniqueError):
+    with pytest.raises(betterbib.errors.UniqueError):
         source.find_unique(test_entry)
 
     return
