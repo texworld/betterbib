@@ -30,22 +30,13 @@ def _main():
     print('Reading from: {}'.format(infile))
     print('Saving to: {}\n'.format(args.outfile))
 
-    # Open output file for writing.
-    out = io_open(args.outfile, mode='w', encoding='utf-8')
-
-    # Write header to the output file.
-    out.write(
-        '%%comment{This file was created with betterbib v%s.}\n\n' %
-        betterbib.__version__
-        )
-
     # Use an ordered dictionary to make sure that the entries are written out
-    # sorted by their BibTeX key if
-    od = (
-        collections.OrderedDict(sorted(data.entries.items()))
-        if args.sort_by_bibkey
-        else data.entries
-        )
+    # sorted by their BibTeX key if demanded.
+    od = collections.OrderedDict(
+            sorted(data.entries.items())
+            if args.sort_by_bibkey
+            else data.entries.items()
+            )
 
     num_success = 0
 
@@ -93,21 +84,29 @@ def _main():
                         if short_doi:
                             d.fields['url'] = 'https://doi.org/' + short_doi
 
-            bracket_delimeters = args.delimeter_type == 'curly'
-            a = pybtex_to_bibtex_string(
-                d, bib_id, bracket_delimeters=bracket_delimeters
-                )
+            od[bib_id] = d
 
-            if not data:
-                out.write(
-                    '%comment{Error when fetching the following entry.}\n'
-                    )
-            out.write(a + '\n\n')
+    # Open output file for writing.
+    out = io_open(args.outfile, mode='w', encoding='utf-8')
+
+    # Write header to the output file.
+    out.write(
+        '%%comment{This file was created with betterbib v%s.}\n\n' %
+        betterbib.__version__
+        )
+
+    # write the data out sequentially to respect ordering
+    for bib_id, d in od.items():
+        bracket_delimeters = args.delimeter_type == 'curly'
+        a = pybtex_to_bibtex_string(
+            d, bib_id, bracket_delimeters=bracket_delimeters
+            )
+        out.write(a + '\n\n')
 
     out.close()
+
     print('\n\nTotal number of entries: {}'.format(n))
     print('Found: {}'.format(num_success))
-
     return
 
 
