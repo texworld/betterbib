@@ -409,7 +409,7 @@ def test_crossref_no_title():
     test_entry = pybtex.database.Entry(
         'article',
         fields={
-            'title': 'Stratified atmospheric boundary layers',
+            # 'title': 'Stratified atmospheric boundary layers',
             'journal': 'Boundary-Layer Meteorology',
             'pages': '375--396',
             },
@@ -418,8 +418,8 @@ def test_crossref_no_title():
             ]}
         )
 
-    # Make sure and exception is thrown when no finding a unique match
-    with pytest.raises(betterbib.crossref.UniqueError):
+    # Make sure and exception is thrown when not finding a unique match
+    with pytest.raises(betterbib.errors.UniqueError):
         source.find_unique(test_entry)
 
     return
