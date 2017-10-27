@@ -90,7 +90,7 @@ class Dblp(object):
             if not doi:
                 doi = d['doi']
             for result in results:
-                if result['DOI'].lower() == doi.lower():
+                if 'doi' in result and result['doi'].lower() == doi.lower():
                     return self._crossref_to_pybtex(result['info'])
 
         # If that doesn't work, check if the title appears in the input.
