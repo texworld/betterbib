@@ -342,12 +342,16 @@ class Crossref(object):
             pass
 
         try:
-            fields_dict['year'] = data['issued']['date-parts'][0][0]
+            year = data['issued']['date-parts'][0][0]
+            if year is not None:
+                fields_dict['year'] = year
         except (KeyError, IndexError):
             pass
 
         try:
-            fields_dict['month'] = data['issued']['date-parts'][0][1]
+            month = data['issued']['date-parts'][0][1]
+            if month is not None:
+                fields_dict['month'] = month
         except (IndexError, KeyError):
             pass
 
