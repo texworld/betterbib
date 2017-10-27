@@ -11,7 +11,9 @@ import pypandoc
 def latex_to_unicode(latex_string):
     '''Convert a LaTeX string to unicode.
     '''
-    return pypandoc.convert_text(latex_string, 'plain', format='latex')
+    out = pypandoc.convert_text(latex_string, 'plain', format='latex')
+    # replace multiple whitespace by one, remove surrounding spaces
+    return ' '.join(out.split())
 
 
 def pybtex_to_dict(entry):

@@ -32,6 +32,8 @@ class Dblp(object):
     def find_unique(self, entry):
         d = pybtex_to_dict(entry)
 
+        # Be stingy on the search terms. DBLP search is not fuzzy, so one
+        # misspelled word results in 0 hits.
         L = []
 
         try:
@@ -41,51 +43,16 @@ class Dblp(object):
 
         try:
             for au in d['author']:
-                L.extend([
-                    ' '.join(au['first']), ' '.join(au['middle']),
-                    ' '.join(au['prelast']), ' '.join(au['last']),
-                    ' '.join(au['lineage'])
-                    ])
+                L.append(' '.join(au['last']))
         except KeyError:
             pass
 
-        try:
-            L.append(d['journal'])
-        except KeyError:
-            pass
-
-        try:
-            L.append(d['doi'])
-        except KeyError:
-            pass
-
-        try:
-            L.append(d['pages'])
-        except KeyError:
-            pass
-
-        try:
-            L.append(d['year'])
-        except KeyError:
-            pass
-
-        try:
-            L.append(d['volume'])
-        except KeyError:
-            pass
-
-        try:
-            L.append(d['number'])
-        except KeyError:
-            pass
-
-        try:
-            L.append(d['publisher'])
-        except KeyError:
-            pass
+        # replace multiple whitespace by one, remove surrounding spaces
+        for k in range(len(L)):
+            L[k] = ' '.join(L[k].split())
 
         # kick out empty strings
-        L = filter(None, L)
+        L = list(filter(None, L))
 
         # Simply plug the dict together to a search query. Typical query:
         # <api>?q=vanroose+schl%C3%B6mer&h=5
