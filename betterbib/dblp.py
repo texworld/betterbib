@@ -125,7 +125,6 @@ class Dblp(object):
         self.api_url = 'https://dblp.org/search/publ/api'
         return
 
-    # pylint: disable=too-many-return-statements
     def find_unique(self, entry):
         d = pybtex_to_dict(entry)
 

@@ -96,7 +96,6 @@ class Crossref(object):
         result = data['message']
         return self._crossref_to_pybtex(result)
 
-    # pylint: disable=too-many-return-statements
     def find_unique(self, entry):
         d = pybtex_to_dict(entry)
 

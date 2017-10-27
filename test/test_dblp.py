@@ -24,8 +24,6 @@ def test_article0():
 
     bt = source.find_unique(test_entry)
 
-    print(bt)
-
     reference = pybtex.database.Entry(
         'article',
         fields={
