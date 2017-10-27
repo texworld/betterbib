@@ -330,8 +330,11 @@ class Crossref(object):
                 'Unknown type \'{}\''.format(bibtex_type)
             if publisher:
                 fields_dict['publisher'] = publisher
+            # Standards have the title in container_title
             if title:
                 fields_dict['title'] = title
+            elif container_title:
+                fields_dict['title'] = container_title
 
         try:
             fields_dict['volume'] = data['volume']

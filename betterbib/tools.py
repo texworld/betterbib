@@ -154,7 +154,7 @@ def _translate_title(val):
     words = val.split()
     # pylint: disable=consider-using-enumerate
     for k in range(len(words)):
-        if k > 0 and words[k-1][-1] == ':':
+        if k > 0 and words[k-1][-1] == ':' and words[k][0] != '{':
             # Algorithm 694: {A} collection...
             words[k] = '{' + words[k].capitalize() + '}'
 

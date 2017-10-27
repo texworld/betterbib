@@ -425,6 +425,10 @@ def test_standard():
     reference = pybtex.database.Entry(
         'misc',
         fields={
+            'title': (
+                '{ST} 2022-7:2013 : {Seamless} Protection Switching '
+                'of {SMPTE} {ST} 2022 {IP} Datagrams'
+                ),
             'doi': u'10.5594/s9781614827788',
             'url': u'http://dx.doi.org/10.5594/s9781614827788',
             'isbn': '9781614827788',

@@ -44,4 +44,9 @@ def test():
         'Dash-Dash Double--Dash Triple---Dash'
         ) == \
         'Dash-Dash Double--Dash Triple---Dash'
+
+    assert betterbib.tools._translate_title(
+        'x: {X}'
+        ) == \
+        'x: {X}'
     return
