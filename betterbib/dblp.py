@@ -47,10 +47,6 @@ class Dblp(object):
         except KeyError:
             pass
 
-        # replace multiple whitespace by one, remove surrounding spaces
-        for k in range(len(L)):
-            L[k] = ' '.join(L[k].split())
-
         # kick out empty strings
         L = list(filter(None, L))
 
