@@ -170,6 +170,10 @@ def _translate_title(val):
     This function takes a raw title string as input and {}-protects those parts
     whose capitalization should not change.
     '''
+    # If the title is completely capitalized, it's probably by mistake.
+    if val == val.upper():
+        val = val.title()
+
     words = val.split()
     # pylint: disable=consider-using-enumerate
     for k in range(len(words)):
@@ -240,13 +244,17 @@ def get_short_doi(doi):
 
 
 def _get_person_str(p):
-    person_str = []
-    for s in [' '.join(p.prelast() + p.last()),
-              ' '.join(p.lineage()),
-              ' '.join(p.first() + p.middle())]:
-        if s:
-            person_str.append(s)
-    return ', '.join(person_str)
+    out = ', '.join(filter(None, [
+        ' '.join(p.prelast() + p.last()),
+        ' '.join(p.lineage()),
+        ' '.join(p.first() + p.middle())
+        ]))
+
+    # If the name is completely capitalized, it's probably by mistake.
+    if out == out.upper():
+        out = out.title()
+
+    return out
 
 
 def heuristic_unique_result(results, d):
