@@ -132,7 +132,7 @@ def _translate_word(word, d):
     return word
 
 
-def _translate_title(val):
+def _translate_title(val, dictionary=create_dict()):
     '''The capitalization of BibTeX entries is handled by the style, so names
     (Newton) or abbreviations (GMRES) may not be capitalized. This is unless
     they are wrapped in curly brackets.
@@ -153,17 +153,19 @@ def _translate_title(val):
         if k > 0 and words[k-1][-1] == ':' and words[k][0] != '{':
             words[k] = '{' + words[k].capitalize() + '}'
 
-    d = create_dict()
     for k in range(len(words)):
         words[k] = '-'.join([
-            _translate_word(w, d) for w in words[k].split('-')
+            _translate_word(w, dictionary) for w in words[k].split('-')
             ])
 
     return ' '.join(words)
 
 
 # pylint: disable=too-many-locals
-def pybtex_to_bibtex_string(entry, bibtex_key, bracket_delimeters=True):
+def pybtex_to_bibtex_string(
+        entry, bibtex_key, bracket_delimeters=True,
+        dictionary=create_dict()
+        ):
     '''String representation of BibTeX entry.
     '''
     out = '@{}{{{},\n '.format(entry.type, bibtex_key)
@@ -185,7 +187,7 @@ def pybtex_to_bibtex_string(entry, bibtex_key, bracket_delimeters=True):
                 content.append('month = {}'.format(month_string))
         elif field == 'title':
             content.append(u'title = {}{}{}'.format(
-                left, _translate_title(value), right
+                left, _translate_title(value), right, dictionary
                 ))
         else:
             content.append(u'{} = {}{}{}'.format(field, left, value, right))

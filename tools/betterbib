@@ -20,6 +20,7 @@ from tqdm import tqdm
 def _main():
     args = _parse_cmd_arguments()
 
+    print(args.infile)
     data = bibtex.Parser().parse_file(args.infile)
 
     # Use an ordered dictionary to make sure that the entries are written out
@@ -117,11 +118,15 @@ def _write(od, filename, delimeter_type):
         betterbib.__version__
         )
 
+    # Create the dictionary only once
+    dictionary = betterbib.create_dict()
+
     # write the data out sequentially to respect ordering
     for bib_id, d in od.items():
         bracket_delimeters = delimeter_type == 'curly'
         a = pybtex_to_bibtex_string(
-            d, bib_id, bracket_delimeters=bracket_delimeters
+            d, bib_id, bracket_delimeters=bracket_delimeters,
+            dictionary=dictionary
             )
         out.write(a + '\n\n')
 
