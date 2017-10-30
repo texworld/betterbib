@@ -1,0 +1,89 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+from __future__ import print_function, unicode_literals
+
+import argparse
+from io import open as io_open
+import sys
+
+# pylint: disable=import-self
+import betterbib
+from betterbib import pybtex_to_bibtex_string
+from pybtex.database.input import bibtex
+
+
+def _main():
+    args = _parse_cmd_arguments()
+
+    data = bibtex.Parser().parse_file(args.infile)
+
+    od = data.entries
+
+    # deduplicate
+    for key in data.entries:
+        if 'url' in od[key].fields and 'doi' in od[key].fields:
+            doi = betterbib.tools.doi_from_url(od[key].fields['url'])
+            if doi == od[key].fields['doi']:
+                # Would be nicer to remove it completely; see
+                # <https://bitbucket.org/pybtex-devs/pybtex/issues/104/implement>.
+                od[key].fields['doi'] = None
+
+    _write(od, args.infile, 'curly')
+    return
+
+
+def _write(od, filename, delimeter_type):
+    # Open output file for writing.
+    out = io_open(filename, mode='w', encoding='utf-8')
+
+    # Write header to the output file.
+    out.write(
+        '%%comment{This file was created with betterbib v%s.}\n\n' %
+        betterbib.__version__
+        )
+
+    # Create the dictionary only once
+    dictionary = betterbib.create_dict()
+
+    # write the data out sequentially to respect ordering
+    for bib_id, d in od.items():
+        bracket_delimeters = delimeter_type == 'curly'
+        a = pybtex_to_bibtex_string(
+            d, bib_id, bracket_delimeters=bracket_delimeters,
+            dictionary=dictionary
+            )
+        out.write(a + '\n\n')
+
+    out.close()
+    return
+
+
+def _parse_cmd_arguments():
+    parser = argparse.ArgumentParser(
+        description='Removes one of DOI and URL in a BibTeX file '
+        'if both are identical.'
+        )
+    parser.add_argument(
+        'infile',
+        type=str,
+        help='input BibTeX file'
+        )
+    parser.add_argument(
+        '-v', '--version',
+        help='display version information',
+        action='version',
+        version='%(prog)s {}, Python {}'.format(
+            betterbib.__version__, sys.version
+            )
+        )
+    parser.add_argument(
+        '-k', '--keep-doi',
+        action='store_true',
+        help='keep the DOI rather than the URL (default: false)'
+        )
+    return parser.parse_args()
+
+
+if __name__ == '__main__':
+    _main()

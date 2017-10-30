@@ -201,7 +201,10 @@ def pybtex_to_bibtex_string(
                 left, _translate_title(value, dictionary), right
                 ))
         else:
-            content.append(u'{} = {}{}{}'.format(field, left, value, right))
+            if value is not None:
+                content.append(
+                    u'{} = {}{}{}'.format(field, left, value, right)
+                    )
 
     # Make sure that every line ends with a comma
     out += ' '.join([line + ',\n' for line in content])
