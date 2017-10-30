@@ -64,6 +64,7 @@ of `pip` to install in `$HOME`.
 
 betterbib requires
 
+* [enchant](https://abiword.github.io/enchant/) and
 * [pandoc](https://pandoc.org/)
 
 to be installed.
