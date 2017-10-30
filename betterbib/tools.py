@@ -94,6 +94,7 @@ def create_dict():
         u'Pólya',
         'Ramanujan',
         'Ricatti',
+        'Runge',
         'Scholz',
         'Schur',
         'Siebeck',
