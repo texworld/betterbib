@@ -5,6 +5,7 @@ from __future__ import print_function
 import re
 import requests
 
+import enchant
 import pypandoc
 
 from .errors import UniqueError
@@ -59,113 +60,123 @@ def _translate_month(key):
     return month
 
 
-_names = [
-    'Abrikosov',
-    'Arnoldi',
-    'Banach',
-    'Bernstein',
-    'Bose',
-    'Cauchy',
-    'Caputo',
-    'Chebyshev',
-    'Davidson',
-    'Einstein',
-    'Euler',
-    'Fourier',
-    'Galerkin',
-    'Gauss',
-    'Gross',
-    'Ginzburg',
-    'Hermite',
-    'Jacobi',
-    'Jordan',
-    'Kronrod',
-    'Krylov',
-    'Kutta',
-    'Landau',
-    'Laplace',
-    'Magnus',
-    'Navier',
-    'Lanczos',
-    'Lie',
-    'Magnus',
-    'Neumann',
-    'Newton',
-    'Peano',
-    'Pitaevskii',
-    'Richardson',
-    'Ritz',
-    'Runge',
-    u'Schrödinger',
-    'Schur',
-    'Stokes',
-    'Sylvester',
-    'Toeplitz',
-    #
-    'I',
-    'II',
-    'III',
-    'IV',
-    'V',
-    'VI',
-    'VII',
-    'VIII',
-    'IX',
-    'X'
-    ]
+def create_dict():
+    extra_names = [
+        'Abrikosov',
+        'Arnoldi',
+        'Bergman',
+        'Bernstein',
+        'Bruijn',
+        'Chebyshev',
+        'Danilewski',
+        'Darboux',
+        'Pezzo',
+        'Galerkin',
+        'Ginzburg',
+        'Goldbach',
+        'Hermite', 'Hermitian',
+        'Hopf',
+        'Hopfield',
+        'Jacobi', 'Jacobian',
+        'Kronrod',
+        'Krylov',
+        'Kuratowski',
+        'Kutta',
+        'Liouville',
+        'Magnus'
+        'Manin',
+        'Navier',
+        'Kolmogorov',
+        'Lanczos',
+        'Magnus',
+        'Peano',
+        'Pell',
+        'Pitaevskii',
+        u'Pólya',
+        'Ramanujan',
+        'Ricatti',
+        'Runge',
+        'Scholz',
+        'Schur',
+        'Siebeck',
+        'Sommerfeld',
+        'Stieltjes',
+        'Tausworthe',
+        'Tchebycheff',
+        'Toeplitz',
+        'Voronoi',
+        u'Voronoï',
+        'Wieland',
+        'Wronski', 'Wronskian',
+        ]
+
+    d = enchant.DictWithPWL('en_US')
+
+    for name in extra_names:
+        d.add(name)
+        d.add(name + '\'s')
+        if name[-1] == 's':
+            d.add(name + '\'')
+
+    for word in ['boolean', 'hermitian']:
+        d.remove(word)
+
+    return d
 
 
-def _translate_word(word):
-    # Check if the word has a capital letter in a position other than
-    # the first. If yes, protect it.
+def _translate_word(word, d):
+    # Check if the word needs to be protected by curly brackets to prevent
+    # recapitalization.
     if not word:
-        out = word
+        needs_protection = False
     elif word[0] == '{' and word[-1] == '}':
-        out = word
-    elif any(char.isupper() for char in word[1:]):
-        out = '{' + word + '}'
-    elif word in _names:
-        # Einstein
-        out = '{' + word + '}'
-    elif len(word) > 2 and word[-2:] == '\'s' and word[:-2] in _names:
-        # Peano's
-        out = '{' + word + '}'
-    elif len(word) > 3 and word[-3:] == 'ian' and word[:-3] in _names:
-        # Gaussian
-        out = '{' + word + '}'
-    elif len(word) > 3 and word[-3:] == 'ian' and word[:-3] + 'e' in _names:
-        # Laplacian
-        out = '{' + word + '}'
-    elif len(word) > 3 and word[-3:] == 'ian' and word[:-2] in _names:
-        # Jacobian
-        out = '{' + word + '}'
+        needs_protection = False
+    elif any([char.isupper() for char in word[1:]]):
+        needs_protection = True
     else:
-        out = word
-    return out
+        needs_protection = (
+            any([char.isupper() for char in word]) and
+            d.check(word) and not d.check(word.lower())
+            )
+
+    if needs_protection:
+        return '{' + word + '}'
+    return word
 
 
-def _translate_title(val):
+def _translate_title(val, dictionary=create_dict()):
     '''The capitalization of BibTeX entries is handled by the style, so names
     (Newton) or abbreviations (GMRES) may not be capitalized. This is unless
     they are wrapped in curly brackets.
     This function takes a raw title string as input and {}-protects those parts
     whose capitalization should not change.
     '''
+    # If the title is completely capitalized, it's probably by mistake.
+    if val == val.upper():
+        val = val.title()
+
     words = val.split()
     # pylint: disable=consider-using-enumerate
+    # Handle colons as in
+    # ```
+    # Algorithm 694: {A} collection...
+    # ```
     for k in range(len(words)):
         if k > 0 and words[k-1][-1] == ':' and words[k][0] != '{':
-            # Algorithm 694: {A} collection...
             words[k] = '{' + words[k].capitalize() + '}'
 
     for k in range(len(words)):
-        words[k] = '-'.join([_translate_word(w) for w in words[k].split('-')])
+        words[k] = '-'.join([
+            _translate_word(w, dictionary) for w in words[k].split('-')
+            ])
 
     return ' '.join(words)
 
 
 # pylint: disable=too-many-locals
-def pybtex_to_bibtex_string(entry, bibtex_key, bracket_delimeters=True):
+def pybtex_to_bibtex_string(
+        entry, bibtex_key, bracket_delimeters=True,
+        dictionary=create_dict()):
     '''String representation of BibTeX entry.
     '''
     out = '@{}{{{},\n '.format(entry.type, bibtex_key)
@@ -187,7 +198,7 @@ def pybtex_to_bibtex_string(entry, bibtex_key, bracket_delimeters=True):
                 content.append('month = {}'.format(month_string))
         elif field == 'title':
             content.append(u'title = {}{}{}'.format(
-                left, _translate_title(value), right
+                left, _translate_title(value, dictionary), right
                 ))
         else:
             content.append(u'{} = {}{}{}'.format(field, left, value, right))
@@ -221,13 +232,17 @@ def get_short_doi(doi):
 
 
 def _get_person_str(p):
-    person_str = []
-    for s in [' '.join(p.prelast() + p.last()),
-              ' '.join(p.lineage()),
-              ' '.join(p.first() + p.middle())]:
-        if s:
-            person_str.append(s)
-    return ', '.join(person_str)
+    out = ', '.join(filter(None, [
+        ' '.join(p.prelast() + p.last()),
+        ' '.join(p.lineage()),
+        ' '.join(p.first() + p.middle())
+        ]))
+
+    # If the name is completely capitalized, it's probably by mistake.
+    if out == out.upper():
+        out = out.title()
+
+    return out
 
 
 def heuristic_unique_result(results, d):

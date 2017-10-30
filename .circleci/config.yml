@@ -8,10 +8,10 @@ jobs:
     docker:
       - image: ubuntu:17.10
     steps:
-      - run: apt-get update
+      - run: apt update
       # don't install sympy with apt: it pulls in texlive which takes for ever
       # to download and install
-      - run: apt-get install -y git python-pip pandoc
+      - run: apt install -y git python-pip pandoc enchant
       - run: pip2 install -U pytest pytest-cov pylint
       - checkout
       - run: pip2 install .
@@ -28,7 +28,7 @@ jobs:
       # The tests
       - run: cd test/ && MPLBACKEND=Agg pytest --maxfail=1 --cov betterbib
       # submit to codecov
-      - run: apt-get install -y curl
+      - run: apt install -y curl
       - run: bash <(curl -s https://codecov.io/bash)
 
 
@@ -38,8 +38,8 @@ jobs:
 #     docker:
 #       - image: ubuntu:17.10
 #     steps:
-#       - run: apt-get update
-#       - run: apt-get install -y libcgal-dev libeigen3-dev pandoc python3-numpy python3-pip
+#       - run: apt update
+#       - run: apt install -y libcgal-dev libeigen3-dev pandoc python3-numpy python3-pip
 #       - run: pip3 install -U pytest pytest-cov pylint meshio
 #       - checkout
 #       # install

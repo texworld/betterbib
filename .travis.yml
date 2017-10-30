@@ -9,6 +9,7 @@ python:
 addons:
   apt:
     packages:
+      - enchant
       - pandoc
 
 before_install:

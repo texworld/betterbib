@@ -37,6 +37,7 @@ setup(
     install_requires=[
         'pipdate',
         'pybtex >= 0.19.0',
+        'pyenchant',
         'pypandoc',
         'requests',
         'tqdm',

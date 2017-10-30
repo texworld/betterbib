@@ -471,5 +471,39 @@ def test_crossref_no_title():
     return
 
 
+def test_crossref_all_capitals():
+    source = betterbib.Crossref()
+
+    bt = source.get_by_doi(u'10.1142/s0218213009000366')
+    reference = pybtex.database.Entry(
+        'article',
+        fields={
+            'doi': u'10.1142/s0218213009000366',
+            'issn': u'0218-2130, 1793-6349',
+            'publisher': u'World Scientific Pub Co Pte Lt',
+            'title': u'Ontological Cognitive Map',
+            'url': u'http://dx.doi.org/10.1142/s0218213009000366',
+            'journal': u'Int. J. Artif. Intell. Tools',
+            'number': u'05',
+            'month': 10,
+            'volume': u'18',
+            'source': u'Crossref',
+            'year': 2009,
+            'pages': u'697-716',
+            },
+        persons=pybtex.database.OrderedCaseInsensitiveDict({
+            'author': [
+                pybtex.database.Person(u'CHAUVIN, LIONEL'),
+                pybtex.database.Person(u'GENEST, DAVID'),
+                pybtex.database.Person(u'LOISEAU, STÉPHANE'),
+                ]
+            }))
+
+    assert betterbib.pybtex_to_bibtex_string(bt, 'key') \
+        == betterbib.pybtex_to_bibtex_string(reference, 'key')
+
+    return
+
+
 if __name__ == '__main__':
-    test_standard()
+    test_crossref_all_capitals()
