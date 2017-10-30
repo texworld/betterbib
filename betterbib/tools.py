@@ -109,7 +109,7 @@ def create_dict():
     return d
 
 
-def _translate_word(word):
+def _translate_word(word, d):
     # Check if the word needs to be protected by curly brackets to prevent
     # recapitalization.
     if not word:
@@ -119,7 +119,6 @@ def _translate_word(word):
     elif any([char.isupper() for char in word[1:]]):
         needs_protection = True
     else:
-        d = create_dict()
         needs_protection = (
                 any([char.isupper() for char in word]) and
                 d.check(word) and not d.check(word.lower())
@@ -151,8 +150,11 @@ def _translate_title(val):
         if k > 0 and words[k-1][-1] == ':' and words[k][0] != '{':
             words[k] = '{' + words[k].capitalize() + '}'
 
+    d = create_dict()
     for k in range(len(words)):
-        words[k] = '-'.join([_translate_word(w) for w in words[k].split('-')])
+        words[k] = '-'.join([
+            _translate_word(w, d) for w in words[k].split('-')
+            ])
 
     return ' '.join(words)
 
