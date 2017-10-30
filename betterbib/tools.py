@@ -2,6 +2,7 @@
 #
 from __future__ import print_function
 
+import enchant
 import re
 import requests
 
@@ -59,108 +60,74 @@ def _translate_month(key):
     return month
 
 
-_names = [
-    'Abrikosov',
-    'Arnoldi',
-    'Banach',
-    'Bernstein',
-    'Bose',
-    'Cauchy',
-    'Caputo',
-    'Chebyshev',
-    'Cullen',
-    'Davidson',
-    'Del Pezzo',
-    'Einstein',
-    'Euler',
-    'Faber',
-    'Fourier',
-    'Galerkin',
-    'Gauss',
-    'Greenberg',
-    'Gross',
-    'Ginzburg',
-    'Hamilton',
-    'Hermite',
-    'Hopfield',
-    'Jacobi',
-    'Jordan',
-    'Kronrod',
-    'Krylov',
-    'Kutta',
-    'Landau',
-    'Laplace',
-    'Linux',
-    'Magnus'
-    'Manin',
-    'Monte Carlo',
-    'Navier',
-    'Kolmogorov',
-    'Lanczos',
-    'Lie',
-    'Magnus',
-    'Mahler',
-    'Markov',
-    'Neumann',
-    'Newton',
-    'Peano',
-    'Pell',
-    'Petri',
-    'Pitaevskii',
-    'Poisson',
-    'Richardson',
-    'Ritz',
-    'Runge',
-    'Scholz',
-    u'Schrödinger',
-    'Schur',
-    'Steiner',
-    'Stokes',
-    'Suzuki',
-    'Sylvester',
-    'Tausworthe',
-    'Toeplitz',
-    #
-    'I',
-    'II',
-    'III',
-    'IV',
-    'V',
-    'VI',
-    'VII',
-    'VIII',
-    'IX',
-    'X'
-    ]
+def create_dict():
+    extra_names = [
+        'Abrikosov',
+        'Arnoldi',
+        'Bernstein',
+        'Bruijn',
+        'Chebyshev',
+        'Darboux',
+        'Pezzo',
+        'Galerkin',
+        'Ginzburg',
+        'Goldbach',
+        'Hermite', 'Hermitian',
+        'Hopf',
+        'Hopfield',
+        'Kronrod',
+        'Krylov',
+        'Kuratowski',
+        'Kutta',
+        'Magnus'
+        'Manin',
+        'Navier',
+        'Kolmogorov',
+        'Lanczos',
+        'Magnus',
+        'Peano',
+        'Pell',
+        'Pitaevskii',
+        'Ramanujan',
+        'Ricatti',
+        'Scholz',
+        'Schur',
+        'Siebeck',
+        'Tausworthe',
+        'Toeplitz',
+        'Voronoi',
+        u'Voronoï',
+        'Wronski', 'Wronskian',
+        ]
+
+    d = enchant.DictWithPWL('en_US')
+
+    for name in extra_names:
+        d.add(name)
+        d.add(name + '\'s')
+
+    return d
 
 
 def _translate_word(word):
-    # Check if the word has a capital letter in a position other than
-    # the first. If yes, protect it.
+    # Check if the word needs to be protected by curly brackets to prevent
+    # recapitalization.
     if not word:
-        out = word
+        needs_protection = False
     elif word[0] == '{' and word[-1] == '}':
-        out = word
-    elif any(char.isupper() for char in word[1:]):
-        out = '{' + word + '}'
-    elif word in _names:
-        # Einstein
-        out = '{' + word + '}'
-    elif len(word) > 2 and word[-2:] == '\'s' and word[:-2] in _names:
-        # Peano's
-        out = '{' + word + '}'
-    elif len(word) > 3 and word[-3:] == 'ian' and word[:-3] in _names:
-        # Gaussian
-        out = '{' + word + '}'
-    elif len(word) > 3 and word[-3:] == 'ian' and word[:-3] + 'e' in _names:
-        # Laplacian
-        out = '{' + word + '}'
-    elif len(word) > 3 and word[-3:] == 'ian' and word[:-2] in _names:
-        # Jacobian
-        out = '{' + word + '}'
+        needs_protection = False
+    elif any(map(str.isupper, word[1:])):
+        needs_protection = True
     else:
-        out = word
-    return out
+        d = create_dict()
+        needs_protection = (
+                any(map(str.isupper, word)) and
+                d.check(word) and not d.check(word.lower())
+                )
+
+    if needs_protection:
+        return '{' + word + '}'
+    return word
 
 
 def _translate_title(val):
@@ -176,9 +143,12 @@ def _translate_title(val):
 
     words = val.split()
     # pylint: disable=consider-using-enumerate
+    # Handle colons as in
+    # ```
+    # Algorithm 694: {A} collection...
+    # ```
     for k in range(len(words)):
         if k > 0 and words[k-1][-1] == ':' and words[k][0] != '{':
-            # Algorithm 694: {A} collection...
             words[k] = '{' + words[k].capitalize() + '}'
 
     for k in range(len(words)):

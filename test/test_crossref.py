@@ -481,7 +481,7 @@ def test_crossref_all_capitals():
             'doi': u'10.1142/s0218213009000366',
             'issn': u'0218-2130, 1793-6349',
             'publisher': u'World Scientific Pub Co Pte Lt',
-            'title': u'{ONTOLOGICAL} {COGNITIVE} {MAP}',
+            'title': u'Ontological Cognitive Map',
             'url': u'http://dx.doi.org/10.1142/s0218213009000366',
             'journal': u'Int. J. Artif. Intell. Tools',
             'number': u'05',
