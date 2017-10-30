@@ -116,12 +116,12 @@ def _translate_word(word):
         needs_protection = False
     elif word[0] == '{' and word[-1] == '}':
         needs_protection = False
-    elif any(map(str.isupper, word[1:])):
+    elif any([char.isupper() for char in word[1:]]):
         needs_protection = True
     else:
         d = create_dict()
         needs_protection = (
-                any(map(str.isupper, word)) and
+                any([char.isupper() for char in word]) and
                 d.check(word) and not d.check(word.lower())
                 )
 
