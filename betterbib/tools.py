@@ -106,6 +106,9 @@ def create_dict():
         d.add(name)
         d.add(name + '\'s')
 
+    for word in ['hermitian']:
+        d.remove(word)
+
     return d
 
 

@@ -38,7 +38,7 @@ def test():
     assert betterbib.tools._translate_title(
         'Gaussian Hermitian Jacobian'
         ) == \
-        '{Gaussian} Hermitian {Jacobian}'
+        '{Gaussian} {Hermitian} {Jacobian}'
 
     assert betterbib.tools._translate_title(
         'Dash-Dash Double--Dash Triple---Dash'
