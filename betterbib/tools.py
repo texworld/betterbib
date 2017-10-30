@@ -64,9 +64,11 @@ def create_dict():
     extra_names = [
         'Abrikosov',
         'Arnoldi',
+        'Bergman',
         'Bernstein',
         'Bruijn',
         'Chebyshev',
+        'Danilewski',
         'Darboux',
         'Pezzo',
         'Galerkin',
@@ -79,6 +81,7 @@ def create_dict():
         'Krylov',
         'Kuratowski',
         'Kutta',
+        'Liouville',
         'Magnus'
         'Manin',
         'Navier',
@@ -88,15 +91,20 @@ def create_dict():
         'Peano',
         'Pell',
         'Pitaevskii',
+        u'Pólya',
         'Ramanujan',
         'Ricatti',
         'Scholz',
         'Schur',
         'Siebeck',
+        'Sommerfeld',
+        'Stieltjes',
         'Tausworthe',
+        'Tchebycheff',
         'Toeplitz',
         'Voronoi',
         u'Voronoï',
+        'Wieland',
         'Wronski', 'Wronskian',
         ]
 
@@ -105,8 +113,10 @@ def create_dict():
     for name in extra_names:
         d.add(name)
         d.add(name + '\'s')
+        if name[-1] == 's':
+            d.add(name + '\'')
 
-    for word in ['hermitian']:
+    for word in ['boolean', 'hermitian']:
         d.remove(word)
 
     return d

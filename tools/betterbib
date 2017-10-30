@@ -20,7 +20,6 @@ from tqdm import tqdm
 def _main():
     args = _parse_cmd_arguments()
 
-    print(args.infile)
     data = bibtex.Parser().parse_file(args.infile)
 
     # Use an ordered dictionary to make sure that the entries are written out
