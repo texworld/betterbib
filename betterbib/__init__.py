@@ -10,11 +10,11 @@ from betterbib.__about__ import (
     )
 
 from betterbib.tools import (
-        create_dict,
-        pybtex_to_dict,
-        pybtex_to_bibtex_string,
-        latex_to_unicode
-        )
+    create_dict,
+    pybtex_to_dict,
+    pybtex_to_bibtex_string,
+    latex_to_unicode
+    )
 from betterbib.crossref import Crossref
 from betterbib.dblp import Dblp
 

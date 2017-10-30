@@ -2,10 +2,10 @@
 #
 from __future__ import print_function
 
-import enchant
 import re
 import requests
 
+import enchant
 import pypandoc
 
 from .errors import UniqueError
@@ -133,9 +133,9 @@ def _translate_word(word, d):
         needs_protection = True
     else:
         needs_protection = (
-                any([char.isupper() for char in word]) and
-                d.check(word) and not d.check(word.lower())
-                )
+            any([char.isupper() for char in word]) and
+            d.check(word) and not d.check(word.lower())
+            )
 
     if needs_protection:
         return '{' + word + '}'
@@ -174,8 +174,7 @@ def _translate_title(val, dictionary=create_dict()):
 # pylint: disable=too-many-locals
 def pybtex_to_bibtex_string(
         entry, bibtex_key, bracket_delimeters=True,
-        dictionary=create_dict()
-        ):
+        dictionary=create_dict()):
     '''String representation of BibTeX entry.
     '''
     out = '@{}{{{},\n '.format(entry.type, bibtex_key)
@@ -197,7 +196,7 @@ def pybtex_to_bibtex_string(
                 content.append('month = {}'.format(month_string))
         elif field == 'title':
             content.append(u'title = {}{}{}'.format(
-                left, _translate_title(value), right, dictionary
+                left, _translate_title(value, dictionary), right
                 ))
         else:
             content.append(u'{} = {}{}{}'.format(field, left, value, right))
