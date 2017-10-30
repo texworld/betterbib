@@ -27,7 +27,10 @@ def _main():
             if doi == od[key].fields['doi']:
                 # Would be nicer to remove it completely; see
                 # <https://bitbucket.org/pybtex-devs/pybtex/issues/104/implement>.
-                od[key].fields['doi'] = None
+                if args.keep_doi:
+                    od[key].fields['url'] = None
+                else:
+                    od[key].fields['doi'] = None
 
     _write(od, args.infile, 'curly')
     return
