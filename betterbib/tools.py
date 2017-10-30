@@ -77,6 +77,7 @@ def create_dict():
         'Hermite', 'Hermitian',
         'Hopf',
         'Hopfield',
+        'Jacobi', 'Jacobian',
         'Kronrod',
         'Krylov',
         'Kuratowski',
