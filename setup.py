@@ -55,6 +55,7 @@ setup(
         ],
     scripts=[
         'tools/betterbib',
-        'tools/doi2bibtex'
+        'tools/betterbib-dedup-doi',
+        'tools/doi2bibtex',
         ]
     )

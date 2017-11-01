@@ -13,16 +13,6 @@ from .tools import pybtex_to_dict, latex_to_unicode, heuristic_unique_result
 
 
 def _bibtex_to_crossref_type(bibtex_type):
-    assert bibtex_type not in [
-        'booklet',
-        'conference',
-        'manual',
-        'mastersthesis',
-        'online',
-        'phdthesis',
-        'unpublished'
-        ], 'Crossref doesn''t provide {} data'.format(bibtex_type)
-
     _bibtex_to_crossref_map = {
         'article': ['journal-article'],
         'book': ['book', 'monograph'],
@@ -33,7 +23,10 @@ def _bibtex_to_crossref_type(bibtex_type):
         'proceedings': ['proceedings'],
         'techreport': ['report'],
         }
-    return _bibtex_to_crossref_map[bibtex_type]
+    try:
+        return _bibtex_to_crossref_map[bibtex_type]
+    except KeyError:
+        return []
 
 
 class Crossref(object):
@@ -160,12 +153,15 @@ class Crossref(object):
 
         params = {
             'query': payload,
-            'filter': ','.join(
-                'type:{}'.format(tp)
-                for tp in _bibtex_to_crossref_type(entry.type)
-                ),
             'rows': 2  # max number of results
             }
+
+        crossref_types = _bibtex_to_crossref_type(entry.type)
+        if crossref_types:
+            params['filter'] = ','.join(
+                'type:{}'.format(ct)
+                for ct in crossref_types
+                )
 
         r = requests.get(self.api_url, params=params)
         if not r.ok:
