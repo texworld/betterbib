@@ -122,7 +122,7 @@ def _write(od, filename, delimeter_type):
 
     # write the data out sequentially to respect ordering
     for bib_id, d in od.items():
-        bracket_delimeters = delimeter_type == 'curly'
+        bracket_delimeters = delimeter_type == 'braces'
         a = pybtex_to_bibtex_string(
             d, bib_id, bracket_delimeters=bracket_delimeters,
             dictionary=dictionary
@@ -178,13 +178,13 @@ def _parse_cmd_arguments():
     parser.add_argument(
         '-d', '--delimeter-type',
         choices=[
-            'curly',
+            'braces',
             'quote',
             ],
-        default='curly',
+        default='braces',
         help=(
             'which delimeters to use in the output file '
-            '(default: curly brackets)'
+            '(default: braces {...})'
             ),
         )
     parser.add_argument(
