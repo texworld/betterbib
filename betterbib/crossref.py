@@ -72,6 +72,7 @@ class Crossref(object):
         # All other cases
         _crossref_to_bibtex_type = {
             'book': 'book',
+            'dataset': 'misc',
             'journal-article': 'article',
             'monograph': 'book',
             'other': 'misc',
