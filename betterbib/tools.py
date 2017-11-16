@@ -8,6 +8,7 @@ import requests
 import enchant
 import pypandoc
 
+from .__about__ import __version__
 from .errors import UniqueError
 
 
@@ -300,3 +301,24 @@ def heuristic_unique_result(results, d):
         return results[0]
 
     raise UniqueError('Could not find a positively unique match.')
+
+
+def write(od, file_handle, delimeter_type):
+    # Write header to the output file.
+    file_handle.write(
+        '%comment{{This file was created with betterbib v{}.}}\n\n'
+        .format(__version__)
+        )
+
+    # Create the dictionary only once
+    dictionary = create_dict()
+
+    # write the data out sequentially to respect ordering
+    for bib_id, d in od.items():
+        bracket_delimeters = delimeter_type == 'braces'
+        a = pybtex_to_bibtex_string(
+            d, bib_id, bracket_delimeters=bracket_delimeters,
+            dictionary=dictionary
+            )
+        file_handle.write(a + '\n\n')
+    return

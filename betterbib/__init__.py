@@ -13,7 +13,8 @@ from betterbib.tools import (
     create_dict,
     pybtex_to_dict,
     pybtex_to_bibtex_string,
-    latex_to_unicode
+    latex_to_unicode,
+    write,
     )
 from betterbib.crossref import Crossref
 from betterbib.dblp import Dblp

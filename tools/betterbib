@@ -11,7 +11,6 @@ import sys
 
 # pylint: disable=import-self
 import betterbib
-from betterbib import pybtex_to_bibtex_string
 from pybtex.database.input import bibtex
 from tqdm import tqdm
 
@@ -44,7 +43,7 @@ def _main():
     print('\n\nTotal number of entries: {}'.format(len(data.entries)))
     print('Found: {}'.format(num_success))
 
-    _write(od, args.outfile, args.delimeter_type)
+    betterbib.write(od, args.outfile, args.delimeter_type)
 
     return
 
@@ -105,27 +104,6 @@ def _update_from_source(od, source, num_concurrent_requests):
             od[bib_id] = data if data else entry
 
     return od, num_success
-
-
-def _write(od, file_handle, delimeter_type):
-    # Write header to the output file.
-    file_handle.write(
-        '%%comment{This file was created with betterbib v%s.}\n\n' %
-        betterbib.__version__
-        )
-
-    # Create the dictionary only once
-    dictionary = betterbib.create_dict()
-
-    # write the data out sequentially to respect ordering
-    for bib_id, d in od.items():
-        bracket_delimeters = delimeter_type == 'braces'
-        a = pybtex_to_bibtex_string(
-            d, bib_id, bracket_delimeters=bracket_delimeters,
-            dictionary=dictionary
-            )
-        file_handle.write(a + '\n\n')
-    return
 
 
 def _parse_cmd_arguments():
