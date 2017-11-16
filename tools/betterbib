@@ -7,7 +7,6 @@ import argparse
 import collections
 # pylint: disable=import-error
 import concurrent.futures
-from io import open as io_open
 import sys
 
 # pylint: disable=import-self
@@ -42,10 +41,11 @@ def _main():
 
     od = _adapt_doi_urls(od, args.doi_url_type)
 
-    _write(od, args.outfile, args.delimeter_type)
-
     print('\n\nTotal number of entries: {}'.format(len(data.entries)))
     print('Found: {}'.format(num_success))
+
+    _write(od, args.outfile, args.delimeter_type)
+
     return
 
 
@@ -107,12 +107,9 @@ def _update_from_source(od, source, num_concurrent_requests):
     return od, num_success
 
 
-def _write(od, filename, delimeter_type):
-    # Open output file for writing.
-    out = io_open(filename, mode='w', encoding='utf-8')
-
+def _write(od, file_handle, delimeter_type):
     # Write header to the output file.
-    out.write(
+    file_handle.write(
         '%%comment{This file was created with betterbib v%s.}\n\n' %
         betterbib.__version__
         )
@@ -127,9 +124,7 @@ def _write(od, filename, delimeter_type):
             d, bib_id, bracket_delimeters=bracket_delimeters,
             dictionary=dictionary
             )
-        out.write(a + '\n\n')
-
-    out.close()
+        file_handle.write(a + '\n\n')
     return
 
 
@@ -137,11 +132,6 @@ def _parse_cmd_arguments():
     parser = argparse.ArgumentParser(
         description='Improve BibTeX files '
         'with information from online sources.'
-        )
-    parser.add_argument(
-        'infile',
-        type=str,
-        help='input BibTeX file'
         )
     parser.add_argument(
         '-v', '--version',
@@ -152,9 +142,18 @@ def _parse_cmd_arguments():
             )
         )
     parser.add_argument(
+        'infile',
+        nargs='?',
+        type=argparse.FileType('r'),
+        default=sys.stdin,
+        help='input BibTeX file (default: stdin)'
+        )
+    parser.add_argument(
         'outfile',
-        type=str,
-        help='output BibTeX file'
+        nargs='?',
+        type=argparse.FileType('w'),
+        default=sys.stdout,
+        help='output BibTeX file (default: stdout)'
         )
     parser.add_argument(
         '-s', '--source',
