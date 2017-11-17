@@ -14,7 +14,7 @@ def test_crossref_article0():
     test_entry = pybtex.database.Entry(
         'article',
         fields={
-            'title': 'Framework Deflation Krylov Augmented'
+            'title': 'Framework Deflation Krylov Augmented',
             },
         persons={'author': [
             pybtex.database.Person('Liesen'),
@@ -41,7 +41,7 @@ def test_crossref_article0():
             'volume': u'34',
             'source': u'Crossref',
             'year': 2013,
-            'pages': u'495-518'
+            'pages': u'495-518',
             },
         persons=pybtex.database.OrderedCaseInsensitiveDict({
             'author': [

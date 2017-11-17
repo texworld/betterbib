@@ -8,6 +8,7 @@ import requests
 import enchant
 import pypandoc
 
+from .__about__ import __version__
 from .errors import UniqueError
 
 
@@ -125,7 +126,7 @@ def create_dict():
 
 
 def _translate_word(word, d):
-    # Check if the word needs to be protected by curly brackets to prevent
+    # Check if the word needs to be protected by curly braces to prevent
     # recapitalization.
     if not word:
         needs_protection = False
@@ -147,7 +148,7 @@ def _translate_word(word, d):
 def _translate_title(val, dictionary=create_dict()):
     '''The capitalization of BibTeX entries is handled by the style, so names
     (Newton) or abbreviations (GMRES) may not be capitalized. This is unless
-    they are wrapped in curly brackets.
+    they are wrapped in curly braces.
     This function takes a raw title string as input and {}-protects those parts
     whose capitalization should not change.
     '''
@@ -175,14 +176,18 @@ def _translate_title(val, dictionary=create_dict()):
 
 # pylint: disable=too-many-locals
 def pybtex_to_bibtex_string(
-        entry, bibtex_key, bracket_delimeters=True,
+        entry, bibtex_key,
+        brace_delimeters=True,
+        tab_indent=False,
         dictionary=create_dict()):
     '''String representation of BibTeX entry.
     '''
-    out = '@{}{{{},\n '.format(entry.type, bibtex_key)
+
+    indent = '\t' if tab_indent else ' '
+    out = '@{}{{{},\n{}'.format(entry.type, bibtex_key, indent)
     content = []
 
-    left, right = ['{', '}'] if bracket_delimeters else ['"', '"']
+    left, right = ['{', '}'] if brace_delimeters else ['"', '"']
 
     for key, persons in entry.persons.items():
         persons_str = ' and '.join([_get_person_str(p) for p in persons])
@@ -207,7 +212,7 @@ def pybtex_to_bibtex_string(
                     )
 
     # Make sure that every line ends with a comma
-    out += ' '.join([line + ',\n' for line in content])
+    out += indent.join([line + ',\n' for line in content])
     out += '}'
     return out
 
@@ -300,3 +305,37 @@ def heuristic_unique_result(results, d):
         return results[0]
 
     raise UniqueError('Could not find a positively unique match.')
+
+
+def write(od, file_handle, delimeter_type, tab_indent):
+    # Write header to the output file.
+    file_handle.write(
+        '%comment{{This file was created with betterbib v{}.}}\n\n'
+        .format(__version__)
+        )
+
+    # Create the dictionary only once
+    dictionary = create_dict()
+
+    # write the data out sequentially to respect ordering
+    for bib_id, d in od.items():
+        brace_delimeters = delimeter_type == 'braces'
+        a = pybtex_to_bibtex_string(
+            d, bib_id, brace_delimeters=brace_delimeters,
+            tab_indent=tab_indent,
+            dictionary=dictionary,
+            )
+        file_handle.write(a + '\n\n')
+    return
+
+
+def update(entry1, entry2):
+    '''Create a merged BibTeX entry with the data from entry2 taking
+    precedence.
+    '''
+    out = entry1
+    if entry2 is not None:
+        out.type = entry2.type
+        for key, value in entry2.fields.items():
+            out.fields[key] = value
+    return out
