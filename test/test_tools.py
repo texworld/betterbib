@@ -36,7 +36,7 @@ def test_update():
 
     merged = betterbib.update(entry1, entry2)
 
-    assert betterbib.pybtex_to_bibtex_string(merged, 'key') \
-        == betterbib.pybtex_to_bibtex_string(reference, 'key')
+    assert betterbib.pybtex_to_bibtex_string(merged, 'key', sort=True) \
+        == betterbib.pybtex_to_bibtex_string(reference, 'key', sort=True)
 
     return

@@ -47,8 +47,8 @@ def test_article0():
                 ]
             }))
 
-    assert betterbib.pybtex_to_bibtex_string(bt, 'key') \
-        == betterbib.pybtex_to_bibtex_string(reference, 'key')
+    assert betterbib.pybtex_to_bibtex_string(bt, 'key', sort=True) \
+        == betterbib.pybtex_to_bibtex_string(reference, 'key', sort=True)
 
     return
 

@@ -174,12 +174,13 @@ def _translate_title(val, dictionary=create_dict()):
     return ' '.join(words)
 
 
-# pylint: disable=too-many-locals
+# pylint: disable=too-many-locals,too-many-arguments
 def pybtex_to_bibtex_string(
         entry, bibtex_key,
         brace_delimeters=True,
         tab_indent=False,
-        dictionary=create_dict()):
+        dictionary=create_dict(),
+        sort=False):
     '''String representation of BibTeX entry.
     '''
 
@@ -193,22 +194,24 @@ def pybtex_to_bibtex_string(
         persons_str = ' and '.join([_get_person_str(p) for p in persons])
         content.append(u'{} = {}{}{}'.format(key, left, persons_str, right))
 
-    # Make sure the fields always come out in the same order
-    sorted_fields = sorted(entry.fields.keys())
-    for field in sorted_fields:
-        value = entry.fields[field]
-        if field == 'month':
+    keys = entry.fields.keys()
+    if sort:
+        keys = sorted(keys)
+
+    for key in keys:
+        value = entry.fields[key]
+        if key == 'month':
             month_string = _translate_month(value)
             if month_string:
                 content.append('month = {}'.format(month_string))
-        elif field == 'title':
+        elif key == 'title':
             content.append(u'title = {}{}{}'.format(
                 left, _translate_title(value, dictionary), right
                 ))
         else:
             if value is not None:
                 content.append(
-                    u'{} = {}{}{}'.format(field, left, value, right)
+                    u'{} = {}{}{}'.format(key, left, value, right)
                     )
 
     # Make sure that every line ends with a comma
@@ -336,6 +339,7 @@ def update(entry1, entry2):
     out = entry1
     if entry2 is not None:
         out.type = entry2.type
+        out.persons = entry2.persons
         for key, value in entry2.fields.items():
             out.fields[key] = value
     return out
