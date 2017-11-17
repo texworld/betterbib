@@ -179,8 +179,7 @@ def pybtex_to_bibtex_string(
         entry, bibtex_key,
         brace_delimeters=True,
         tab_indent=False,
-        dictionary=create_dict(),
-        ):
+        dictionary=create_dict()):
     '''String representation of BibTeX entry.
     '''
 
