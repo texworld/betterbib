@@ -174,14 +174,13 @@ def _translate_title(val, dictionary=create_dict()):
     return ' '.join(words)
 
 
-# pylint: disable=too-many-locals
+# pylint: disable=too-many-locals,too-many-arguments
 def pybtex_to_bibtex_string(
         entry, bibtex_key,
         brace_delimeters=True,
         tab_indent=False,
         dictionary=create_dict(),
-        sort=False
-        ):
+        sort=False):
     '''String representation of BibTeX entry.
     '''
 
