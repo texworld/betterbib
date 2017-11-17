@@ -36,7 +36,7 @@ def _main():
     print('\n\nTotal number of entries: {}'.format(len(data.entries)))
     print('Found: {}'.format(num_success))
 
-    betterbib.write(od, args.outfile, 'braces')
+    betterbib.write(od, args.outfile, 'braces', tab_indent=False)
     return
 
 

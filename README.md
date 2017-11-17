@@ -11,6 +11,12 @@ inconsistencies, mistakes, or are missing information. betterbib helps
 maintaining your BibTeX files by comparing them with online sources and
 correcting whatever entries are found faulty.
 
+All of the following tools can read from stdin and write to stdout, so you can
+concatenate them to get exactly what you want; e.g.,
+```
+betterbib-sync in.bib | betterbib-format -t -b - out.bib
+```
+
 ### Sync
 
 With

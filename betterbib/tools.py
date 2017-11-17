@@ -335,7 +335,8 @@ def update(entry1, entry2):
     precedence.
     '''
     out = entry1
-    out.type = entry2.type
-    for key, value in entry2.fields.items():
-        out.fields[key] = value
+    if entry2 is not None:
+        out.type = entry2.type
+        for key, value in entry2.fields.items():
+            out.fields[key] = value
     return out
