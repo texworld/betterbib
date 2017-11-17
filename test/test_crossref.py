@@ -52,8 +52,8 @@ def test_crossref_article0():
                 ]
             }))
 
-    assert betterbib.pybtex_to_bibtex_string(bt, 'key') \
-        == betterbib.pybtex_to_bibtex_string(reference, 'key')
+    assert betterbib.pybtex_to_bibtex_string(bt, 'key', sort=True) \
+        == betterbib.pybtex_to_bibtex_string(reference, 'key', sort=True)
 
     assert betterbib.tools.get_short_doi(
         betterbib.tools.doi_from_url(bt.fields['url'])
@@ -122,8 +122,8 @@ def test_crossref_book0():
                 ]
             }))
 
-    assert betterbib.pybtex_to_bibtex_string(bt, 'key') \
-        == betterbib.pybtex_to_bibtex_string(reference, 'key')
+    assert betterbib.pybtex_to_bibtex_string(bt, 'key', sort=True) \
+        == betterbib.pybtex_to_bibtex_string(reference, 'key', sort=True)
 
     return
 
@@ -164,8 +164,8 @@ def test_crossref_book1():
                 ]
             }))
 
-    assert betterbib.pybtex_to_bibtex_string(bt, 'key') \
-        == betterbib.pybtex_to_bibtex_string(reference, 'key')
+    assert betterbib.pybtex_to_bibtex_string(bt, 'key', sort=True) \
+        == betterbib.pybtex_to_bibtex_string(reference, 'key', sort=True)
 
     return
 
@@ -203,8 +203,8 @@ def test_crossref_inbook0():
             }
         )
 
-    assert betterbib.pybtex_to_bibtex_string(bt, 'key') \
-        == betterbib.pybtex_to_bibtex_string(reference, 'key')
+    assert betterbib.pybtex_to_bibtex_string(bt, 'key', sort=True) \
+        == betterbib.pybtex_to_bibtex_string(reference, 'key', sort=True)
 
     return
 
@@ -253,8 +253,8 @@ def test_crossref_incollection0():
                 ]})
         )
 
-    assert betterbib.pybtex_to_bibtex_string(bt, 'key') \
-        == betterbib.pybtex_to_bibtex_string(reference, 'key')
+    assert betterbib.pybtex_to_bibtex_string(bt, 'key', sort=True) \
+        == betterbib.pybtex_to_bibtex_string(reference, 'key', sort=True)
 
     return
 
@@ -292,8 +292,8 @@ def test_crossref_techreport0():
                 ]})
         )
 
-    assert betterbib.pybtex_to_bibtex_string(bt, 'key') \
-        == betterbib.pybtex_to_bibtex_string(reference, 'key')
+    assert betterbib.pybtex_to_bibtex_string(bt, 'key', sort=True) \
+        == betterbib.pybtex_to_bibtex_string(reference, 'key', sort=True)
 
     return
 
@@ -331,8 +331,8 @@ def test_crossref_inproceedings0():
                 ]})
         )
 
-    assert betterbib.pybtex_to_bibtex_string(bt, 'key') \
-        == betterbib.pybtex_to_bibtex_string(reference, 'key')
+    assert betterbib.pybtex_to_bibtex_string(bt, 'key', sort=True) \
+        == betterbib.pybtex_to_bibtex_string(reference, 'key', sort=True)
 
     return
 
@@ -364,8 +364,8 @@ def test_crossref_proceedings0():
             }
         )
 
-    assert betterbib.pybtex_to_bibtex_string(bt, 'key') \
-        == betterbib.pybtex_to_bibtex_string(reference, 'key')
+    assert betterbib.pybtex_to_bibtex_string(bt, 'key', sort=True) \
+        == betterbib.pybtex_to_bibtex_string(reference, 'key', sort=True)
 
     return
 
@@ -401,8 +401,8 @@ def test_doi_only():
                 ]
             }))
 
-    assert betterbib.pybtex_to_bibtex_string(bt, 'key') \
-        == betterbib.pybtex_to_bibtex_string(reference, 'key')
+    assert betterbib.pybtex_to_bibtex_string(bt, 'key', sort=True) \
+        == betterbib.pybtex_to_bibtex_string(reference, 'key', sort=True)
 
     return
 
@@ -442,8 +442,8 @@ def test_standard():
 
     bt = source.find_unique(test_entry)
 
-    assert betterbib.pybtex_to_bibtex_string(bt, 'key') \
-        == betterbib.pybtex_to_bibtex_string(reference, 'key')
+    assert betterbib.pybtex_to_bibtex_string(bt, 'key', sort=True) \
+        == betterbib.pybtex_to_bibtex_string(reference, 'key', sort=True)
 
     return
 
@@ -499,8 +499,8 @@ def test_crossref_all_capitals():
                 ]
             }))
 
-    assert betterbib.pybtex_to_bibtex_string(bt, 'key') \
-        == betterbib.pybtex_to_bibtex_string(reference, 'key')
+    assert betterbib.pybtex_to_bibtex_string(bt, 'key', sort=True) \
+        == betterbib.pybtex_to_bibtex_string(reference, 'key', sort=True)
 
     return
 
