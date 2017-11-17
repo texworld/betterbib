@@ -24,8 +24,37 @@ def _main():
         else data.entries.items()
         )
 
+    od = _adapt_doi_urls(od, args.doi_url_type)
+
     betterbib.write(od, args.outfile, args.delimeter_type)
     return
+
+
+def _adapt_doi_urls(od, doi_url_type):
+    if doi_url_type == 'new':
+        od = _update_doi_url(od, lambda doi: 'https://doi.org/' + doi)
+    elif doi_url_type == 'short':
+        def update_to_short_doi(doi):
+            short_doi = betterbib.tools.get_short_doi(doi)
+            if short_doi:
+                return 'https://doi.org/' + short_doi
+            return None
+        od = _update_doi_url(od, update_to_short_doi)
+    else:
+        assert doi_url_type == 'unchanged'
+
+    return od
+
+
+def _update_doi_url(od, url_from_doi):
+    for bib_id in od:
+        if 'url' in od[bib_id].fields:
+            doi = betterbib.tools.doi_from_url(od[bib_id].fields['url'])
+            if doi:
+                new_url = url_from_doi(doi)
+                if new_url:
+                    od[bib_id].fields['url'] = new_url
+    return od
 
 
 def _parse_cmd_arguments():
@@ -67,7 +96,7 @@ def _parse_cmd_arguments():
         '-d', '--delimeter-type',
         choices=[
             'braces',
-            'quote',
+            'quotes',
             ],
         default='braces',
         help=(

@@ -126,7 +126,7 @@ def create_dict():
 
 
 def _translate_word(word, d):
-    # Check if the word needs to be protected by curly brackets to prevent
+    # Check if the word needs to be protected by curly braces to prevent
     # recapitalization.
     if not word:
         needs_protection = False
@@ -148,7 +148,7 @@ def _translate_word(word, d):
 def _translate_title(val, dictionary=create_dict()):
     '''The capitalization of BibTeX entries is handled by the style, so names
     (Newton) or abbreviations (GMRES) may not be capitalized. This is unless
-    they are wrapped in curly brackets.
+    they are wrapped in curly braces.
     This function takes a raw title string as input and {}-protects those parts
     whose capitalization should not change.
     '''
@@ -176,14 +176,14 @@ def _translate_title(val, dictionary=create_dict()):
 
 # pylint: disable=too-many-locals
 def pybtex_to_bibtex_string(
-        entry, bibtex_key, bracket_delimeters=True,
+        entry, bibtex_key, brace_delimeters=True,
         dictionary=create_dict()):
     '''String representation of BibTeX entry.
     '''
     out = '@{}{{{},\n '.format(entry.type, bibtex_key)
     content = []
 
-    left, right = ['{', '}'] if bracket_delimeters else ['"', '"']
+    left, right = ['{', '}'] if brace_delimeters else ['"', '"']
 
     for key, persons in entry.persons.items():
         persons_str = ' and '.join([_get_person_str(p) for p in persons])
@@ -315,9 +315,9 @@ def write(od, file_handle, delimeter_type):
 
     # write the data out sequentially to respect ordering
     for bib_id, d in od.items():
-        bracket_delimeters = delimeter_type == 'braces'
+        brace_delimeters = delimeter_type == 'braces'
         a = pybtex_to_bibtex_string(
-            d, bib_id, bracket_delimeters=bracket_delimeters,
+            d, bib_id, brace_delimeters=brace_delimeters,
             dictionary=dictionary
             )
         file_handle.write(a + '\n\n')
