@@ -35,7 +35,7 @@ def _parse_cmd_arguments():
         '-v', '--version',
         help='display version information',
         action='version',
-        version='%(prog)s {}, Python {}'.format(
+        version='betterbib {}, Python {}'.format(
             betterbib.__version__, sys.version
             )
         )
@@ -57,6 +57,11 @@ def _parse_cmd_arguments():
         '-b', '--sort-by-bibkey',
         action='store_true',
         help='sort entries by BibTeX key (default: false)'
+        )
+    parser.add_argument(
+        '-t', '--tabs-indent',
+        action='store_true',
+        help='use tabs for indentation (default: false)'
         )
     parser.add_argument(
         '-d', '--delimeter-type',

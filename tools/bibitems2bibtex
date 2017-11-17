@@ -9,6 +9,9 @@ from __future__ import print_function
 
 import argparse
 import re
+import sys
+
+import betterbib
 
 
 def _main():
@@ -226,6 +229,14 @@ def extract_bibitems(filename):
 
 def _parse_args():
     parser = argparse.ArgumentParser(description='Extract bibitems.')
+    parser.add_argument(
+        '-v', '--version',
+        help='display version information',
+        action='version',
+        version='betterbib {}, Python {}'.format(
+            betterbib.__version__, sys.version
+            )
+        )
     parser.add_argument(
         'input',
         type=str,

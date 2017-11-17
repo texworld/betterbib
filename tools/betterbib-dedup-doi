@@ -68,17 +68,17 @@ def _parse_cmd_arguments():
         'if both are identical.'
         )
     parser.add_argument(
-        'infile',
-        type=str,
-        help='input BibTeX file'
-        )
-    parser.add_argument(
         '-v', '--version',
         help='display version information',
         action='version',
-        version='%(prog)s {}, Python {}'.format(
+        version='betterbib {}, Python {}'.format(
             betterbib.__version__, sys.version
             )
+        )
+    parser.add_argument(
+        'infile',
+        type=argparse.FileType('w'),
+        help='input BibTeX file'
         )
     parser.add_argument(
         '-k', '--keep-doi',

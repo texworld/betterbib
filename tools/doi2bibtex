@@ -3,6 +3,8 @@
 #
 from __future__ import print_function, unicode_literals
 
+import sys
+
 import betterbib
 from betterbib import pybtex_to_bibtex_string
 
@@ -20,6 +22,14 @@ def _parse_cmd_arguments():
     import argparse
     parser = argparse.ArgumentParser(
         description='Turn a DOI into a BibTeX entry.'
+        )
+    parser.add_argument(
+        '-v', '--version',
+        help='display version information',
+        action='version',
+        version='betterbib {}, Python {}'.format(
+            betterbib.__version__, sys.version
+            )
         )
     parser.add_argument(
         'doi',

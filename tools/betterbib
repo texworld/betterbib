@@ -115,7 +115,7 @@ def _parse_cmd_arguments():
         '-v', '--version',
         help='display version information',
         action='version',
-        version='%(prog)s {}, Python {}'.format(
+        version='betterbib {}, Python {}'.format(
             betterbib.__version__, sys.version
             )
         )
