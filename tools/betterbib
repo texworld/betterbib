@@ -101,7 +101,7 @@ def _update_from_source(od, source, num_concurrent_requests):
             else:
                 num_success += 1
 
-            od[bib_id] = data if data else entry
+            od[bib_id] = betterbib.update(entry, data)
 
     return od, num_success
 

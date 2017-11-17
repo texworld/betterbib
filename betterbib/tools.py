@@ -322,3 +322,14 @@ def write(od, file_handle, delimeter_type):
             )
         file_handle.write(a + '\n\n')
     return
+
+
+def update(entry1, entry2):
+    '''Create a merged BibTeX entry with the data from entry2 taking
+    precedence.
+    '''
+    out = entry1
+    out.type = entry2.type
+    for key, value in entry2.fields.items():
+        out.fields[key] = value
+    return out
