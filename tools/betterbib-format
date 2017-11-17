@@ -26,7 +26,9 @@ def _main():
 
     od = _adapt_doi_urls(od, args.doi_url_type)
 
-    betterbib.write(od, args.outfile, args.delimeter_type)
+    betterbib.write(
+        od, args.outfile, args.delimeter_type, tab_indent=args.tabs_indent
+        )
     return
 
 

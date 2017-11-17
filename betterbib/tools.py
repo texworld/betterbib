@@ -176,11 +176,16 @@ def _translate_title(val, dictionary=create_dict()):
 
 # pylint: disable=too-many-locals
 def pybtex_to_bibtex_string(
-        entry, bibtex_key, brace_delimeters=True,
-        dictionary=create_dict()):
+        entry, bibtex_key,
+        brace_delimeters=True,
+        tab_indent=False,
+        dictionary=create_dict(),
+        ):
     '''String representation of BibTeX entry.
     '''
-    out = '@{}{{{},\n '.format(entry.type, bibtex_key)
+
+    indent = '\t' if tab_indent else ' '
+    out = '@{}{{{},\n{}'.format(entry.type, bibtex_key, indent)
     content = []
 
     left, right = ['{', '}'] if brace_delimeters else ['"', '"']
@@ -208,7 +213,7 @@ def pybtex_to_bibtex_string(
                     )
 
     # Make sure that every line ends with a comma
-    out += ' '.join([line + ',\n' for line in content])
+    out += indent.join([line + ',\n' for line in content])
     out += '}'
     return out
 
@@ -303,7 +308,7 @@ def heuristic_unique_result(results, d):
     raise UniqueError('Could not find a positively unique match.')
 
 
-def write(od, file_handle, delimeter_type):
+def write(od, file_handle, delimeter_type, tab_indent):
     # Write header to the output file.
     file_handle.write(
         '%comment{{This file was created with betterbib v{}.}}\n\n'
@@ -318,7 +323,8 @@ def write(od, file_handle, delimeter_type):
         brace_delimeters = delimeter_type == 'braces'
         a = pybtex_to_bibtex_string(
             d, bib_id, brace_delimeters=brace_delimeters,
-            dictionary=dictionary
+            tab_indent=tab_indent,
+            dictionary=dictionary,
             )
         file_handle.write(a + '\n\n')
     return
