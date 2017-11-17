@@ -29,19 +29,19 @@ def test_crossref_article0():
         'article',
         fields={
             'doi': u'10.1137/110820713',
-            'number': u'2',
-            'pages': u'495-518',
-            'source': u'Crossref',
-            'url': u'http://dx.doi.org/10.1137/110820713',
-            'journal': u'SIAM J. Matrix Anal. & Appl.',
+            'issn': u'0895-4798, 1095-7162',
             'publisher':
                 u'Society for Industrial & Applied Mathematics (SIAM)',
             'title': u'A Framework for Deflated and Augmented ' +
                      'Krylov Subspace Methods',
-            'volume': u'34',
-            'issn': u'0895-4798, 1095-7162',
-            'year': 2013,
+            'url': u'http://dx.doi.org/10.1137/110820713',
+            'journal': u'SIAM J. Matrix Anal. & Appl.',
+            'number': u'2',
             'month': 1,
+            'volume': u'34',
+            'source': u'Crossref',
+            'year': 2013,
+            'pages': u'495-518',
             },
         persons=pybtex.database.OrderedCaseInsensitiveDict({
             'author': [
@@ -108,13 +108,13 @@ def test_crossref_book0():
         'book',
         fields={
             'doi': u'10.1002/0470868279',
-            'source': u'Crossref',
-            'url': u'http://dx.doi.org/10.1002/0470868279',
             'publisher': u'John Wiley & Sons, Ltd',
             'title': u'Numerical Methods for Ordinary Differential Equations',
-            'isbn': '9780470868270, 9780471967583',
-            'year': 2003,
+            'url': u'http://dx.doi.org/10.1002/0470868279',
             'month': 6,
+            'source': u'Crossref',
+            'year': 2003,
+            'isbn': '9780470868270, 9780471967583'
             },
         persons=pybtex.database.OrderedCaseInsensitiveDict({
             'author': [
@@ -148,14 +148,14 @@ def test_crossref_book1():
     reference = pybtex.database.Entry(
         'book',
         fields={
-            'doi': '10.1515/9781400833887',
-            'source': u'Crossref',
-            'url': u'http://dx.doi.org/10.1515/9781400833887',
-            'publisher': u'Princeton University Press',
             'title': u'Matrices, Moments and Quadrature with Applications',
-            'isbn': '9781400833887',
+            'source': u'Crossref',
+            'publisher': u'Princeton University Press',
             'year': 2009,
             'month': 1,
+            'doi': '10.1515/9781400833887',
+            'url': u'http://dx.doi.org/10.1515/9781400833887',
+            'isbn': '9781400833887',
             },
         persons=pybtex.database.OrderedCaseInsensitiveDict({
             'author': [
@@ -190,16 +190,16 @@ def test_crossref_inbook0():
         'inbook',
         fields={
             'doi': u'10.1002/0470868279.ch1',
-            'pages': '1-44',
-            'source': u'Crossref',
+            'publisher': u'John Wiley & Sons, Ltd',
+            'chapter': u'Differential and Difference Equations',
             'url': u'http://dx.doi.org/10.1002/0470868279.ch1',
             'booktitle': u'Numerical Methods ' +
                          'for Ordinary Differential Equations',
-            'publisher': u'John Wiley & Sons, Ltd',
-            'chapter': u'Differential and Difference Equations',
-            'isbn': '9780470868270, 9780471967583',
-            'year': 2005,
             'month': 1,
+            'source': u'Crossref',
+            'year': 2005,
+            'pages': '1-44',
+            'isbn': '9780470868270, 9780471967583',
             }
         )
 
@@ -231,16 +231,16 @@ def test_crossref_incollection0():
     reference = pybtex.database.Entry(
         'incollection',
         fields={
+            'publisher': 'Elsevier',
             'doi': u'10.1016/s1874-575x(02)80025-x',
-            'pages': u'149-219',
-            'source': u'Crossref',
+            'issn': u'1874-575X',
+            'title': 'Numerical Continuation, and Computation of Normal Forms',
             'url': u'http://dx.doi.org/10.1016/s1874-575x(02)80025-x',
             'booktitle': 'Handbook of Dynamical Systems',
-            'publisher': 'Elsevier',
-            'title': 'Numerical Continuation, and Computation of Normal Forms',
-            'issn': u'1874-575X',
-            'isbn': u'9780444501684',
+            'source': u'Crossref',
             'year': 2002,
+            'pages': u'149-219',
+            'isbn': u'9780444501684',
             },
         persons=pybtex.database.OrderedCaseInsensitiveDict({
             'author': [
@@ -276,13 +276,13 @@ def test_crossref_techreport0():
         'techreport',
         fields={
             'doi': u'10.2172/15014765',
-            'source': u'Crossref',
-            'url': u'http://dx.doi.org/10.2172/15014765',
-            'institution': 'Office of Scientific ' +
-                           'and Technical Information  (OSTI)',
             'title': 'CT Scan of NASA Booster Nozzle',
-            'year': 2004,
+            'url': u'http://dx.doi.org/10.2172/15014765',
             'month': 7,
+            'source': u'Crossref',
+            'year': 2004,
+            'institution': 'Office of Scientific ' +
+                           'and Technical Information  (OSTI)'
             },
         persons=pybtex.database.OrderedCaseInsensitiveDict({
             'author': [
@@ -314,16 +314,16 @@ def test_crossref_inproceedings0():
     reference = pybtex.database.Entry(
         'inproceedings',
         fields={
+            'publisher': 'IEEE',
             'doi': u'10.1109/aero.2008.4526230',
-            'source': u'Crossref',
+            'isbn': u'9781424414871, 9781424414888',
+            'issn': u'1095-323X',
+            'title': 'Global Warming is Unequivocal',
             'url': u'http://dx.doi.org/10.1109/aero.2008.4526230',
             'booktitle': '2008 IEEE Aerospace Conference',
-            'publisher': 'IEEE',
-            'title': 'Global Warming is Unequivocal',
-            'issn': u'1095-323X',
-            'isbn': u'9781424414871, 9781424414888',
-            'year': 2008,
             'month': 3,
+            'source': u'Crossref',
+            'year': 2008,
             },
         persons=pybtex.database.OrderedCaseInsensitiveDict({
             'author': [
@@ -354,12 +354,12 @@ def test_crossref_proceedings0():
     reference = pybtex.database.Entry(
         'proceedings',
         fields={
-            'doi': u'10.15611/amse.2014.17',
-            'source': u'Crossref',
-            'url': u'http://dx.doi.org/10.15611/amse.2014.17',
             'publisher': u'Wydawnictwo Uniwersytetu Ekonomicznego ' +
                          u'we Wrocławiu',
+            'doi': u'10.15611/amse.2014.17',
             'title': 'International Scientific Conference',
+            'url': u'http://dx.doi.org/10.15611/amse.2014.17',
+            'source': u'Crossref',
             'year': 2014,
             }
         )
@@ -378,19 +378,19 @@ def test_doi_only():
         'article',
         fields={
             'doi': u'10.1137/110820713',
-            'number': u'2',
-            'pages': u'495-518',
-            'source': u'Crossref',
-            'url': u'http://dx.doi.org/10.1137/110820713',
-            'journal': u'SIAM Journal on Matrix Analysis and Applications',
+            'issn': u'0895-4798, 1095-7162',
             'publisher':
                 u'Society for Industrial & Applied Mathematics (SIAM)',
             'title': u'A Framework for Deflated and Augmented ' +
                      'Krylov Subspace Methods',
-            'volume': u'34',
-            'issn': u'0895-4798, 1095-7162',
-            'year': 2013,
+            'url': u'http://dx.doi.org/10.1137/110820713',
+            'journal': u'SIAM Journal on Matrix Analysis and Applications',
+            'number': u'2',
             'month': 1,
+            'volume': u'34',
+            'source': u'Crossref',
+            'year': 2013,
+            'pages': u'495-518'
             },
         persons=pybtex.database.OrderedCaseInsensitiveDict({
             'author': [
@@ -425,18 +425,18 @@ def test_standard():
     reference = pybtex.database.Entry(
         'misc',
         fields={
-            'doi': u'10.5594/s9781614827788',
-            'source': u'Crossref',
-            'url': u'http://dx.doi.org/10.5594/s9781614827788',
-            'publisher': (
-                'The Society of Motion Picture '
-                'and Television Engineers'
-                ),
             'title': (
                 '{ST} 2022-7:2013 : {Seamless} Protection Switching '
                 'of {SMPTE} {ST} 2022 {IP} Datagrams'
                 ),
+            'doi': u'10.5594/s9781614827788',
+            'url': u'http://dx.doi.org/10.5594/s9781614827788',
             'isbn': '9781614827788',
+            'publisher': (
+                'The Society of Motion Picture '
+                'and Television Engineers'
+                ),
+            'source': u'Crossref',
             }
         )
 
@@ -479,17 +479,17 @@ def test_crossref_all_capitals():
         'article',
         fields={
             'doi': u'10.1142/s0218213009000366',
-            'number': u'05',
-            'pages': u'697-716',
-            'source': u'Crossref',
-            'url': u'http://dx.doi.org/10.1142/s0218213009000366',
-            'journal': u'Int. J. Artif. Intell. Tools',
+            'issn': u'0218-2130, 1793-6349',
             'publisher': u'World Scientific Pub Co Pte Lt',
             'title': u'Ontological Cognitive Map',
-            'volume': u'18',
-            'issn': u'0218-2130, 1793-6349',
-            'year': 2009,
+            'url': u'http://dx.doi.org/10.1142/s0218213009000366',
+            'journal': u'Int. J. Artif. Intell. Tools',
+            'number': u'05',
             'month': 10,
+            'volume': u'18',
+            'source': u'Crossref',
+            'year': 2009,
+            'pages': u'697-716',
             },
         persons=pybtex.database.OrderedCaseInsensitiveDict({
             'author': [

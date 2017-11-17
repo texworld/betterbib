@@ -28,15 +28,15 @@ def test_article0():
         'article',
         fields={
             'doi': u'10.1137/110820713',
-            'number': u'2',
-            'pages': u'495-518',
-            'source': u'DBLP',
-            'url': u'https://doi.org/10.1137/110820713',
-            'journal': u'SIAM J. Matrix Analysis Applications',
             'title': u'A Framework for Deflated and Augmented ' +
                      'Krylov Subspace Methods.',
+            'url': u'https://doi.org/10.1137/110820713',
+            'journal': u'SIAM J. Matrix Analysis Applications',
+            'number': u'2',
             'volume': u'34',
+            'source': u'DBLP',
             'year': 2013,
+            'pages': u'495-518'
             },
         persons=pybtex.database.OrderedCaseInsensitiveDict({
             'author': [
