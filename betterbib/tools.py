@@ -179,7 +179,9 @@ def pybtex_to_bibtex_string(
         entry, bibtex_key,
         brace_delimeters=True,
         tab_indent=False,
-        dictionary=create_dict()):
+        dictionary=create_dict(),
+        sort=False
+        ):
     '''String representation of BibTeX entry.
     '''
 
@@ -193,10 +195,12 @@ def pybtex_to_bibtex_string(
         persons_str = ' and '.join([_get_person_str(p) for p in persons])
         content.append(u'{} = {}{}{}'.format(key, left, persons_str, right))
 
-    # Don't sort the fields or anything -- some people rely on the input being
-    # in the same order as the output (as far as possible). This simplified
-    # diff comparison.
-    for key, value in entry.fields.items():
+    keys = entry.fields.keys()
+    if sort:
+        keys = sorted(keys)
+
+    for key in keys:
+        value = entry.fields[key]
         if key == 'month':
             month_string = _translate_month(value)
             if month_string:
