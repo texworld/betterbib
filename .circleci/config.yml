@@ -18,9 +18,9 @@ jobs:
       # lint
       - run: pylint betterbib/
       - run: pylint test/*.py
-      - run: pylint tools/betterbib
       - run: pylint tools/betterbib-dedup-doi
       - run: pylint tools/betterbib-format
+      - run: pylint tools/betterbib-sync
       - run: pylint tools/bibitems2bibtex
       - run: pylint tools/doi2bibtex
       # make sure that rst converts correctly

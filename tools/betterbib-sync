@@ -9,7 +9,6 @@ import collections
 import concurrent.futures
 import sys
 
-# pylint: disable=import-self
 import betterbib
 from pybtex.database.input import bibtex
 from tqdm import tqdm
@@ -74,8 +73,7 @@ def _update_from_source(od, source, num_concurrent_requests):
 
 def _parse_cmd_arguments():
     parser = argparse.ArgumentParser(
-        description='Improve BibTeX files '
-        'with information from online sources.'
+        description='Sync BibTeX files with information from online sources.'
         )
     parser.add_argument(
         '-v', '--version',

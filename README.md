@@ -9,9 +9,13 @@
 BibTeX files are typically manually maintained and thus often contain
 inconsistencies, mistakes, or are missing information. betterbib helps
 maintaining your BibTeX files by comparing them with online sources and
-correcting whatever entries are found faulty. For example, with
+correcting whatever entries are found faulty.
+
+### Sync
+
+With
 ```
-$ betterbib in.bib out.bib
+$ betterbib-sync in.bib out.bib
 ```
 the input BibTeX
 ```
@@ -46,6 +50,14 @@ betterbib fetches data from
 
 All betterbib command-line options are explained in `betterbib -h`.
 
+### Format
+
+The tool
+```
+betterbib-format in.bib out.bib
+```
+allows you to apply consistent formatting to you BibTeX file. See `-h`/`--help`
+for options.
 
 ### Installation
 
