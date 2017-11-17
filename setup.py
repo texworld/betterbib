@@ -54,8 +54,9 @@ setup(
         'Topic :: Utilities'
         ],
     scripts=[
-        'tools/betterbib',
         'tools/betterbib-dedup-doi',
-        'tools/doi2bibtex',
+        'tools/betterbib-doi2bibtex',
+        'tools/betterbib-format',
+        'tools/betterbib-sync',
         ]
     )
