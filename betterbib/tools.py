@@ -193,22 +193,22 @@ def pybtex_to_bibtex_string(
         persons_str = ' and '.join([_get_person_str(p) for p in persons])
         content.append(u'{} = {}{}{}'.format(key, left, persons_str, right))
 
-    # Make sure the fields always come out in the same order
-    sorted_fields = sorted(entry.fields.keys())
-    for field in sorted_fields:
-        value = entry.fields[field]
-        if field == 'month':
+    # Don't sort the fields or anything -- some people rely on the input being
+    # in the same order as the output (as far as possible). This simplified
+    # diff comparison.
+    for key, value in entry.fields.items():
+        if key == 'month':
             month_string = _translate_month(value)
             if month_string:
                 content.append('month = {}'.format(month_string))
-        elif field == 'title':
+        elif key == 'title':
             content.append(u'title = {}{}{}'.format(
                 left, _translate_title(value, dictionary), right
                 ))
         else:
             if value is not None:
                 content.append(
-                    u'{} = {}{}{}'.format(field, left, value, right)
+                    u'{} = {}{}{}'.format(key, left, value, right)
                     )
 
     # Make sure that every line ends with a comma
