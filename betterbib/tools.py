@@ -342,9 +342,12 @@ def update(entry1, entry2):
             out.type = entry2.type
 
         if entry2.persons:
-            out.persons = entry2.persons
+            for key, value in entry2.persons.items():
+                if value:
+                    out.persons[key] = value
 
         for key, value in entry2.fields.items():
             if value:
                 out.fields[key] = value
+
     return out
