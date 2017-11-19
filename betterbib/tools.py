@@ -338,8 +338,13 @@ def update(entry1, entry2):
     '''
     out = entry1
     if entry2 is not None:
-        out.type = entry2.type
-        out.persons = entry2.persons
+        if entry2.type:
+            out.type = entry2.type
+
+        if entry2.persons:
+            out.persons = entry2.persons
+
         for key, value in entry2.fields.items():
-            out.fields[key] = value
+            if value:
+                out.fields[key] = value
     return out
