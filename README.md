@@ -88,11 +88,6 @@ betterbib requires
 to be installed.
 
 
-### Usage
-```
-$ betterbib mybibliography.bib out.bib
-```
-
 ### Testing
 
 To run the betterbib unit tests, check out this repository and type
