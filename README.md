@@ -11,18 +11,11 @@ inconsistencies, mistakes, or are missing information. betterbib helps
 maintaining your BibTeX files by comparing them with online sources and
 correcting whatever entries are found faulty.
 
-All of the following tools can read from standard input and write to standard
-output, so you can concatenate them to get exactly what you want; e.g.,
+Simply run
 ```
-betterbib-sync in.bib | betterbib-journal-abbrev | betterbib-format -t -b - out.bib
+betterbib in.bib out.bib
 ```
-
-### Sync
-
-With
-```
-$ betterbib-sync in.bib out.bib
-```
+to improve your BibTeX file with default settings. For example,
 the input BibTeX
 ```
 @article {krylov,
@@ -33,21 +26,34 @@ the input BibTeX
 is converted into
 ```
 @article{krylov,
-  author = {Gaul, André and Gutknecht, Martin H. and Liesen, Jörg and Nabben, Reinhard},
-  publisher = {Society for Industrial & Applied Mathematics (SIAM)},
-  doi = {10.1137/110820713},
-  title = {A Framework for Deflated and Augmented {Krylov} Subspace Methods},
-  url = {https://doi.org/10.1137/110820713},
-  journal = {SIAM J. Matrix Anal. & Appl.},
-  number = {2},
-  month = jan,
-  volume = {34},
-  source = {Crossref},
-  year = {2013},
-  pages = {495-518}
+ author = {Gaul, André and Gutknecht, Martin H. and Liesen, Jörg and Nabben, Reinhard},
+ title = {A Framework for Deflated and Augmented {Krylov} Subspace Methods},
+ doi = {10.1137/110820713},
+ number = {2},
+ pages = {495-518},
+ source = {Crossref},
+ url = {https://doi.org/10.1137/110820713},
+ volume = {34},
+ journal = {SIAM J. Matrix Anal. & Appl.},
+ publisher = {Society for Industrial & Applied Mathematics (SIAM)},
+ issn = {0895-4798, 1095-7162},
+ year = {2013},
+ month = jan,
 }
 ```
-(If you prefer long journal names, add the option `--long-journal-name`/`-l`.)
+
+### Tools
+
+All of the following tools can read from standard input and write to standard
+output, so you can concatenate them to get exactly what you want. For example,
+the above `betterbib` command is short for
+```
+betterbib-sync in.bib | betterbib-journal-abbrev | betterbib-format -b - out.bib
+```
+
+
+#### Sync
+
 
 betterbib fetches data from
 
@@ -56,7 +62,7 @@ betterbib fetches data from
 
 All betterbib command-line options are explained in `betterbib -h`.
 
-### Format
+#### Format
 
 The tool
 ```
@@ -65,7 +71,7 @@ betterbib-format in.bib out.bib
 allows you to apply consistent formatting to you BibTeX file. See `-h`/`--help`
 for options.
 
-### (Un)abbreviate journal names
+#### (Un)abbreviate journal names
 
 The tool
 ```
