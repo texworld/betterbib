@@ -21,6 +21,7 @@ jobs:
       - run: pylint tools/betterbib-dedup-doi
       - run: pylint tools/betterbib-doi2bibtex
       - run: pylint tools/betterbib-format
+      - run: pylint tools/betterbib-journal-abbrev
       - run: pylint tools/betterbib-sync
       - run: pylint tools/bibitems2bibtex
       # make sure that rst converts correctly
