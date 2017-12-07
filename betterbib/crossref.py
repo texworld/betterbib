@@ -95,53 +95,19 @@ class Crossref(object):
 
         L = []
 
-        try:
-            L.append(d['title'])
-        except KeyError:
-            pass
+        for key in [
+                'title', 'journal', 'doi', 'pages', 'year', 'volume', 'number',
+                'publisher'
+                ]:
+            try:
+                L.append(d[key])
+            except KeyError:
+                pass
 
+        names = ['first', 'middle', 'prelast', 'last', 'lineage']
         try:
             for au in d['author']:
-                L.extend([
-                    ' '.join(au['first']), ' '.join(au['middle']),
-                    ' '.join(au['prelast']), ' '.join(au['last']),
-                    ' '.join(au['lineage'])
-                    ])
-        except KeyError:
-            pass
-
-        try:
-            L.append(d['journal'])
-        except KeyError:
-            pass
-
-        try:
-            L.append(d['doi'])
-        except KeyError:
-            pass
-
-        try:
-            L.append(d['pages'])
-        except KeyError:
-            pass
-
-        try:
-            L.append(d['year'])
-        except KeyError:
-            pass
-
-        try:
-            L.append(d['volume'])
-        except KeyError:
-            pass
-
-        try:
-            L.append(d['number'])
-        except KeyError:
-            pass
-
-        try:
-            L.append(d['publisher'])
+                L.extend([' '.join(au[key]) for key in names])
         except KeyError:
             pass
 
