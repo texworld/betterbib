@@ -16,7 +16,7 @@ from betterbib.tools import (
     latex_to_unicode,
     write,
     update,
-    update_journal_names,
+    JournalNameUpdater,
     )
 from betterbib.crossref import Crossref
 from betterbib.dblp import Dblp

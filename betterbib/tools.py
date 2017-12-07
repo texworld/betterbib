@@ -355,19 +355,20 @@ def update(entry1, entry2):
     return out
 
 
-def update_journal_names(data, long_journal_names=False):
-    this_dir = os.path.dirname(os.path.realpath(__file__))
-    with open(os.path.join(this_dir, 'data/journals.json'), 'r') as f:
-        table = json.load(f)
+class JournalNameUpdater(object):
+    def __init__(self, long_journal_names=False):
+        this_dir = os.path.dirname(os.path.realpath(__file__))
+        with open(os.path.join(this_dir, 'data/journals.json'), 'r') as f:
+            self.table = json.load(f)
 
-    if long_journal_names:
-        table = {v: k for k, v in table.items()}
+        if long_journal_names:
+            self.table = {v: k for k, v in self.table.items()}
+        return
 
-    for key in data.entries:
+    def update(self, entry):
         try:
-            journal_name = data.entries[key].fields['journal']
-            data.entries[key].fields['journal'] = table[journal_name]
+            journal_name = entry.fields['journal']
+            entry.fields['journal'] = self.table[journal_name]
         except KeyError:
-            continue
-
-    return data
+            pass
+        return

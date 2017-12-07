@@ -15,12 +15,14 @@ from pybtex.database.input import bibtex
 def _main():
     args = _parse_cmd_arguments()
 
-    out = betterbib.update_journal_names(
-            bibtex.Parser().parse_file(args.infile),
-            long_journal_names=args.long_journal_names
-            )
+    updater = betterbib.JournalNameUpdater(args.long_journal_names)
 
-    _write(out.entries, args.outfile, 'curly')
+    data = bibtex.Parser().parse_file(args.infile)
+    for entry in data:
+        entry = updater.update(entry)
+        print(entry)
+
+    _write(data.entries, args.outfile, 'curly')
     return
 
 
