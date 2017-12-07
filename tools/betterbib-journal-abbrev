@@ -18,9 +18,8 @@ def _main():
     updater = betterbib.JournalNameUpdater(args.long_journal_names)
 
     data = bibtex.Parser().parse_file(args.infile)
-    for entry in data:
-        entry = updater.update(entry)
-        print(entry)
+    for key in data.entries:
+        updater.update(data.entries[key])
 
     _write(data.entries, args.outfile, 'curly')
     return
