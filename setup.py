@@ -59,6 +59,7 @@ setup(
         'tools/betterbib-dedup-doi',
         'tools/betterbib-doi2bibtex',
         'tools/betterbib-format',
+        'tools/betterbib-journal-abbrev',
         'tools/betterbib-sync',
         ]
     )
