@@ -20,9 +20,6 @@ def _main():
             long_journal_names=args.long_journal_names
             )
 
-    for key in out.entries:
-        print(out.entries[key].fields['journal'])
-
     _write(out.entries, args.outfile, 'curly')
     return
 

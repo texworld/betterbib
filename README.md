@@ -14,7 +14,7 @@ correcting whatever entries are found faulty.
 All of the following tools can read from standard input and write to standard
 output, so you can concatenate them to get exactly what you want; e.g.,
 ```
-betterbib-sync in.bib | betterbib-format -t -b - out.bib
+betterbib-sync in.bib | betterbib-journal-abbrev | betterbib-format -t -b - out.bib
 ```
 
 ### Sync
@@ -63,6 +63,15 @@ The tool
 betterbib-format in.bib out.bib
 ```
 allows you to apply consistent formatting to you BibTeX file. See `-h`/`--help`
+for options.
+
+### (Un)abbreviate journal names
+
+The tool
+```
+betterbib-journal-abbrev in.bib out.bib
+```
+allows you to apply consistent abbreviation of journal names. See `-h`/`--help`
 for options.
 
 ### Installation
