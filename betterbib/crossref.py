@@ -200,30 +200,21 @@ class Crossref(object):
         bibtex_type = self._crossref_to_bibtex_type(data)
 
         fields_dict = {}
-        try:
-            fields_dict['doi'] = data['DOI']
-        except KeyError:
-            pass
 
-        try:
-            fields_dict['number'] = data['issue']
-        except KeyError:
-            pass
+        pairs = {
+            'doi': 'DOI',
+            'number': 'issue',
+            'pages': 'page',
+            'source': 'source',
+            'url': 'URL',
+            'volume': 'volume',
+            }
 
-        try:
-            fields_dict['pages'] = data['page']
-        except KeyError:
-            pass
-
-        try:
-            fields_dict['source'] = data['source']
-        except KeyError:
-            pass
-
-        try:
-            fields_dict['url'] = data['URL']
-        except KeyError:
-            pass
+        for key1, key2 in pairs.items():
+            try:
+                fields_dict[key1] = data[key2]
+            except KeyError:
+                pass
 
         container_title = None
         keys = ['short-container-title', 'container-title']
@@ -298,11 +289,6 @@ class Crossref(object):
                 fields_dict['title'] = title
             elif container_title:
                 fields_dict['title'] = container_title
-
-        try:
-            fields_dict['volume'] = data['volume']
-        except KeyError:
-            pass
 
         try:
             fields_dict['issn'] = ', '.join(data['ISSN'])
