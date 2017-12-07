@@ -28,6 +28,7 @@ setup(
     author=about['__author__'],
     author_email=about['__author_email__'],
     packages=find_packages(),
+    package_data={'betterbib': ['data/journals.json']},
     description='Better BibTeX data',
     long_description=read('README.rst'),
     url='https://github.com/nschloe/betterbib',

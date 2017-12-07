@@ -1,0 +1,83 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+from __future__ import print_function, unicode_literals
+
+import argparse
+from io import open as io_open
+import sys
+
+# pylint: disable=import-self
+import betterbib
+from betterbib import pybtex_to_bibtex_string
+from pybtex.database.input import bibtex
+
+
+def _main():
+    args = _parse_cmd_arguments()
+
+    out = betterbib.update_journal_names(
+            bibtex.Parser().parse_file(args.infile),
+            long_journal_names=args.long_journal_names
+            )
+
+    for key in out.entries:
+        print(out.entries[key].fields['journal'])
+
+    _write(out.entries, args.infile, 'curly')
+    return
+
+
+def _write(od, filename, delimeter_type):
+    # Open output file for writing.
+    out = io_open(filename, mode='w', encoding='utf-8')
+
+    # Write header to the output file.
+    out.write(
+        '%%comment{This file was created with betterbib v%s.}\n\n' %
+        betterbib.__version__
+        )
+
+    # Create the dictionary only once
+    dictionary = betterbib.create_dict()
+
+    # write the data out sequentially to respect ordering
+    for bib_id, d in od.items():
+        brace_delimeters = delimeter_type == 'curly'
+        a = pybtex_to_bibtex_string(
+            d, bib_id, brace_delimeters=brace_delimeters,
+            dictionary=dictionary
+            )
+        out.write(a + '\n\n')
+
+    out.close()
+    return
+
+
+def _parse_cmd_arguments():
+    parser = argparse.ArgumentParser(
+        description='(Un)abbreviate journal names.'
+        )
+    parser.add_argument(
+        '-v', '--version',
+        help='display version information',
+        action='version',
+        version='betterbib {}, Python {}'.format(
+            betterbib.__version__, sys.version
+            )
+        )
+    parser.add_argument(
+        'infile',
+        type=str,
+        help='input BibTeX file'
+        )
+    parser.add_argument(
+        '-l', '--long-journal-names',
+        action='store_true',
+        help='use long journal names (default: false)'
+        )
+    return parser.parse_args()
+
+
+if __name__ == '__main__':
+    _main()

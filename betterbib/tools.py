@@ -2,6 +2,8 @@
 #
 from __future__ import print_function
 
+import json
+import os
 import re
 import requests
 
@@ -351,3 +353,21 @@ def update(entry1, entry2):
                 out.fields[key] = value
 
     return out
+
+
+def update_journal_names(data, long_journal_names=False):
+    this_dir = os.path.dirname(os.path.realpath(__file__))
+    with open(os.path.join(this_dir, 'data/journals.json'), 'r') as f:
+        table = json.load(f)
+
+    if long_journal_names:
+        table = {v: k for k, v in table.items()}
+
+    for key in data.entries:
+        try:
+            journal_name = data.entries[key].fields['journal']
+            data.entries[key].fields['journal'] = table[journal_name]
+        except KeyError:
+            continue
+
+    return data
