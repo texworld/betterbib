@@ -1,3 +1,25 @@
 #!/bin/sh
 
+usage="Usage: $(basename "$0") in.bib out.bib
+
+  -h     show this help list"
+
+if [ -z "$1" ] || [ -z "$2" ]; then
+  echo "$usage"
+  exit 1
+fi
+
+while getopts ':h:' option; do
+  case "$option" in
+    h) echo "$usage"
+       exit 0
+       ;;
+   \?) printf "illegal option: -%s\n\n" "$OPTARG" >&2
+       echo "$usage" >&2
+       exit 1
+       ;;
+  esac
+done
+shift $((OPTIND - 1))
+
 betterbib-sync "$1" | betterbib-journal-abbrev | betterbib-format -b - "$2"
