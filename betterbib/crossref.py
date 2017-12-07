@@ -95,10 +95,11 @@ class Crossref(object):
 
         L = []
 
-        for key in [
-                'title', 'journal', 'doi', 'pages', 'year', 'volume', 'number',
-                'publisher'
-                ]:
+        keys = [
+            'title', 'journal', 'doi', 'pages', 'year', 'volume', 'number',
+            'publisher'
+            ]
+        for key in keys:
             try:
                 L.append(d[key])
             except KeyError:
@@ -146,6 +147,7 @@ class Crossref(object):
 
         return self._crossref_to_pybtex(heuristic_unique_result(results, d))
 
+    # pylint: disable=too-many-locals
     def _crossref_to_pybtex(self, data):
         '''Translate a given data set into the bibtex data structure.
         '''
@@ -196,9 +198,6 @@ class Crossref(object):
         #   u'page': u'495-518'
         # }
         #
-        # translate the type
-        bibtex_type = self._crossref_to_bibtex_type(data)
-
         fields_dict = {}
 
         pairs = {
@@ -209,7 +208,6 @@ class Crossref(object):
             'url': 'URL',
             'volume': 'volume',
             }
-
         for key1, key2 in pairs.items():
             try:
                 fields_dict[key1] = data[key2]
@@ -235,6 +233,8 @@ class Crossref(object):
         except KeyError:
             publisher = None
 
+        # translate the type
+        bibtex_type = self._crossref_to_bibtex_type(data)
         if bibtex_type == 'article':
             if container_title:
                 fields_dict['journal'] = container_title
