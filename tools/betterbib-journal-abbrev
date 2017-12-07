@@ -4,7 +4,6 @@
 from __future__ import print_function, unicode_literals
 
 import argparse
-from io import open as io_open
 import sys
 
 # pylint: disable=import-self
@@ -24,14 +23,11 @@ def _main():
     for key in out.entries:
         print(out.entries[key].fields['journal'])
 
-    _write(out.entries, args.infile, 'curly')
+    _write(out.entries, args.outfile, 'curly')
     return
 
 
-def _write(od, filename, delimeter_type):
-    # Open output file for writing.
-    out = io_open(filename, mode='w', encoding='utf-8')
-
+def _write(od, out, delimeter_type):
     # Write header to the output file.
     out.write(
         '%%comment{This file was created with betterbib v%s.}\n\n' %
@@ -49,8 +45,6 @@ def _write(od, filename, delimeter_type):
             dictionary=dictionary
             )
         out.write(a + '\n\n')
-
-    out.close()
     return
 
 
@@ -68,8 +62,17 @@ def _parse_cmd_arguments():
         )
     parser.add_argument(
         'infile',
-        type=str,
-        help='input BibTeX file'
+        nargs='?',
+        type=argparse.FileType('r'),
+        default=sys.stdin,
+        help='input BibTeX file (default: stdin)'
+        )
+    parser.add_argument(
+        'outfile',
+        nargs='?',
+        type=argparse.FileType('w'),
+        default=sys.stdout,
+        help='output BibTeX file (default: stdout)'
         )
     parser.add_argument(
         '-l', '--long-journal-names',
