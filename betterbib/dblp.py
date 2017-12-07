@@ -49,30 +49,25 @@ def _dblp_to_pybtex(data):
     bibtex_type = _to_bibtex_type(data)
 
     fields_dict = {}
-    try:
-        fields_dict['doi'] = data['doi']
-    except KeyError:
-        pass
 
-    try:
-        fields_dict['number'] = data['number']
-    except KeyError:
-        pass
-
-    try:
-        fields_dict['pages'] = data['pages']
-    except KeyError:
-        pass
+    pairs = {
+        'doi': 'doi',
+        'number': 'number',
+        'pages': 'pages',
+        'url': 'ee',
+        'volume': 'volume',
+        'year': 'year',
+        }
+    for key1, key2 in pairs.items():
+        try:
+            fields_dict[key1] = data[key2]
+        except KeyError:
+            pass
 
     try:
         fields_dict['source'] = data['source']
     except KeyError:
         fields_dict['source'] = 'DBLP'
-
-    try:
-        fields_dict['url'] = data['ee']
-    except KeyError:
-        pass
 
     try:
         container_title = data['venue']
@@ -89,16 +84,6 @@ def _dblp_to_pybtex(data):
         fields_dict['journal'] = container_title
     if title:
         fields_dict['title'] = title
-
-    try:
-        fields_dict['volume'] = data['volume']
-    except KeyError:
-        pass
-
-    try:
-        fields_dict['year'] = data['year']
-    except KeyError:
-        pass
 
     try:
         persons = {'author': [
