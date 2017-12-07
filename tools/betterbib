@@ -1,0 +1,3 @@
+#!/bin/sh
+
+betterbib-sync "$1" | betterbib-journal-abbrev | betterbib-format -b - "$2"

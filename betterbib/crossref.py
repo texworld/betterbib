@@ -95,53 +95,20 @@ class Crossref(object):
 
         L = []
 
-        try:
-            L.append(d['title'])
-        except KeyError:
-            pass
+        keys = [
+            'title', 'journal', 'doi', 'pages', 'year', 'volume', 'number',
+            'publisher'
+            ]
+        for key in keys:
+            try:
+                L.append(d[key])
+            except KeyError:
+                pass
 
+        names = ['first', 'middle', 'prelast', 'last', 'lineage']
         try:
             for au in d['author']:
-                L.extend([
-                    ' '.join(au['first']), ' '.join(au['middle']),
-                    ' '.join(au['prelast']), ' '.join(au['last']),
-                    ' '.join(au['lineage'])
-                    ])
-        except KeyError:
-            pass
-
-        try:
-            L.append(d['journal'])
-        except KeyError:
-            pass
-
-        try:
-            L.append(d['doi'])
-        except KeyError:
-            pass
-
-        try:
-            L.append(d['pages'])
-        except KeyError:
-            pass
-
-        try:
-            L.append(d['year'])
-        except KeyError:
-            pass
-
-        try:
-            L.append(d['volume'])
-        except KeyError:
-            pass
-
-        try:
-            L.append(d['number'])
-        except KeyError:
-            pass
-
-        try:
-            L.append(d['publisher'])
+                L.extend([' '.join(au[key]) for key in names])
         except KeyError:
             pass
 
@@ -180,6 +147,7 @@ class Crossref(object):
 
         return self._crossref_to_pybtex(heuristic_unique_result(results, d))
 
+    # pylint: disable=too-many-locals
     def _crossref_to_pybtex(self, data):
         '''Translate a given data set into the bibtex data structure.
         '''
@@ -230,34 +198,21 @@ class Crossref(object):
         #   u'page': u'495-518'
         # }
         #
-        # translate the type
-        bibtex_type = self._crossref_to_bibtex_type(data)
-
         fields_dict = {}
-        try:
-            fields_dict['doi'] = data['DOI']
-        except KeyError:
-            pass
 
-        try:
-            fields_dict['number'] = data['issue']
-        except KeyError:
-            pass
-
-        try:
-            fields_dict['pages'] = data['page']
-        except KeyError:
-            pass
-
-        try:
-            fields_dict['source'] = data['source']
-        except KeyError:
-            pass
-
-        try:
-            fields_dict['url'] = data['URL']
-        except KeyError:
-            pass
+        pairs = {
+            'doi': 'DOI',
+            'number': 'issue',
+            'pages': 'page',
+            'source': 'source',
+            'url': 'URL',
+            'volume': 'volume',
+            }
+        for key1, key2 in pairs.items():
+            try:
+                fields_dict[key1] = data[key2]
+            except KeyError:
+                pass
 
         container_title = None
         keys = ['short-container-title', 'container-title']
@@ -278,6 +233,8 @@ class Crossref(object):
         except KeyError:
             publisher = None
 
+        # translate the type
+        bibtex_type = self._crossref_to_bibtex_type(data)
         if bibtex_type == 'article':
             if container_title:
                 fields_dict['journal'] = container_title
@@ -332,11 +289,6 @@ class Crossref(object):
                 fields_dict['title'] = title
             elif container_title:
                 fields_dict['title'] = container_title
-
-        try:
-            fields_dict['volume'] = data['volume']
-        except KeyError:
-            pass
 
         try:
             fields_dict['issn'] = ', '.join(data['ISSN'])

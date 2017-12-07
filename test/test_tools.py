@@ -40,3 +40,29 @@ def test_update():
         == betterbib.pybtex_to_bibtex_string(reference, 'key', sort=True)
 
     return
+
+
+def test_journal_name():
+    shrt = pybtex.database.Entry(
+        'article',
+        fields={'journal': u'SIAM J. Matrix Anal. Appl.'}
+        )
+    lng = pybtex.database.Entry(
+        'article',
+        fields={'journal': u'SIAM Journal on Matrix Analysis and Applications'}
+        )
+
+    tmp = lng
+    updater = betterbib.JournalNameUpdater()
+    updater.update(tmp)
+    assert tmp.fields['journal'] == shrt.fields['journal']
+
+    lng = pybtex.database.Entry(
+        'article',
+        fields={'journal': u'SIAM Journal on Matrix Analysis and Applications'}
+        )
+    tmp = shrt
+    updater = betterbib.JournalNameUpdater(long_journal_names=True)
+    updater.update(tmp)
+    assert tmp.fields['journal'] == lng.fields['journal']
+    return
