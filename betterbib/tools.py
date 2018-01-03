@@ -89,7 +89,8 @@ def create_dict():
     config.read(_config_file)
     try:
         extra_names = config.get('DICTIONARY', 'add').split(',')
-    except configparser.NoSectionError:  # No section: 'DICTIONARY'
+    except (configparser.NoSectionError, configparser.NoOptionError):
+        # No section: 'DICTIONARY', No option 'add' in section: 'DICTIONARY'
         extra_names = []
 
     for name in extra_names:
@@ -101,7 +102,7 @@ def create_dict():
 
     try:
         blacklist = config.get('DICTIONARY', 'remove').split(',')
-    except configparser.NoSectionError:  # No section: 'DICTIONARY'
+    except (configparser.NoSectionError, configparser.NoOptionError):
         blacklist = []
     for word in blacklist:
         d.remove(word.strip())
