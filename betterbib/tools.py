@@ -172,13 +172,13 @@ def pybtex_to_bibtex_string(
 
     for key in keys:
         value = entry.fields[key]
-        if key == 'month':
+        if key.lower() == 'month':
             month_string = _translate_month(value)
             if month_string:
-                content.append('month = {}'.format(month_string))
-        elif key == 'title':
-            content.append(u'title = {}{}{}'.format(
-                left, _translate_title(value, dictionary), right
+                content.append('{} = {}'.format(key, month_string))
+        elif key.lower() == 'title':
+            content.append(u'{} = {}{}{}'.format(
+                key, left, _translate_title(value, dictionary), right
                 ))
         else:
             if value is not None:
