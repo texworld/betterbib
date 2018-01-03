@@ -7,8 +7,9 @@ import argparse
 import collections
 import sys
 
-import betterbib
 from pybtex.database.input import bibtex
+
+import betterbib
 
 
 def _main():
@@ -18,11 +19,11 @@ def _main():
 
     # Use an ordered dictionary to make sure that the entries are written out
     # sorted by their BibTeX key if demanded.
-    od = collections.OrderedDict(
+    od = betterbib.decode(collections.OrderedDict(
         sorted(data.entries.items())
         if args.sort_by_bibkey
         else data.entries.items()
-        )
+        ))
 
     od = _adapt_doi_urls(od, args.doi_url_type)
 

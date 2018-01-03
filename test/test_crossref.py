@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-import betterbib
-
 import pybtex
 import pybtex.database
 import pytest
+
+import betterbib
 
 
 def test_crossref_article0():

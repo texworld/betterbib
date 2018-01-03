@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 #
-import betterbib
-
 import pybtex
 import pybtex.database
+
+import betterbib
 
 
 def test_update():

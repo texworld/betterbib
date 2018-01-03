@@ -6,10 +6,10 @@ from __future__ import print_function, unicode_literals
 import argparse
 import sys
 
-# pylint: disable=import-self
+from pybtex.database.input import bibtex
+
 import betterbib
 from betterbib import pybtex_to_bibtex_string
-from pybtex.database.input import bibtex
 
 
 def _main():

@@ -4,7 +4,7 @@
 [![codecov](https://codecov.io/gh/nschloe/betterbib/branch/master/graph/badge.svg)](https://codecov.io/gh/nschloe/betterbib)
 [![PyPi Version](https://img.shields.io/pypi/v/betterbib.svg)](https://pypi.python.org/pypi/betterbib)
 [![awesome](https://img.shields.io/badge/awesome-yes-brightgreen.svg)](https://img.shields.io/badge/awesome-yes-brightgreen.svg)
-[![GitHub stars](https://img.shields.io/github/stars/nschloe/betterbib.svg?style=social&label=Stars&maxAge=2592000)](https://github.com/nschloe/betterbib)
+[![GitHub stars](https://img.shields.io/github/stars/nschloe/betterbib.svg?style=social&label=Stars)](https://github.com/nschloe/betterbib)
 
 BibTeX files are typically manually maintained and thus often contain
 inconsistencies, mistakes, or are missing information. betterbib helps
@@ -54,7 +54,6 @@ betterbib-sync in.bib | betterbib-journal-abbrev | betterbib-format -b - out.bib
 
 #### Sync
 
-
 betterbib fetches data from
 
    * [Crossref](http://www.crossref.org/) (default) or
@@ -80,27 +79,40 @@ betterbib-journal-abbrev in.bib out.bib
 allows you to apply consistent abbreviation of journal names. See `-h`/`--help`
 for options.
 
+
+### Configuration
+
+In BibTeX titles, some words need to be protected by curly brackets such that
+they are capitalized correctly, e.g., `{Einstein}`.  betterbib automatically
+recognizes some of them (if they are in the default dictionary, like
+`Einstein`), but you might want to add some. To this end, create the config
+file
+```
+~/.config/betterbib/config.ini
+```
+and fill it with, e.g.,
+```
+[DICTIONARY]
+add=Arnoldi,
+    Bernstein,
+    Boolean,
+    Chebyshev,
+    Hermitian
+
+remove=hermitian,
+   boolean
+```
+
+
 ### Installation
 
-#### Python Package Index
-
 betterbib is [available from the Python Package
-Index](https://pypi.python.org/pypi/betterbib/), so simply type
+Index](https://pypi.python.org/pypi/betterbib/), so simply do
 ```
 pip install -U betterbib
 ```
 to install or upgrade. Use `sudo -H` to install as root or the `--user` option
 of `pip` to install in `$HOME`.
-
-
-### Requirements
-
-betterbib requires
-
-* [enchant](https://abiword.github.io/enchant/) and
-* [pandoc](https://pandoc.org/)
-
-to be installed.
 
 
 ### Testing

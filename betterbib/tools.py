@@ -2,28 +2,45 @@
 #
 from __future__ import print_function
 
+import codecs
 import json
 import os
 import re
 import requests
 
 import enchant
-import pypandoc
+# pylint: disable=unused-import
+import latexcodec
+
+import appdirs
+
+try:
+    import configparser
+except ImportError:
+    import ConfigParser as configparser
 
 from .__about__ import __version__
 from .errors import UniqueError
 
 
-def latex_to_unicode(latex_string):
-    '''Convert a LaTeX string to unicode.
+_config_dir = appdirs.user_config_dir('betterbib')
+if not os.path.exists(_config_dir):
+    os.makedirs(_config_dir)
+_config_file = os.path.join(_config_dir, 'config.ini')
+
+
+def decode(od):
+    '''Decode an OrderedDict with LaTeX strings into a dict with unicode
+    strings.
     '''
-    out = pypandoc.convert_text(latex_string, 'plain', format='latex')
-    # replace multiple whitespace by one, remove surrounding spaces
-    return ' '.join(out.split())
+    for entry in od.values():
+        for key, value in entry.fields.items():
+            entry.fields[key] = codecs.decode(value, 'ulatex')
+    return od
 
 
 def pybtex_to_dict(entry):
-    '''String representation of BibTeX entry.
+    '''dict representation of BibTeX entry.
     '''
     d = {}
     d['genre'] = entry.type
@@ -47,9 +64,10 @@ def _translate_month(key):
     '''
     months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul',
               'aug', 'sep', 'oct', 'nov', 'dec']
+
     try:
-        return months[key-1]
-    except TypeError:
+        return months[int(key)-1]
+    except (TypeError, ValueError):
         # TypeError: unsupported operand type(s) for -: 'str' and 'int'
         pass
 
@@ -64,65 +82,30 @@ def _translate_month(key):
 
 
 def create_dict():
-    extra_names = [
-        'Abrikosov',
-        'Arnoldi',
-        'Bergman',
-        'Bernstein',
-        'Bruijn',
-        'Chebyshev',
-        'Danilewski',
-        'Darboux',
-        'Pezzo',
-        'Galerkin',
-        'Ginzburg',
-        'Goldbach',
-        'Hermite', 'Hermitian',
-        'Hopf',
-        'Hopfield',
-        'Jacobi', 'Jacobian',
-        'Kronrod',
-        'Krylov',
-        'Kuratowski',
-        'Kutta',
-        'Liouville',
-        'Magnus'
-        'Manin',
-        'Navier',
-        'Kolmogorov',
-        'Lanczos',
-        'Magnus',
-        'Peano',
-        'Pell',
-        'Pitaevskii',
-        u'Pólya',
-        'Ramanujan',
-        'Ricatti',
-        'Runge',
-        'Scholz',
-        'Schur',
-        'Siebeck',
-        'Sommerfeld',
-        'Stieltjes',
-        'Tausworthe',
-        'Tchebycheff',
-        'Toeplitz',
-        'Voronoi',
-        u'Voronoï',
-        'Wieland',
-        'Wronski', 'Wronskian',
-        ]
-
     d = enchant.DictWithPWL('en_US')
 
+    # read extra names from config file
+    config = configparser.ConfigParser()
+    config.read(_config_file)
+    try:
+        extra_names = config.get('DICTIONARY', 'add').split(',')
+    except (configparser.NoSectionError, configparser.NoOptionError):
+        # No section: 'DICTIONARY', No option 'add' in section: 'DICTIONARY'
+        extra_names = []
+
     for name in extra_names:
+        name = name.strip()
         d.add(name)
         d.add(name + '\'s')
         if name[-1] == 's':
             d.add(name + '\'')
 
-    for word in ['boolean', 'hermitian']:
-        d.remove(word)
+    try:
+        blacklist = config.get('DICTIONARY', 'remove').split(',')
+    except (configparser.NoSectionError, configparser.NoOptionError):
+        blacklist = []
+    for word in blacklist:
+        d.remove(word.strip())
 
     return d
 
@@ -185,7 +168,6 @@ def pybtex_to_bibtex_string(
         sort=False):
     '''String representation of BibTeX entry.
     '''
-
     indent = '\t' if tab_indent else ' '
     out = '@{}{{{},\n{}'.format(entry.type, bibtex_key, indent)
     content = []
@@ -202,13 +184,19 @@ def pybtex_to_bibtex_string(
 
     for key in keys:
         value = entry.fields[key]
-        if key == 'month':
+        try:
+            value = codecs.encode(value, 'ulatex')
+        except TypeError:
+            # expected unicode for encode input, but got int instead
+            pass
+
+        if key.lower() == 'month':
             month_string = _translate_month(value)
             if month_string:
-                content.append('month = {}'.format(month_string))
-        elif key == 'title':
-            content.append(u'title = {}{}{}'.format(
-                left, _translate_title(value, dictionary), right
+                content.append('{} = {}'.format(key, month_string))
+        elif key.lower() == 'title':
+            content.append(u'{} = {}{}{}'.format(
+                key, left, _translate_title(value, dictionary), right
                 ))
         else:
             if value is not None:
