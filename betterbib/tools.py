@@ -87,7 +87,10 @@ def create_dict():
     # read extra names from config file
     config = configparser.ConfigParser()
     config.read(_config_file)
-    extra_names = config.get('SPELLING', 'capitalize').split(',')
+    try:
+        extra_names = config.get('DICTIONARY', 'add').split(',')
+    except configparser.NoSectionError:  # No section: 'DICTIONARY'
+        extra_names = []
 
     for name in extra_names:
         name = name.strip()
@@ -96,7 +99,10 @@ def create_dict():
         if name[-1] == 's':
             d.add(name + '\'')
 
-    blacklist = config.get('SPELLING', 'blacklist').split(',')
+    try:
+        blacklist = config.get('DICTIONARY', 'remove').split(',')
+    except configparser.NoSectionError:  # No section: 'DICTIONARY'
+        blacklist = []
     for word in blacklist:
         d.remove(word.strip())
 

@@ -92,13 +92,14 @@ file
 ```
 and fill it with, e.g.,
 ```
-[SPELLING]
-capitalize=Abrikosov,
-    Arnoldi,
+[DICTIONARY]
+add=Arnoldi,
     Bernstein,
-    Chebyshev
+    Boolean,
+    Chebyshev,
+    Hermitian
 
-blacklist=hermitian,
+remove=hermitian,
    boolean
 ```
 
