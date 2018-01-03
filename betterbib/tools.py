@@ -86,6 +86,7 @@ def create_dict():
         'Kuratowski',
         'Kutta',
         'Liouville',
+        'Lyapunov',
         'Magnus'
         'Manin',
         'Navier',
