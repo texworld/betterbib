@@ -114,16 +114,6 @@ to install or upgrade. Use `sudo -H` to install as root or the `--user` option
 of `pip` to install in `$HOME`.
 
 
-### Requirements
-
-betterbib requires
-
-* [enchant](https://abiword.github.io/enchant/) and
-* [pandoc](https://pandoc.org/)
-
-to work.
-
-
 ### Testing
 
 To run the betterbib unit tests, check out this repository and type

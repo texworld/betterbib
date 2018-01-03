@@ -9,8 +9,8 @@ import re
 import requests
 
 import enchant
+# pylint: disable=unused-import
 import latexcodec
-import pypandoc
 
 import appdirs
 
@@ -33,18 +33,10 @@ def decode(od):
     '''Decode an OrderedDict with LaTeX strings into a dict with unicode
     strings.
     '''
-    for bibtex_key, entry in od.items():
+    for entry in od.values():
         for key, value in entry.fields.items():
             entry.fields[key] = codecs.decode(value, 'ulatex')
     return od
-
-
-def latex_to_unicode(latex_string):
-    '''Convert a LaTeX string to unicode.
-    '''
-    out = pypandoc.convert_text(latex_string, 'plain', format='latex')
-    # replace multiple whitespace by one, remove surrounding spaces
-    return ' '.join(out.split())
 
 
 def pybtex_to_dict(entry):

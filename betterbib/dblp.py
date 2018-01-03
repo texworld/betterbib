@@ -2,12 +2,14 @@
 #
 from __future__ import print_function
 
+import codecs
+
 import pybtex
 import pybtex.database
 import requests
 
 from .errors import NotFoundError, HttpError
-from .tools import pybtex_to_dict, latex_to_unicode, heuristic_unique_result
+from .tools import pybtex_to_dict, heuristic_unique_result
 
 
 def _to_bibtex_type(entry):
@@ -133,7 +135,7 @@ class Dblp(object):
 
         # Simply plug the dict together to a search query. Typical query:
         # <api>?q=vanroose+schl%C3%B6mer&h=5
-        payload = latex_to_unicode(' '.join(L)).replace(' ', '+')
+        payload = codecs.decode(' '.join(L), 'ulatex').replace(' ', '+')
 
         params = {
             'q': payload,

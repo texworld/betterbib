@@ -2,6 +2,7 @@
 #
 from __future__ import print_function
 
+import codecs
 import re
 
 import pybtex
@@ -9,7 +10,7 @@ import pybtex.database
 import requests
 
 from .errors import NotFoundError, HttpError
-from .tools import pybtex_to_dict, latex_to_unicode, heuristic_unique_result
+from .tools import pybtex_to_dict, heuristic_unique_result
 
 
 def _bibtex_to_crossref_type(bibtex_type):
@@ -117,7 +118,7 @@ class Crossref(object):
 
         # Simply plug the dict together to a search query. Typical query:
         # https://api.crossref.org/works?query=vanroose+schl%C3%B6mer&rows=5
-        payload = latex_to_unicode(' '.join(L)).replace(' ', '+')
+        payload = codecs.decode(' '.join(L), 'ulatex').replace(' ', '+')
 
         params = {
             'query': payload,

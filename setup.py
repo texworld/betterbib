@@ -36,10 +36,10 @@ setup(
     license=about['__license__'],
     platforms='any',
     install_requires=[
+        'latexcodec',
         'pipdate',
         'pybtex >= 0.19.0',
         'pyenchant',
-        'pypandoc',
         'requests',
         'tqdm',
         ],
