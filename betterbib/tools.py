@@ -92,7 +92,7 @@ def create_dict():
             d.add(name + '\'')
 
     blacklist = config.get('SPELLING', 'blacklist').split(',')
-    for k, word in enumerate(blacklist):
+    for word in blacklist:
         d.remove(word.strip())
 
     return d
@@ -156,7 +156,6 @@ def pybtex_to_bibtex_string(
         sort=False):
     '''String representation of BibTeX entry.
     '''
-
     indent = '\t' if tab_indent else ' '
     out = '@{}{{{},\n{}'.format(entry.type, bibtex_key, indent)
     content = []
