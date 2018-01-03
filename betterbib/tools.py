@@ -2,12 +2,14 @@
 #
 from __future__ import print_function
 
+import codecs
 import json
 import os
 import re
 import requests
 
 import enchant
+import latexcodec
 import pypandoc
 
 import appdirs
@@ -60,9 +62,10 @@ def _translate_month(key):
     '''
     months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul',
               'aug', 'sep', 'oct', 'nov', 'dec']
+
     try:
-        return months[key-1]
-    except TypeError:
+        return months[int(key)-1]
+    except (TypeError, ValueError):
         # TypeError: unsupported operand type(s) for -: 'str' and 'int'
         pass
 
@@ -172,6 +175,12 @@ def pybtex_to_bibtex_string(
 
     for key in keys:
         value = entry.fields[key]
+        try:
+            value = codecs.encode(value, 'ulatex')
+        except TypeError:
+            # expected unicode for encode input, but got int instead
+            pass
+
         if key.lower() == 'month':
             month_string = _translate_month(value)
             if month_string:

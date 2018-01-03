@@ -4,11 +4,11 @@
 from __future__ import print_function, unicode_literals
 
 import argparse
+import collections
 import sys
 
 # pylint: disable=import-self
 import betterbib
-from betterbib import pybtex_to_bibtex_string
 from pybtex.database.input import bibtex
 
 
@@ -21,28 +21,9 @@ def _main():
     for key in data.entries:
         updater.update(data.entries[key])
 
-    _write(data.entries, args.outfile, 'curly')
-    return
-
-
-def _write(od, out, delimeter_type):
-    # Write header to the output file.
-    out.write(
-        '%%comment{This file was created with betterbib v%s.}\n\n' %
-        betterbib.__version__
-        )
-
-    # Create the dictionary only once
-    dictionary = betterbib.create_dict()
-
-    # write the data out sequentially to respect ordering
-    for bib_id, d in od.items():
-        brace_delimeters = delimeter_type == 'curly'
-        a = pybtex_to_bibtex_string(
-            d, bib_id, brace_delimeters=brace_delimeters,
-            dictionary=dictionary
-            )
-        out.write(a + '\n\n')
+    od = collections.OrderedDict(data.entries.items())
+    betterbib.write(od, args.outfile, 'braces', tab_indent=False)
+    # _write(data.entries, args.outfile, 'curly')
     return
 
 
