@@ -21,7 +21,7 @@ def _main():
 
     # Use an ordered dictionary to make sure that the entries are written out
     # the way they came in.
-    od = collections.OrderedDict(data.entries.items())
+    od = betterbib.decode(collections.OrderedDict(data.entries.items()))
 
     if args.source == 'crossref':
         source = betterbib.Crossref(args.long_journal_name)

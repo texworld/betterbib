@@ -11,6 +11,7 @@ from betterbib.__about__ import (
 
 from betterbib.tools import (
     create_dict,
+    decode,
     pybtex_to_dict,
     pybtex_to_bibtex_string,
     latex_to_unicode,

@@ -29,6 +29,16 @@ if not os.path.exists(_config_dir):
 _config_file = os.path.join(_config_dir, 'config.ini')
 
 
+def decode(od):
+    '''Decode an OrderedDict with LaTeX strings into a dict with unicode
+    strings.
+    '''
+    for bibtex_key, entry in od.items():
+        for key, value in entry.fields.items():
+            entry.fields[key] = codecs.decode(value, 'ulatex')
+    return od
+
+
 def latex_to_unicode(latex_string):
     '''Convert a LaTeX string to unicode.
     '''
@@ -38,7 +48,7 @@ def latex_to_unicode(latex_string):
 
 
 def pybtex_to_dict(entry):
-    '''String representation of BibTeX entry.
+    '''dict representation of BibTeX entry.
     '''
     d = {}
     d['genre'] = entry.type

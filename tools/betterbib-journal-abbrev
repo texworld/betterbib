@@ -21,9 +21,8 @@ def _main():
     for key in data.entries:
         updater.update(data.entries[key])
 
-    od = collections.OrderedDict(data.entries.items())
+    od = betterbib.decode(collections.OrderedDict(data.entries.items()))
     betterbib.write(od, args.outfile, 'braces', tab_indent=False)
-    # _write(data.entries, args.outfile, 'curly')
     return
 
 
