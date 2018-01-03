@@ -7,8 +7,9 @@ import argparse
 import collections
 import sys
 
-import betterbib
 from pybtex.database.input import bibtex
+
+import betterbib
 
 
 def _main():

@@ -7,9 +7,10 @@ import argparse
 import collections
 import sys
 
+from pybtex.database.input import bibtex
+
 # pylint: disable=import-self
 import betterbib
-from pybtex.database.input import bibtex
 
 
 def _main():

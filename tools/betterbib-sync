@@ -9,9 +9,10 @@ import collections
 import concurrent.futures
 import sys
 
-import betterbib
 from pybtex.database.input import bibtex
 from tqdm import tqdm
+
+import betterbib
 
 
 def _main():
