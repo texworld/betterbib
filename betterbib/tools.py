@@ -10,8 +10,21 @@ import requests
 import enchant
 import pypandoc
 
+import appdirs
+
+try:
+    import configparser
+except ImportError:
+    import ConfigParser as configparser
+
 from .__about__ import __version__
 from .errors import UniqueError
+
+
+_config_dir = appdirs.user_config_dir('betterbib')
+if not os.path.exists(_config_dir):
+    os.makedirs(_config_dir)
+_config_file = os.path.join(_config_dir, 'config.ini')
 
 
 def latex_to_unicode(latex_string):
@@ -64,65 +77,23 @@ def _translate_month(key):
 
 
 def create_dict():
-    extra_names = [
-        'Abrikosov',
-        'Arnoldi',
-        'Bergman',
-        'Bernstein',
-        'Bruijn',
-        'Chebyshev',
-        'Danilewski',
-        'Darboux',
-        'Pezzo',
-        'Galerkin',
-        'Ginzburg',
-        'Goldbach',
-        'Hermite', 'Hermitian',
-        'Hopf',
-        'Hopfield',
-        'Jacobi', 'Jacobian',
-        'Kronrod',
-        'Krylov',
-        'Kuratowski',
-        'Kutta',
-        'Liouville',
-        'Magnus'
-        'Manin',
-        'Navier',
-        'Kolmogorov',
-        'Lanczos',
-        'Magnus',
-        'Peano',
-        'Pell',
-        'Pitaevskii',
-        u'Pólya',
-        'Ramanujan',
-        'Ricatti',
-        'Runge',
-        'Scholz',
-        'Schur',
-        'Siebeck',
-        'Sommerfeld',
-        'Stieltjes',
-        'Tausworthe',
-        'Tchebycheff',
-        'Toeplitz',
-        'Voronoi',
-        u'Voronoï',
-        'Wieland',
-        'Wronski', 'Wronskian',
-        ]
-
     d = enchant.DictWithPWL('en_US')
 
+    # read extra names from config file
+    config = configparser.ConfigParser()
+    config.read(_config_file)
+    extra_names = config.get('SPELLING', 'capitalize').split(',')
+
     for name in extra_names:
+        name = name.strip()
         d.add(name)
         d.add(name + '\'s')
         if name[-1] == 's':
             d.add(name + '\'')
 
-    for word in ['boolean', 'hermitian']:
-        d.remove(word)
+    blacklist = config.get('SPELLING', 'blacklist').split(',')
+    for k, word in enumerate(blacklist):
+        d.remove(word.strip())
 
     return d
 
