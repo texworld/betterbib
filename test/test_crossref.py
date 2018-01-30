@@ -449,7 +449,6 @@ def test_standard():
 
 
 def test_crossref_no_title():
-
     source = betterbib.Crossref()
 
     test_entry = pybtex.database.Entry(
@@ -467,7 +466,6 @@ def test_crossref_no_title():
     # Make sure and exception is thrown when not finding a unique match
     with pytest.raises(betterbib.errors.UniqueError):
         source.find_unique(test_entry)
-
     return
 
 
@@ -505,5 +503,58 @@ def test_crossref_all_capitals():
     return
 
 
+def test_subtitle():
+    source = betterbib.Crossref()
+
+    test_entry = pybtex.database.Entry(
+        'article',
+        fields={
+            'title': 'tube',
+            'doi': '10.1145/2377677.2377723',
+            'journal': u'ACM SIGCOMM Computer Communication Review',
+            'issn': '0146-4833',
+            },
+        persons={'author': [
+            pybtex.database.Person('Ha, Sangtae'),
+            pybtex.database.Person('Sen'),
+            pybtex.database.Person('Joe-Wong'),
+            pybtex.database.Person('Im'),
+            pybtex.database.Person('Chiang, Mung'),
+            ]}
+        )
+
+    reference = pybtex.database.Entry(
+        'article',
+        fields={
+            'publisher': u'Association for Computing Machinery (ACM)',
+            'doi': u'10.1145/2377677.2377723',
+            'title': u'TUBE',
+            'subtitle': u'time-dependent pricing for mobile data',
+            'url': u'http://dx.doi.org/10.1145/2377677.2377723',
+            'journal': u'SIGCOMM Comput. Commun. Rev.',
+            'issn': u'0146-4833',
+            'number': u'4',
+            'month': 9,
+            'volume': u'42',
+            'source': u'Crossref',
+            'year': 2012,
+            'pages': u'247',
+            },
+        persons=pybtex.database.OrderedCaseInsensitiveDict({
+            'author': [
+                pybtex.database.Person(u'Ha, Sangtae'),
+                pybtex.database.Person(u'Sen, Soumya'),
+                pybtex.database.Person(u'Joe-Wong, Carlee'),
+                pybtex.database.Person(u'Im, Youngbin'),
+                pybtex.database.Person(u'Chiang, Mung')
+                ]
+            }))
+
+    bt = source.find_unique(test_entry)
+    assert betterbib.pybtex_to_bibtex_string(bt, 'key', sort=True) \
+        == betterbib.pybtex_to_bibtex_string(reference, 'key', sort=True)
+    return
+
+
 if __name__ == '__main__':
-    test_crossref_all_capitals()
+    test_subtitle()
