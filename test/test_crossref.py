@@ -110,6 +110,7 @@ def test_crossref_book0():
             'doi': u'10.1002/0470868279',
             'publisher': u'John Wiley & Sons, Ltd',
             'title': u'Numerical Methods for Ordinary Differential Equations',
+            'subtitle': 'Butcher/Numerical Methods',
             'url': u'http://dx.doi.org/10.1002/0470868279',
             'month': 6,
             'source': u'Crossref',
@@ -129,7 +130,6 @@ def test_crossref_book0():
 
 
 def test_crossref_book1():
-
     source = betterbib.Crossref()
 
     test_entry = pybtex.database.Entry(

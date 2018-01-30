@@ -292,7 +292,8 @@ class Crossref(object):
                 fields_dict['title'] = container_title
 
         try:
-            fields_dict['subtitle'] = data['subtitle'][0]
+            if data['subtitle'][0]:
+                fields_dict['subtitle'] = data['subtitle'][0]
         except (KeyError, IndexError):
             pass
 
