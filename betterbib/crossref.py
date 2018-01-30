@@ -292,6 +292,12 @@ class Crossref(object):
                 fields_dict['title'] = container_title
 
         try:
+            if data['subtitle'][0]:
+                fields_dict['subtitle'] = data['subtitle'][0]
+        except (KeyError, IndexError):
+            pass
+
+        try:
             fields_dict['issn'] = ', '.join(data['ISSN'])
         except KeyError:
             pass
