@@ -2,7 +2,7 @@ version: 2
 
 jobs:
 
-  # python2:
+  # python3:
   build:
     working_directory: ~/betterbib
     docker:
@@ -11,23 +11,16 @@ jobs:
       - run: apt update
       # don't install sympy with apt: it pulls in texlive which takes for ever
       # to download and install
-      - run: apt install -y git python-pip pandoc enchant
-      - run: pip2 install -U pytest pytest-cov pylint
+      - run: apt install -y git python3-pip pandoc enchant
+      - run: pip3 install -U pytest pytest-cov pylint
       - checkout
-      - run: pip2 install .
+      - run: pip3 install .
       # lint
-      - run: pylint betterbib/
-      - run: pylint test/*.py
-      - run: pylint tools/betterbib-dedup-doi
-      - run: pylint tools/betterbib-doi2bibtex
-      - run: pylint tools/betterbib-format
-      - run: pylint tools/betterbib-journal-abbrev
-      - run: pylint tools/betterbib-sync
-      - run: pylint tools/bibitems2bibtex
+      - run: pylint betterbib/ test/*.py tools/betterbib-dedup-doi tools/betterbib-doi2bibtex tools/betterbib-format tools/betterbib-journal-abbrev tools/betterbib-sync tools/bibitems2bibtex
       # make sure that rst converts correctly
       - run: pandoc README.md -o README.rst
-      - run: pip2 install docutils pygments
-      - run: python setup.py check -r -s
+      - run: pip3 install docutils pygments
+      - run: python3 setup.py check -r -s
       # add some entries to the dict
       - run: mkdir -p ~/.config/betterbib/ && echo -e "[DICTIONARY]\nadd=Magnus,Peano,Kutta\nremove=hermitian" > ~/.config/betterbib/config.ini
       # The tests
@@ -35,24 +28,6 @@ jobs:
       # submit to codecov
       - run: apt install -y curl
       - run: bash <(curl -s https://codecov.io/bash)
-
-
-#   # python3:
-#   build:
-#     working_directory: ~/frentos
-#     docker:
-#       - image: ubuntu:17.10
-#     steps:
-#       - run: apt update
-#       - run: apt install -y libcgal-dev libeigen3-dev pandoc python3-numpy python3-pip
-#       - run: pip3 install -U pytest pytest-cov pylint meshio
-#       - checkout
-#       # install
-#       - run: pip3 install .
-#       # lint
-#       - run: pylint setup.py
-#       # The actual test
-#       - run: cd test/ && pytest
 
 # workflow builds don't support forked PRs yet, cf.
 # <https://circleci.com/docs/2.0/faq/#can-i-build-fork-prs-using-workflows>.
