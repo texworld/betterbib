@@ -1,12 +1,10 @@
 version: 2
 
 jobs:
-
-  # python3:
   build:
     working_directory: ~/betterbib
     docker:
-      - image: ubuntu:17.10
+      - image: ubuntu:18.04
     steps:
       - run: apt update
       # don't install sympy with apt: it pulls in texlive which takes for ever
@@ -28,12 +26,3 @@ jobs:
       # submit to codecov
       - run: apt install -y curl
       - run: bash <(curl -s https://codecov.io/bash)
-
-# workflow builds don't support forked PRs yet, cf.
-# <https://circleci.com/docs/2.0/faq/#can-i-build-fork-prs-using-workflows>.
-# workflows:
-#   version: 2
-#   build-and-test:
-#     jobs:
-#       - python2
-#       - python3
