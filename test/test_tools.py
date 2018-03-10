@@ -7,7 +7,6 @@ import betterbib
 
 
 def test_update():
-
     entry1 = pybtex.database.Entry(
         'article',
         fields={
@@ -65,4 +64,12 @@ def test_journal_name():
     updater = betterbib.JournalNameUpdater(long_journal_names=True)
     updater.update(tmp)
     assert tmp.fields['journal'] == lng.fields['journal']
+    return
+
+
+def test_title():
+    title = '{Aaa ${\\text{Pt/Co/AlO}}_{x}$ aaa bbb}'
+    ref = '{Aaa {${\\text{Pt/Co/AlO}}_{x}$} aaa bbb}'
+    out = betterbib.translate_title(title)
+    assert out == ref
     return

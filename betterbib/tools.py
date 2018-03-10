@@ -115,6 +115,8 @@ def _translate_word(word, d):
     # recapitalization.
     if not word:
         needs_protection = False
+    elif word.count('{') != word.count('}'):
+        needs_protection = False
     elif word[0] == '{' and word[-1] == '}':
         needs_protection = False
     elif any([char.isupper() for char in word[1:]]):
@@ -130,7 +132,7 @@ def _translate_word(word, d):
     return word
 
 
-def _translate_title(val, dictionary=create_dict()):
+def translate_title(val, dictionary=create_dict()):
     '''The capitalization of BibTeX entries is handled by the style, so names
     (Newton) or abbreviations (GMRES) may not be capitalized. This is unless
     they are wrapped in curly braces.
@@ -151,10 +153,13 @@ def _translate_title(val, dictionary=create_dict()):
         if k > 0 and words[k-1][-1] == ':' and words[k][0] != '{':
             words[k] = '{' + words[k].capitalize() + '}'
 
-    for k in range(len(words)):
-        words[k] = '-'.join([
-            _translate_word(w, dictionary) for w in words[k].split('-')
+    print(words)
+    words = [
+        '-'.join([
+            _translate_word(w, dictionary) for w in word.split('-')
             ])
+        for word in words
+        ]
 
     return ' '.join(words)
 
@@ -196,7 +201,7 @@ def pybtex_to_bibtex_string(
                 content.append('{} = {}'.format(key, month_string))
         elif key.lower() == 'title':
             content.append(u'{} = {}{}{}'.format(
-                key, left, _translate_title(value, dictionary), right
+                key, left, translate_title(value, dictionary), right
                 ))
         else:
             if value is not None:
