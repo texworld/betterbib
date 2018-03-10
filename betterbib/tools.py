@@ -153,11 +153,8 @@ def _translate_title(val, dictionary=create_dict()):
         if k > 0 and words[k-1][-1] == ':' and words[k][0] != '{':
             words[k] = '{' + words[k].capitalize() + '}'
 
-    print(words)
     words = [
-        '-'.join([
-            _translate_word(w, dictionary) for w in word.split('-')
-            ])
+        '-'.join([_translate_word(w, dictionary) for w in word.split('-')])
         for word in words
         ]
 
