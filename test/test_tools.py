@@ -65,11 +65,3 @@ def test_journal_name():
     updater.update(tmp)
     assert tmp.fields['journal'] == lng.fields['journal']
     return
-
-
-def test_title():
-    title = '{Aaa ${\\text{Pt/Co/AlO}}_{x}$ aaa bbb}'
-    ref = '{Aaa {${\\text{Pt/Co/AlO}}_{x}$} aaa bbb}'
-    out = betterbib.translate_title(title)
-    assert out == ref
-    return

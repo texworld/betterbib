@@ -132,7 +132,7 @@ def _translate_word(word, d):
     return word
 
 
-def translate_title(val, dictionary=create_dict()):
+def _translate_title(val, dictionary=create_dict()):
     '''The capitalization of BibTeX entries is handled by the style, so names
     (Newton) or abbreviations (GMRES) may not be capitalized. This is unless
     they are wrapped in curly braces.
@@ -201,7 +201,7 @@ def pybtex_to_bibtex_string(
                 content.append('{} = {}'.format(key, month_string))
         elif key.lower() == 'title':
             content.append(u'{} = {}{}{}'.format(
-                key, left, translate_title(value, dictionary), right
+                key, left, _translate_title(value, dictionary), right
                 ))
         else:
             if value is not None:

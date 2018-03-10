@@ -50,3 +50,11 @@ def test():
         ) == \
         'x: {X}'
     return
+
+
+def test_brackets():
+    title = '{Aaa ${\\text{Pt/Co/AlO}}_{x}$ aaa bbb}'
+    ref = '{Aaa {${\\text{Pt/Co/AlO}}_{x}$} aaa bbb}'
+    out = betterbib.tools._translate_title(title)
+    assert out == ref
+    return
