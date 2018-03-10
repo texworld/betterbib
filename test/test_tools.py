@@ -7,7 +7,6 @@ import betterbib
 
 
 def test_update():
-
     entry1 = pybtex.database.Entry(
         'article',
         fields={

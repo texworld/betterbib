@@ -115,6 +115,8 @@ def _translate_word(word, d):
     # recapitalization.
     if not word:
         needs_protection = False
+    elif word.count('{') != word.count('}'):
+        needs_protection = False
     elif word[0] == '{' and word[-1] == '}':
         needs_protection = False
     elif any([char.isupper() for char in word[1:]]):
@@ -151,10 +153,10 @@ def _translate_title(val, dictionary=create_dict()):
         if k > 0 and words[k-1][-1] == ':' and words[k][0] != '{':
             words[k] = '{' + words[k].capitalize() + '}'
 
-    for k in range(len(words)):
-        words[k] = '-'.join([
-            _translate_word(w, dictionary) for w in words[k].split('-')
-            ])
+    words = [
+        '-'.join([_translate_word(w, dictionary) for w in word.split('-')])
+        for word in words
+        ]
 
     return ' '.join(words)
 

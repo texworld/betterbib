@@ -5,7 +5,7 @@
 [![Codacy grade](https://img.shields.io/codacy/grade/8ce98e78f7ef427292593d08815c4fa3.svg)](https://app.codacy.com/app/nschloe/betterbib/dashboard)
 [![PyPi Version](https://img.shields.io/pypi/v/betterbib.svg)](https://pypi.python.org/pypi/betterbib)
 [![awesome](https://img.shields.io/badge/awesome-yes-brightgreen.svg)](https://github.com/nschloe/betterbib)
-[![GitHub stars](https://img.shields.io/github/stars/nschloe/betterbib.svg?style=social&label=Stars)](https://github.com/nschloe/betterbib)
+[![GitHub stars](https://img.shields.io/github/stars/nschloe/betterbib.svg?logo=github&style=social&label=Stars)](https://github.com/nschloe/betterbib)
 
 BibTeX files are typically manually maintained and thus often contain
 inconsistencies, mistakes, or are missing information. betterbib helps
