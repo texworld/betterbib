@@ -14,14 +14,7 @@ with open(os.path.join(base_dir, 'betterbib', '__about__.py'), 'rb') as f:
 
 
 def read(fname):
-    try:
-        content = codecs.open(
-            os.path.join(os.path.dirname(__file__), fname),
-            encoding='utf-8'
-            ).read()
-    except IOError:
-        content = ''
-    return content
+    return codecs.open(os.path.join(base_dir, fname), encoding='utf-8').read()
 
 
 setup(
@@ -32,9 +25,12 @@ setup(
     packages=find_packages(),
     package_data={'betterbib': ['data/journals.json']},
     description='Better BibTeX data',
-    long_description=read('README.rst'),
-    url='https://github.com/nschloe/betterbib',
-    download_url='https://pypi.python.org/pypi/betterbib',
+    long_description=read('README.md'),
+    long_description_content_type='text/markdown',
+    url=about['__website__'],
+    project_urls={
+        'Issues': 'https://github.com/nschloe/betterbib/issues',
+        },
     license=about['__license__'],
     platforms='any',
     install_requires=[
