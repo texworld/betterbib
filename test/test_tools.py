@@ -65,3 +65,8 @@ def test_journal_name():
     updater.update(tmp)
     assert tmp.fields['journal'] == lng.fields['journal']
     return
+
+
+def test_month_range():
+    assert betterbib._translate_month('June-July') == 'jun # "-" # jul'
+    return

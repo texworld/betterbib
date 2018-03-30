@@ -65,20 +65,26 @@ def _translate_month(key):
     months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul',
               'aug', 'sep', 'oct', 'nov', 'dec']
 
+    # Sometimes, the key is just a month
     try:
         return months[int(key)-1]
     except (TypeError, ValueError):
         # TypeError: unsupported operand type(s) for -: 'str' and 'int'
         pass
 
-    month = key[:3].lower()
+    # Split for entries like "March-April"
+    strings = []
+    for k in key.split('-'):
+        month = k[:3].lower()
 
-    # Month values like '????' appear -- skip them
-    if month not in months:
-        print('Unknown month value \'{}\'. Skipping.'.format(key))
-        return None
+        # Month values like '????' appear -- skip them
+        if month in months:
+            strings.append(month)
+        else:
+            print('Unknown month value \'{}\'. Skipping.'.format(key))
+            return None
 
-    return month
+    return ' # "-" # '.join(strings)
 
 
 def create_dict():

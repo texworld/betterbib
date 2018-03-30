@@ -17,6 +17,7 @@ from betterbib.tools import (
     write,
     update,
     JournalNameUpdater,
+    _translate_month
     )
 from betterbib.crossref import Crossref
 from betterbib.dblp import Dblp
