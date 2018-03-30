@@ -24,7 +24,7 @@ the input BibTeX
   title = {Framework Deflation Krylov Augmented}
 }
 ```
-is converted into
+is converted to
 ```
 @article{krylov,
  author = {Gaul, André and Gutknecht, Martin H. and Liesen, Jörg and Nabben, Reinhard},
@@ -60,7 +60,7 @@ betterbib fetches data from
    * [Crossref](http://www.crossref.org/) (default) or
    * [DBLP](http://dblp.uni-trier.de/) (`--source dblp`).
 
-All betterbib command-line options are explained in `betterbib -h`.
+All betterbib-sync command-line options are explained in `betterbib-sync -h`.
 
 #### Format
 

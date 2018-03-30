@@ -57,7 +57,7 @@ def pybtex_to_dict(entry):
     return d
 
 
-def _translate_month(key):
+def translate_month(key):
     '''The month value can take weird forms. Sometimes, it's given as an int,
     sometimes as a string representing an int, and sometimes the name of the
     month is spelled out. Try to handle most of this here.
@@ -65,20 +65,26 @@ def _translate_month(key):
     months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul',
               'aug', 'sep', 'oct', 'nov', 'dec']
 
+    # Sometimes, the key is just a month
     try:
         return months[int(key)-1]
     except (TypeError, ValueError):
         # TypeError: unsupported operand type(s) for -: 'str' and 'int'
         pass
 
-    month = key[:3].lower()
+    # Split for entries like "March-April"
+    strings = []
+    for k in key.split('-'):
+        month = k[:3].lower()
 
-    # Month values like '????' appear -- skip them
-    if month not in months:
-        print('Unknown month value \'{}\'. Skipping.'.format(key))
-        return None
+        # Month values like '????' appear -- skip them
+        if month in months:
+            strings.append(month)
+        else:
+            print('Unknown month value \'{}\'. Skipping.'.format(key))
+            return None
 
-    return month
+    return ' # "-" # '.join(strings)
 
 
 def create_dict():
@@ -193,7 +199,7 @@ def pybtex_to_bibtex_string(
             pass
 
         if key.lower() == 'month':
-            month_string = _translate_month(value)
+            month_string = translate_month(value)
             if month_string:
                 content.append('{} = {}'.format(key, month_string))
         elif key.lower() == 'title':
