@@ -68,5 +68,5 @@ def test_journal_name():
 
 
 def test_month_range():
-    assert betterbib._translate_month('June-July') == 'jun # "-" # jul'
+    assert betterbib.translate_month('June-July') == 'jun # "-" # jul'
     return

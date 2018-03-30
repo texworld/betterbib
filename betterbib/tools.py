@@ -57,7 +57,7 @@ def pybtex_to_dict(entry):
     return d
 
 
-def _translate_month(key):
+def translate_month(key):
     '''The month value can take weird forms. Sometimes, it's given as an int,
     sometimes as a string representing an int, and sometimes the name of the
     month is spelled out. Try to handle most of this here.
@@ -199,7 +199,7 @@ def pybtex_to_bibtex_string(
             pass
 
         if key.lower() == 'month':
-            month_string = _translate_month(value)
+            month_string = translate_month(value)
             if month_string:
                 content.append('{} = {}'.format(key, month_string))
         elif key.lower() == 'title':
