@@ -15,7 +15,6 @@ upload: setup.py
 	rm -f dist/*
 	python3 setup.py sdist
 	python3 setup.py bdist_wheel --universal
-	gpg --detach-sign -a dist/*
 	twine upload dist/*.tar.gz
 	twine upload dist/*.whl
 
