@@ -22,4 +22,16 @@ while getopts ':h:' option; do
 done
 shift $((OPTIND - 1))
 
-betterbib-sync "$1" | betterbib-journal-abbrev | betterbib-format -b - "$2"
+if [[ $1 == $2 ]]
+then
+    DEST=`mktemp /tmp/betterbib.XXXXXX`
+else
+    DEST=$2
+fi
+
+betterbib-sync "$1" | betterbib-journal-abbrev | betterbib-format -b - "$DEST"
+
+if [[ $1 == $2 ]]
+then
+    mv $DEST $2
+fi
