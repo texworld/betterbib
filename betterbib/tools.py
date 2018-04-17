@@ -184,7 +184,7 @@ def pybtex_to_bibtex_string(
 
     for key, persons in entry.persons.items():
         persons_str = ' and '.join([_get_person_str(p) for p in persons])
-        content.append(u'{} = {}{}{}'.format(key, left, persons_str, right))
+        content.append(u'{} = {}{}{}'.format(key.lower(), left, persons_str, right))
 
     keys = entry.fields.keys()
     if sort:
@@ -198,11 +198,14 @@ def pybtex_to_bibtex_string(
             # expected unicode for encode input, but got int instead
             pass
 
-        if key.lower() == 'month':
+        # Always make keys lowercase
+        key = key.lower()
+
+        if key == 'month':
             month_string = translate_month(value)
             if month_string:
                 content.append('{} = {}'.format(key, month_string))
-        elif key.lower() == 'title':
+        elif key == 'title':
             content.append(u'{} = {}{}{}'.format(
                 key, left, _translate_title(value, dictionary), right
                 ))
