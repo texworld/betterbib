@@ -312,25 +312,29 @@ def heuristic_unique_result(results, d):
 
 
 def write(od, file_handle, delimeter_type, tab_indent):
-    # Write header to the output file.
-    file_handle.write(
-        '%comment{{This file was created with betterbib v{}.}}\n\n'
-        .format(__version__)
-        )
-
     # Create the dictionary only once
     dictionary = create_dict()
 
-    # write the data out sequentially to respect ordering
-    for bib_id, d in od.items():
-        brace_delimeters = delimeter_type == 'braces'
-        a = pybtex_to_bibtex_string(
+    # Write header to the output file.
+    segments = [
+        '%comment{{This file was created with betterbib v{}.}}\n\n'
+        .format(__version__)
+    ]
+
+    brace_delimeters = delimeter_type == 'braces'
+
+    # Add segments for each bibtex entry in order
+    segments.extend([
+        pybtex_to_bibtex_string(
             d, bib_id, brace_delimeters=brace_delimeters,
             tab_indent=tab_indent,
             dictionary=dictionary,
-            )
-        file_handle.write(a + '\n\n')
-    return
+        )
+        for bib_id, d in od.items()
+    ])
+
+    # Write all segments to the file at once
+    file_handle.write('\n\n'.join(segments) + '\n')
 
 
 def update(entry1, entry2):
