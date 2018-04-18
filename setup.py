@@ -36,6 +36,7 @@ setup(
         'pybtex >= 0.19.0',
         'pyenchant',
         'requests',
+        'requests_cache',
         'tqdm',
         ],
     classifiers=[

@@ -8,6 +8,7 @@ import re
 import pybtex
 import pybtex.database
 import requests
+import requests_cache
 
 from .errors import NotFoundError, HttpError
 from .tools import pybtex_to_dict, heuristic_unique_result
@@ -39,6 +40,9 @@ class Crossref(object):
     def __init__(self, prefer_long_journal_name=False):
         self.api_url = 'https://api.crossref.org/works'
         self.prefer_long_journal_name = prefer_long_journal_name
+
+        requests_cache.install_cache('betterbib_crossref', expire_after=3600)
+        # requests_cache.remove_expired_responses()
         return
 
     def _crossref_to_bibtex_type(self, entry):
@@ -145,6 +149,10 @@ class Crossref(object):
                 'type:{}'.format(ct)
                 for ct in crossref_types
                 )
+
+        # headers = {
+        #     'User-Agent': 'GroovyBib/1.1 (https://example.org/GroovyBib/; mailto:GroovyBib@example.org) BasedOnFunkyLib/1.4.',
+        #     }
 
         r = requests.get(self.api_url, params=params)
         if not r.ok:
