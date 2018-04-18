@@ -67,7 +67,9 @@ class Crossref(object):
             book_doi = a.group(1)
 
             headers = {
-                'User-Agent': 'betterbib/{} ({}; mailto:{})'.format(__version__, __website__, __author_email__),
+                'User-Agent': 'betterbib/{} ({}; mailto:{})'.format(
+                    __version__, __website__, __author_email__
+                    )
                 }
 
             # Try to get the book data
@@ -94,7 +96,9 @@ class Crossref(object):
 
     def get_by_doi(self, doi):
         headers = {
-            'User-Agent': 'betterbib/{} ({}; mailto:{})'.format(__version__, __website__, __author_email__),
+            'User-Agent': 'betterbib/{} ({}; mailto:{})'.format(
+                __version__, __website__, __author_email__
+                ),
             }
         # https://api.crossref.org/works/10.1137/110820713
         r = requests.get(self.api_url + '/' + doi, headers=headers)
@@ -147,16 +151,16 @@ class Crossref(object):
         # crossref etiquette,
         # <https://github.com/CrossRef/rest-api-doc#good-manners--more-reliable-service>
         headers = {
-            'User-Agent': 'betterbib/{} ({}; mailto:{})'.format(__version__, __website__, __author_email__),
+            'User-Agent': 'betterbib/{} ({}; mailto:{})'.format(
+                __version__, __website__, __author_email__
+                ),
             }
 
         r = requests.get(self.api_url, params=params, headers=headers)
         if not r.ok:
             raise HttpError('Failed request to {}'.format(self.api_url))
 
-        data = r.json()
-
-        results = data['message']['items']
+        results = r.json()['message']['items']
 
         if not results:
             raise NotFoundError('No match')
