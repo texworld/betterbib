@@ -42,7 +42,7 @@ class Crossref(object):
         self.api_url = 'https://api.crossref.org/works'
         self.prefer_long_journal_name = prefer_long_journal_name
 
-        requests_cache.install_cache('betterbib_crossref', expire_after=3600)
+        requests_cache.install_cache('betterbib_cache', expire_after=3600)
         # requests_cache.remove_expired_responses()
         return
 
