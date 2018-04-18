@@ -7,6 +7,7 @@ import codecs
 import pybtex
 import pybtex.database
 import requests
+import requests_cache
 
 from .errors import NotFoundError, HttpError
 from .tools import pybtex_to_dict, heuristic_unique_result
@@ -110,6 +111,9 @@ class Dblp(object):
 
     def __init__(self):
         self.api_url = 'https://dblp.org/search/publ/api'
+
+        requests_cache.install_cache('betterbib_cache', expire_after=3600)
+        # requests_cache.remove_expired_responses()
         return
 
     def find_unique(self, entry):

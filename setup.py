@@ -28,9 +28,6 @@ setup(
     long_description=read('README.md'),
     long_description_content_type='text/markdown',
     url=about['__website__'],
-    project_urls={
-        'Issues': 'https://github.com/nschloe/betterbib/issues',
-        },
     license=about['__license__'],
     platforms='any',
     install_requires=[
@@ -39,6 +36,7 @@ setup(
         'pybtex >= 0.19.0',
         'pyenchant',
         'requests',
+        'requests_cache',
         'tqdm',
         ],
     classifiers=[

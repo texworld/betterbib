@@ -8,7 +8,9 @@ import re
 import pybtex
 import pybtex.database
 import requests
+import requests_cache
 
+from .__about__ import __version__, __website__, __author_email__
 from .errors import NotFoundError, HttpError
 from .tools import pybtex_to_dict, heuristic_unique_result
 
@@ -39,6 +41,9 @@ class Crossref(object):
     def __init__(self, prefer_long_journal_name=False):
         self.api_url = 'https://api.crossref.org/works'
         self.prefer_long_journal_name = prefer_long_journal_name
+
+        requests_cache.install_cache('betterbib_cache', expire_after=3600)
+        # requests_cache.remove_expired_responses()
         return
 
     def _crossref_to_bibtex_type(self, entry):
@@ -61,8 +66,14 @@ class Crossref(object):
 
             book_doi = a.group(1)
 
+            headers = {
+                'User-Agent': 'betterbib/{} ({}; mailto:{})'.format(
+                    __version__, __website__, __author_email__
+                    )
+                }
+
             # Try to get the book data
-            r = requests.get(self.api_url + '/' + book_doi)
+            r = requests.get(self.api_url + '/' + book_doi, headers=headers)
             if r.ok:
                 book_data = r.json()
                 if 'author' in book_data['message']:
@@ -84,8 +95,13 @@ class Crossref(object):
         return _crossref_to_bibtex_type[crossref_type]
 
     def get_by_doi(self, doi):
+        headers = {
+            'User-Agent': 'betterbib/{} ({}; mailto:{})'.format(
+                __version__, __website__, __author_email__
+                ),
+            }
         # https://api.crossref.org/works/10.1137/110820713
-        r = requests.get(self.api_url + '/' + doi)
+        r = requests.get(self.api_url + '/' + doi, headers=headers)
         assert r.ok
         data = r.json()
         result = data['message']
@@ -122,7 +138,7 @@ class Crossref(object):
 
         params = {
             'query': payload,
-            'rows': 2  # max number of results
+            'rows': 2,  # max number of results
             }
 
         crossref_types = _bibtex_to_crossref_type(entry.type)
@@ -132,13 +148,19 @@ class Crossref(object):
                 for ct in crossref_types
                 )
 
-        r = requests.get(self.api_url, params=params)
+        # crossref etiquette,
+        # <https://github.com/CrossRef/rest-api-doc#good-manners--more-reliable-service>
+        headers = {
+            'User-Agent': 'betterbib/{} ({}; mailto:{})'.format(
+                __version__, __website__, __author_email__
+                ),
+            }
+
+        r = requests.get(self.api_url, params=params, headers=headers)
         if not r.ok:
             raise HttpError('Failed request to {}'.format(self.api_url))
 
-        data = r.json()
-
-        results = data['message']['items']
+        results = r.json()['message']['items']
 
         if not results:
             raise NotFoundError('No match')
