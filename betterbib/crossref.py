@@ -61,8 +61,14 @@ class Crossref(object):
 
             book_doi = a.group(1)
 
+            params = {
+                # crossref etiquette,
+                # <https://github.com/CrossRef/rest-api-doc#good-manners--more-reliable-service>
+                'mailto': 'betterbib@github.com',
+                }
+
             # Try to get the book data
-            r = requests.get(self.api_url + '/' + book_doi)
+            r = requests.get(self.api_url + '/' + book_doi, params=params)
             if r.ok:
                 book_data = r.json()
                 if 'author' in book_data['message']:
@@ -84,8 +90,13 @@ class Crossref(object):
         return _crossref_to_bibtex_type[crossref_type]
 
     def get_by_doi(self, doi):
+        params = {
+            # crossref etiquette,
+            # <https://github.com/CrossRef/rest-api-doc#good-manners--more-reliable-service>
+            'mailto': 'betterbib@github.com',
+            }
         # https://api.crossref.org/works/10.1137/110820713
-        r = requests.get(self.api_url + '/' + doi)
+        r = requests.get(self.api_url + '/' + doi, params=params)
         assert r.ok
         data = r.json()
         result = data['message']
@@ -122,7 +133,10 @@ class Crossref(object):
 
         params = {
             'query': payload,
-            'rows': 2  # max number of results
+            'rows': 2,  # max number of results
+            # crossref etiquette,
+            # <https://github.com/CrossRef/rest-api-doc#good-manners--more-reliable-service>
+            'mailto': 'betterbib@github.com',
             }
 
         crossref_types = _bibtex_to_crossref_type(entry.type)
