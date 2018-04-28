@@ -12,10 +12,17 @@ from pybtex.database.input import bibtex
 import betterbib
 
 
+def filter_fields(data, excludes=[]):
+    for entry in data.entries.values():
+        if entry.fields:
+            entry.fields = {k:v for k,v in entry.fields.items() if k not in excludes}
+
+
 def _main():
     args = _parse_cmd_arguments()
 
     data = bibtex.Parser().parse_file(args.infile)
+    filter_fields(data, args.drop)
 
     # Use an ordered dictionary to make sure that the entries are written out
     # sorted by their BibTeX key if demanded.
@@ -119,6 +126,12 @@ def _parse_cmd_arguments():
             'DOI URL (new: https://doi.org/<DOI> (default), '
             'short: https://doi.org/abcde)'
             ),
+        )
+    parser.add_argument(
+        '--drop',
+        nargs='+',
+        default=[],
+        help='Drops fields from bibtex entry if they exist.',
         )
     return parser.parse_args()
 
