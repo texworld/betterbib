@@ -237,6 +237,12 @@ class Crossref(object):
             except KeyError:
                 pass
 
+        # Some journals return the initial page number in article-number. See e.g.
+        # https://doi.org/10.1103/physreve.74.06670
+        # https://doi.org/10.1103/physrevb.92.125113
+        if "pages" not in fields_dict and "article-number" in data:
+            fields_dict["pages"] = data["article-number"]
+
         container_title = None
         keys = ['short-container-title', 'container-title']
         if self.prefer_long_journal_name:
