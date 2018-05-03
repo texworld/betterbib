@@ -32,7 +32,7 @@ setup(
     platforms='any',
     install_requires=[
         'latexcodec',
-        'pipdate',
+        'pipdate >=0.2.0, <0.3.0',
         'pybtex >= 0.19.0',
         'pyenchant',
         'requests',
