@@ -22,3 +22,7 @@ publish: tag upload
 clean:
 	@find . | grep -E "(__pycache__|\.pyc|\.pyo$\)" | xargs rm -rf
 	@rm -rf *.egg-info/ build/ dist/
+
+lint:
+	black --check setup.py betterbib/ test/ tools/betterbib-dedup-doi tools/betterbib-doi2bibtex tools/betterbib-format tools/betterbib-journal-abbrev tools/betterbib-sync tools/bibitems2bibtex
+	flake8 setup.py betterbib/ test/ tools/betterbib-dedup-doi tools/betterbib-doi2bibtex tools/betterbib-format tools/betterbib-journal-abbrev tools/betterbib-sync tools/bibitems2bibtex

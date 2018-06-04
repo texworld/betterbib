@@ -18,13 +18,13 @@ def _to_bibtex_type(entry):
     # monograph (all chapters written by the same set of authors), then
     # return inbook, if all chapters are by different authors, return
     # incollection.
-    assert entry['type'] == 'Journal Articles'
-    return 'article'
+    assert entry["type"] == "Journal Articles"
+    return "article"
 
 
 def _dblp_to_pybtex(data):
-    '''Translate a given data set into the bibtex data structure.
-    '''
+    """Translate a given data set into the bibtex data structure.
+    """
     # A typcial search result is
     #
     #   'info': {
@@ -54,13 +54,13 @@ def _dblp_to_pybtex(data):
     fields_dict = {}
 
     pairs = {
-        'doi': 'doi',
-        'number': 'number',
-        'pages': 'pages',
-        'url': 'ee',
-        'volume': 'volume',
-        'year': 'year',
-        }
+        "doi": "doi",
+        "number": "number",
+        "pages": "pages",
+        "url": "ee",
+        "volume": "volume",
+        "year": "year",
+    }
     for key1, key2 in pairs.items():
         try:
             fields_dict[key1] = data[key2]
@@ -68,51 +68,46 @@ def _dblp_to_pybtex(data):
             pass
 
     try:
-        fields_dict['source'] = data['source']
+        fields_dict["source"] = data["source"]
     except KeyError:
-        fields_dict['source'] = 'DBLP'
+        fields_dict["source"] = "DBLP"
 
     try:
-        container_title = data['venue']
+        container_title = data["venue"]
     except KeyError:
         container_title = None
 
     try:
-        title = data['title']
+        title = data["title"]
     except KeyError:
         title = None
 
-    assert bibtex_type == 'article'
+    assert bibtex_type == "article"
     if container_title:
-        fields_dict['journal'] = container_title
+        fields_dict["journal"] = container_title
     if title:
-        fields_dict['title'] = title
+        fields_dict["title"] = title
 
     try:
-        persons = {'author': [
-            pybtex.database.Person(au)
-            for au in data['authors']['author']
-            ]}
+        persons = {
+            "author": [pybtex.database.Person(au) for au in data["authors"]["author"]]
+        }
     except (KeyError, pybtex.database.InvalidNameString):
         persons = None
 
-    return pybtex.database.Entry(
-        bibtex_type,
-        fields=fields_dict,
-        persons=persons
-        )
+    return pybtex.database.Entry(bibtex_type, fields=fields_dict, persons=persons)
 
 
 class Dblp(object):
-    '''
+    """
     Documentation of the DBLP Search API:
     <http://dblp.uni-trier.de/faq/How+to+use+the+dblp+search+API.html>.
-    '''
+    """
 
     def __init__(self):
-        self.api_url = 'https://dblp.org/search/publ/api'
+        self.api_url = "https://dblp.org/search/publ/api"
 
-        requests_cache.install_cache('betterbib_cache', expire_after=3600)
+        requests_cache.install_cache("betterbib_cache", expire_after=3600)
         # requests_cache.remove_expired_responses()
         return
 
@@ -124,13 +119,13 @@ class Dblp(object):
         L = []
 
         try:
-            L.append(d['title'])
+            L.append(d["title"])
         except KeyError:
             pass
 
         try:
-            for au in d['author']:
-                L.append(' '.join(au['last']))
+            for au in d["author"]:
+                L.append(" ".join(au["last"]))
         except KeyError:
             pass
 
@@ -139,28 +134,26 @@ class Dblp(object):
 
         # Simply plug the dict together to a search query. Typical query:
         # <api>?q=vanroose+schl%C3%B6mer&h=5
-        payload = codecs.decode(' '.join(L), 'ulatex').replace(' ', '+')
+        payload = codecs.decode(" ".join(L), "ulatex").replace(" ", "+")
 
         params = {
-            'q': payload,
-            'format': 'json',
-            'h': 2  # max number of results (hits)
-            }
+            "q": payload,
+            "format": "json",
+            "h": 2,  # max number of results (hits)
+        }
 
         r = requests.get(self.api_url, params=params)
         if not r.ok:
-            raise HttpError('Failed request to {}'.format(self.api_url))
+            raise HttpError("Failed request to {}".format(self.api_url))
 
         data = r.json()
 
         try:
-            results = data['result']['hits']['hit']
+            results = data["result"]["hits"]["hit"]
         except KeyError:
-            raise NotFoundError('No match')
+            raise NotFoundError("No match")
 
         if len(results) == 1:
-            return _dblp_to_pybtex(results[0]['info'])
+            return _dblp_to_pybtex(results[0]["info"])
 
-        return _dblp_to_pybtex(
-            heuristic_unique_result(results, d)['info']
-            )
+        return _dblp_to_pybtex(heuristic_unique_result(results, d)["info"])

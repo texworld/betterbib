@@ -17,15 +17,15 @@ from .tools import pybtex_to_dict, heuristic_unique_result
 
 def _bibtex_to_crossref_type(bibtex_type):
     _bibtex_to_crossref_map = {
-        'article': ['journal-article'],
-        'book': ['book', 'monograph'],
-        'inbook': ['book-chapter'],
-        'misc': ['other'],
-        'incollection': ['book-chapter'],
-        'inproceedings': ['proceedings-article'],
-        'proceedings': ['proceedings'],
-        'techreport': ['report'],
-        }
+        "article": ["journal-article"],
+        "book": ["book", "monograph"],
+        "inbook": ["book-chapter"],
+        "misc": ["other"],
+        "incollection": ["book-chapter"],
+        "inproceedings": ["proceedings-article"],
+        "proceedings": ["proceedings"],
+        "techreport": ["report"],
+    }
     try:
         return _bibtex_to_crossref_map[bibtex_type]
     except KeyError:
@@ -33,16 +33,16 @@ def _bibtex_to_crossref_type(bibtex_type):
 
 
 class Crossref(object):
-    '''
+    """
     Documentation of the Crossref Search API:
     <https://github.com/Crossref/rest-api-doc/blob/master/rest_api.md>.
-    '''
+    """
 
     def __init__(self, prefer_long_journal_name=False):
-        self.api_url = 'https://api.crossref.org/works'
+        self.api_url = "https://api.crossref.org/works"
         self.prefer_long_journal_name = prefer_long_journal_name
 
-        requests_cache.install_cache('betterbib_cache', expire_after=3600)
+        requests_cache.install_cache("betterbib_cache", expire_after=3600)
         # requests_cache.remove_expired_responses()
         return
 
@@ -51,60 +51,60 @@ class Crossref(object):
         # monograph (all chapters written by the same set of authors), then
         # return inbook, if all chapters are by different authors, return
         # incollection.
-        crossref_type = entry['type']
-        if crossref_type == 'book-chapter':
+        crossref_type = entry["type"]
+        if crossref_type == "book-chapter":
             # Get the containing book, and see if it has authors or editors. If
             # authors, consider it a monograph and use inbook; otherwise
             # incollection.
             # To get the book, make use of the fact that the chapter DOIs are
             # the book DOI plus some appendix, e.g., .ch3, _3, etc. In other
             # words: Strip the last digits plus whatever is nondigit before it.
-            a = re.match('(.*?)([^0-9]+[0-9]+)$', entry['DOI'])
+            a = re.match("(.*?)([^0-9]+[0-9]+)$", entry["DOI"])
             if a is None:
                 # The DOI doesn't have that structure; assume 'incollection'.
-                return 'incollection'
+                return "incollection"
 
             book_doi = a.group(1)
 
             headers = {
-                'User-Agent': 'betterbib/{} ({}; mailto:{})'.format(
+                "User-Agent": "betterbib/{} ({}; mailto:{})".format(
                     __version__, __website__, __author_email__
-                    )
-                }
+                )
+            }
 
             # Try to get the book data
-            r = requests.get(self.api_url + '/' + book_doi, headers=headers)
+            r = requests.get(self.api_url + "/" + book_doi, headers=headers)
             if r.ok:
                 book_data = r.json()
-                if 'author' in book_data['message']:
-                    return 'inbook'
+                if "author" in book_data["message"]:
+                    return "inbook"
             # else
-            return 'incollection'
+            return "incollection"
 
         # All other cases
         _crossref_to_bibtex_type = {
-            'book': 'book',
-            'dataset': 'misc',
-            'journal-article': 'article',
-            'monograph': 'book',
-            'other': 'misc',
-            'proceedings': 'proceedings',
-            'proceedings-article': 'inproceedings',
-            'report': 'techreport'
-            }
+            "book": "book",
+            "dataset": "misc",
+            "journal-article": "article",
+            "monograph": "book",
+            "other": "misc",
+            "proceedings": "proceedings",
+            "proceedings-article": "inproceedings",
+            "report": "techreport",
+        }
         return _crossref_to_bibtex_type[crossref_type]
 
     def get_by_doi(self, doi):
         headers = {
-            'User-Agent': 'betterbib/{} ({}; mailto:{})'.format(
+            "User-Agent": "betterbib/{} ({}; mailto:{})".format(
                 __version__, __website__, __author_email__
-                ),
-            }
+            )
+        }
         # https://api.crossref.org/works/10.1137/110820713
-        r = requests.get(self.api_url + '/' + doi, headers=headers)
+        r = requests.get(self.api_url + "/" + doi, headers=headers)
         assert r.ok
         data = r.json()
-        result = data['message']
+        result = data["message"]
         return self._crossref_to_pybtex(result)
 
     def find_unique(self, entry):
@@ -113,19 +113,25 @@ class Crossref(object):
         L = []
 
         keys = [
-            'title', 'journal', 'doi', 'pages', 'year', 'volume', 'number',
-            'publisher'
-            ]
+            "title",
+            "journal",
+            "doi",
+            "pages",
+            "year",
+            "volume",
+            "number",
+            "publisher",
+        ]
         for key in keys:
             try:
                 L.append(d[key])
             except KeyError:
                 pass
 
-        names = ['first', 'middle', 'prelast', 'last', 'lineage']
+        names = ["first", "middle", "prelast", "last", "lineage"]
         try:
-            for au in d['author']:
-                L.extend([' '.join(au[key]) for key in names])
+            for au in d["author"]:
+                L.extend([" ".join(au[key]) for key in names])
         except KeyError:
             pass
 
@@ -134,36 +140,30 @@ class Crossref(object):
 
         # Simply plug the dict together to a search query. Typical query:
         # https://api.crossref.org/works?query=vanroose+schl%C3%B6mer&rows=5
-        payload = codecs.decode(' '.join(L), 'ulatex').replace(' ', '+')
+        payload = codecs.decode(" ".join(L), "ulatex").replace(" ", "+")
 
-        params = {
-            'query': payload,
-            'rows': 2,  # max number of results
-            }
+        params = {"query": payload, "rows": 2}  # max number of results
 
         crossref_types = _bibtex_to_crossref_type(entry.type)
         if crossref_types:
-            params['filter'] = ','.join(
-                'type:{}'.format(ct)
-                for ct in crossref_types
-                )
+            params["filter"] = ",".join("type:{}".format(ct) for ct in crossref_types)
 
         # crossref etiquette,
         # <https://github.com/CrossRef/rest-api-doc#good-manners--more-reliable-service>
         headers = {
-            'User-Agent': 'betterbib/{} ({}; mailto:{})'.format(
+            "User-Agent": "betterbib/{} ({}; mailto:{})".format(
                 __version__, __website__, __author_email__
-                ),
-            }
+            )
+        }
 
         r = requests.get(self.api_url, params=params, headers=headers)
         if not r.ok:
-            raise HttpError('Failed request to {}'.format(self.api_url))
+            raise HttpError("Failed request to {}".format(self.api_url))
 
-        results = r.json()['message']['items']
+        results = r.json()["message"]["items"]
 
         if not results:
-            raise NotFoundError('No match')
+            raise NotFoundError("No match")
 
         if len(results) == 1:
             return self._crossref_to_pybtex(results[0])
@@ -172,8 +172,8 @@ class Crossref(object):
 
     # pylint: disable=too-many-locals
     def _crossref_to_pybtex(self, data):
-        '''Translate a given data set into the bibtex data structure.
-        '''
+        """Translate a given data set into the bibtex data structure.
+        """
         # A typcial search result is
         #
         # {
@@ -224,13 +224,13 @@ class Crossref(object):
         fields_dict = {}
 
         pairs = {
-            'doi': 'DOI',
-            'number': 'issue',
-            'pages': 'page',
-            'source': 'source',
-            'url': 'URL',
-            'volume': 'volume',
-            }
+            "doi": "DOI",
+            "number": "issue",
+            "pages": "page",
+            "source": "source",
+            "url": "URL",
+            "volume": "volume",
+        }
         for key1, key2 in pairs.items():
             try:
                 fields_dict[key1] = data[key2]
@@ -238,7 +238,7 @@ class Crossref(object):
                 pass
 
         container_title = None
-        keys = ['short-container-title', 'container-title']
+        keys = ["short-container-title", "container-title"]
         if self.prefer_long_journal_name:
             keys = reversed(keys)
         for key in keys:
@@ -247,114 +247,109 @@ class Crossref(object):
                 break
 
         try:
-            title = data['title'][0]
+            title = data["title"][0]
         except (KeyError, IndexError):
             title = None
 
         try:
-            publisher = data['publisher']
+            publisher = data["publisher"]
         except KeyError:
             publisher = None
 
         # translate the type
         bibtex_type = self._crossref_to_bibtex_type(data)
-        if bibtex_type == 'article':
+        if bibtex_type == "article":
             if container_title:
-                fields_dict['journal'] = container_title
+                fields_dict["journal"] = container_title
             if publisher:
-                fields_dict['publisher'] = publisher
+                fields_dict["publisher"] = publisher
             if title:
-                fields_dict['title'] = title
-        elif bibtex_type == 'book':
+                fields_dict["title"] = title
+        elif bibtex_type == "book":
             if publisher:
-                fields_dict['publisher'] = publisher
+                fields_dict["publisher"] = publisher
             if title:
-                fields_dict['title'] = title
-        elif bibtex_type == 'inbook':
+                fields_dict["title"] = title
+        elif bibtex_type == "inbook":
             if container_title:
                 # or title?
-                fields_dict['booktitle'] = container_title
+                fields_dict["booktitle"] = container_title
             if publisher:
-                fields_dict['publisher'] = publisher
+                fields_dict["publisher"] = publisher
             if title:
-                fields_dict['chapter'] = title
-        elif bibtex_type == 'incollection':
+                fields_dict["chapter"] = title
+        elif bibtex_type == "incollection":
             if container_title:
-                fields_dict['booktitle'] = container_title
+                fields_dict["booktitle"] = container_title
             if publisher:
-                fields_dict['publisher'] = publisher
+                fields_dict["publisher"] = publisher
             if title:
-                fields_dict['title'] = title
-        elif bibtex_type == 'inproceedings':
+                fields_dict["title"] = title
+        elif bibtex_type == "inproceedings":
             if container_title:
-                fields_dict['booktitle'] = container_title
+                fields_dict["booktitle"] = container_title
             if publisher:
-                fields_dict['publisher'] = publisher
+                fields_dict["publisher"] = publisher
             if title:
-                fields_dict['title'] = title
-        elif bibtex_type == 'proceedings':
+                fields_dict["title"] = title
+        elif bibtex_type == "proceedings":
             if publisher:
-                fields_dict['publisher'] = publisher
+                fields_dict["publisher"] = publisher
             if title:
-                fields_dict['title'] = title
-        elif bibtex_type == 'techreport':
+                fields_dict["title"] = title
+        elif bibtex_type == "techreport":
             if publisher:
-                fields_dict['institution'] = publisher
+                fields_dict["institution"] = publisher
             if title:
-                fields_dict['title'] = title
+                fields_dict["title"] = title
         else:
-            assert bibtex_type == 'misc', \
-                'Unknown type \'{}\''.format(bibtex_type)
+            assert bibtex_type == "misc", "Unknown type '{}'".format(bibtex_type)
             if publisher:
-                fields_dict['publisher'] = publisher
+                fields_dict["publisher"] = publisher
             # Standards have the title in container_title
             if title:
-                fields_dict['title'] = title
+                fields_dict["title"] = title
             elif container_title:
-                fields_dict['title'] = container_title
+                fields_dict["title"] = container_title
 
         try:
-            if data['subtitle'][0]:
-                fields_dict['subtitle'] = data['subtitle'][0]
+            if data["subtitle"][0]:
+                fields_dict["subtitle"] = data["subtitle"][0]
         except (KeyError, IndexError):
             pass
 
         try:
-            fields_dict['issn'] = ', '.join(data['ISSN'])
+            fields_dict["issn"] = ", ".join(data["ISSN"])
         except KeyError:
             pass
 
         try:
-            fields_dict['isbn'] = ', '.join(data['ISBN'])
+            fields_dict["isbn"] = ", ".join(data["ISBN"])
         except KeyError:
             pass
 
         try:
-            year = data['issued']['date-parts'][0][0]
+            year = data["issued"]["date-parts"][0][0]
             if year is not None:
-                fields_dict['year'] = year
+                fields_dict["year"] = year
         except (KeyError, IndexError):
             pass
 
         try:
-            month = data['issued']['date-parts'][0][1]
+            month = data["issued"]["date-parts"][0][1]
             if month is not None:
-                fields_dict['month'] = month
+                fields_dict["month"] = month
         except (IndexError, KeyError):
             pass
 
         try:
-            persons = {'author': [
-                pybtex.database.Person(u'{}, {}'.format(
-                    au['family'], au['given']
-                    ))
-                for au in data['author']
-                ]}
+            persons = {
+                "author": [
+                    pybtex.database.Person(u"{}, {}".format(au["family"], au["given"]))
+                    for au in data["author"]
+                ]
+            }
         except (KeyError, pybtex.database.InvalidNameString):
             persons = None
 
-        return pybtex.database.Entry(
-            bibtex_type,
-            fields=fields_dict,
-            persons=persons
-            )
+        return pybtex.database.Entry(bibtex_type, fields=fields_dict, persons=persons)
