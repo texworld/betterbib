@@ -10,7 +10,8 @@ import requests
 
 import enchant
 
-import latexcodec
+# for "ulatex" codec
+import latexcodec  # noqa
 
 import appdirs
 
@@ -286,7 +287,7 @@ def heuristic_unique_result(results, d):
     # As a heuristic, assume that the top result is the unique answer if
     # its score is at least 1.5 times the score of the the second-best
     # result.
-    for score in "score", "@score":
+    for score in ["score", "@score"]:
         try:
             if float(results[0][score]) > 1.5 * float(results[1][score]):
                 return results[0]
