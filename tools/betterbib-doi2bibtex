@@ -13,31 +13,25 @@ def _main():
     args = _parse_cmd_arguments()
     source = betterbib.Crossref()
     entry = source.get_by_doi(args.doi)
-    bibtex_key = 'bibtex'
+    bibtex_key = "bibtex"
     print(pybtex_to_bibtex_string(entry, bibtex_key))
     return
 
 
 def _parse_cmd_arguments():
     import argparse
-    parser = argparse.ArgumentParser(
-        description='Turn a DOI into a BibTeX entry.'
-        )
+
+    parser = argparse.ArgumentParser(description="Turn a DOI into a BibTeX entry.")
     parser.add_argument(
-        '-v', '--version',
-        help='display version information',
-        action='version',
-        version='betterbib {}, Python {}'.format(
-            betterbib.__version__, sys.version
-            )
-        )
-    parser.add_argument(
-        'doi',
-        type=str,
-        help='input DOI'
-        )
+        "-v",
+        "--version",
+        help="display version information",
+        action="version",
+        version="betterbib {}, Python {}".format(betterbib.__version__, sys.version),
+    )
+    parser.add_argument("doi", type=str, help="input DOI")
     return parser.parse_args()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     _main()
