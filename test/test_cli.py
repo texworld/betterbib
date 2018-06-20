@@ -20,14 +20,16 @@ def test_cli_dedup_doi():
 
     betterbib.cli.dedup_doi.main([infile, outfile])
     with open(outfile, "r") as f:
-        assert f.read() == ((
-            "%comment{{This file was created with betterbib v{}.}}\n"
-            "\n"
-            "@article{{foobar,\n"
-            " url = {{https://doi.org/foobar}},\n"
-            "}}\n"
-            "\n"
-        ).format(betterbib.__version__))
+        assert f.read() == (
+            (
+                "%comment{{This file was created with betterbib v{}.}}\n"
+                "\n"
+                "@article{{foobar,\n"
+                " url = {{https://doi.org/foobar}},\n"
+                "}}\n"
+                "\n"
+            ).format(betterbib.__version__)
+        )
 
     os.remove(infile)
     os.remove(outfile)
