@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-from __future__ import print_function, unicode_literals
+from __future__ import unicode_literals
 
 import argparse
 import sys
@@ -38,7 +38,7 @@ def main(argv=None):
 def _write(od, out, delimeter_type):
     # Write header to the output file.
     out.write(
-        "%comment{This file was created with betterbib v{}.}\n\n".format(
+        "%comment{{This file was created with betterbib v{}.}}\n\n".format(
             __about__.__version__
         )
     )
@@ -53,8 +53,6 @@ def _write(od, out, delimeter_type):
             d, bib_id, brace_delimeters=brace_delimeters, dictionary=dictionary
         )
         out.write(a + "\n\n")
-
-    out.close()
     return
 
 

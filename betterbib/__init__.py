@@ -2,9 +2,10 @@
 #
 from __future__ import print_function
 
-from betterbib.__about__ import __version__, __author__, __author_email__, __website__
+from .__about__ import __version__, __author__, __author_email__, __website__
 
-from betterbib.tools import (
+from . import cli
+from .tools import (
     create_dict,
     decode,
     pybtex_to_dict,
@@ -14,14 +15,15 @@ from betterbib.tools import (
     JournalNameUpdater,
     translate_month,
 )
-from betterbib.crossref import Crossref
-from betterbib.dblp import Dblp
+from .crossref import Crossref
+from .dblp import Dblp
 
 __all__ = [
     "__version__",
     "__author__",
     "__author_email__",
     "__website__",
+    "cli",
     "create_dict",
     "decode",
     "pybtex_to_dict",
