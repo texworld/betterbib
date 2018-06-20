@@ -52,10 +52,12 @@ setup(
     ],
     scripts=[
         "tools/betterbib",
-        "tools/betterbib-dedup-doi",
         "tools/betterbib-doi2bibtex",
         "tools/betterbib-format",
         "tools/betterbib-journal-abbrev",
         "tools/betterbib-sync",
     ],
+    entry_points={
+        "console_scripts": ["betterbib-dedup-doi = betterbib.cli.dedup_doi:main"]
+    },
 )
