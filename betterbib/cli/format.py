@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 from __future__ import print_function, unicode_literals
@@ -9,17 +8,18 @@ import sys
 
 from pybtex.database.input import bibtex
 
-import betterbib
+from .. import tools, __about__
 
 
-def _main():
-    args = _parse_cmd_arguments()
+def main(argv=None):
+    parser = _get_parser()
+    args = parser.parse_args(argv)
 
     data = bibtex.Parser().parse_file(args.infile)
 
     # Use an ordered dictionary to make sure that the entries are written out
     # sorted by their BibTeX key if demanded.
-    od = betterbib.decode(
+    od = tools.decode(
         collections.OrderedDict(
             sorted(data.entries.items())
             if args.sort_by_bibkey
@@ -29,7 +29,7 @@ def _main():
 
     od = _adapt_doi_urls(od, args.doi_url_type)
 
-    betterbib.write(od, args.outfile, args.delimeter_type, tab_indent=args.tabs_indent)
+    tools.write(od, args.outfile, args.delimeter_type, tab_indent=args.tabs_indent)
     return
 
 
@@ -39,7 +39,7 @@ def _adapt_doi_urls(od, doi_url_type):
     elif doi_url_type == "short":
 
         def update_to_short_doi(doi):
-            short_doi = betterbib.tools.get_short_doi(doi)
+            short_doi = tools.get_short_doi(doi)
             if short_doi:
                 return "https://doi.org/" + short_doi
             return None
@@ -54,7 +54,7 @@ def _adapt_doi_urls(od, doi_url_type):
 def _update_doi_url(od, url_from_doi):
     for bib_id in od:
         if "url" in od[bib_id].fields:
-            doi = betterbib.tools.doi_from_url(od[bib_id].fields["url"])
+            doi = tools.doi_from_url(od[bib_id].fields["url"])
             if doi:
                 new_url = url_from_doi(doi)
                 if new_url:
@@ -62,7 +62,7 @@ def _update_doi_url(od, url_from_doi):
     return od
 
 
-def _parse_cmd_arguments():
+def _get_parser():
     parser = argparse.ArgumentParser(description="Reformat BibTeX files.")
 
     parser.add_argument(
@@ -70,7 +70,7 @@ def _parse_cmd_arguments():
         "--version",
         help="display version information",
         action="version",
-        version="betterbib {}, Python {}".format(betterbib.__version__, sys.version),
+        version="betterbib {}, Python {}".format(__about__.__version__, sys.version),
     )
     parser.add_argument(
         "infile",
@@ -115,8 +115,4 @@ def _parse_cmd_arguments():
             "short: https://doi.org/abcde)"
         ),
     )
-    return parser.parse_args()
-
-
-if __name__ == "__main__":
-    _main()
+    return parser

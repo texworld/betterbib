@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 from __future__ import print_function, unicode_literals
@@ -6,30 +5,30 @@ from __future__ import print_function, unicode_literals
 import argparse
 import collections
 
-# pylint: disable=import-error
 import concurrent.futures
 import sys
 
 from pybtex.database.input import bibtex
 from tqdm import tqdm
 
-import betterbib
+from .. import tools, crossref, dblp, errors, __about__
 
 
-def _main():
-    args = _parse_cmd_arguments()
+def main(argv=None):
+    parser = _get_parser()
+    args = parser.parse_args(argv)
 
     data = bibtex.Parser().parse_file(args.infile)
 
     # Use an ordered dictionary to make sure that the entries are written out
     # the way they came in.
-    od = betterbib.decode(collections.OrderedDict(data.entries.items()))
+    od = tools.decode(collections.OrderedDict(data.entries.items()))
 
     if args.source == "crossref":
-        source = betterbib.Crossref(args.long_journal_name)
+        source = crossref.Crossref(args.long_journal_name)
     else:
         assert args.source == "dblp", "Illegal source."
-        source = betterbib.Dblp()
+        source = dblp.Dblp()
 
     print()
     od, num_success = _update_from_source(od, source, args.num_concurrent_requests)
@@ -37,7 +36,7 @@ def _main():
     print("\n\nTotal number of entries: {}".format(len(data.entries)))
     print("Found: {}".format(num_success))
 
-    betterbib.write(od, args.outfile, "braces", tab_indent=False)
+    tools.write(od, args.outfile, "braces", tab_indent=False)
     return
 
 
@@ -58,19 +57,19 @@ def _update_from_source(od, source, num_concurrent_requests):
             data = None
             try:
                 data = future.result()
-            except (betterbib.errors.NotFoundError, betterbib.errors.UniqueError):
+            except (errors.NotFoundError, errors.UniqueError):
                 pass
-            except betterbib.errors.HttpError as e:
+            except errors.HttpError as e:
                 print(e.args[0])
             else:
                 num_success += 1
 
-            od[bib_id] = betterbib.update(entry, data)
+            od[bib_id] = tools.update(entry, data)
 
     return od, num_success
 
 
-def _parse_cmd_arguments():
+def _get_parser():
     parser = argparse.ArgumentParser(
         description="Sync BibTeX files with information from online sources."
     )
@@ -79,7 +78,7 @@ def _parse_cmd_arguments():
         "--version",
         help="display version information",
         action="version",
-        version="betterbib {}, Python {}".format(betterbib.__version__, sys.version),
+        version="betterbib {}, Python {}".format(__about__.__version__, sys.version),
     )
     parser.add_argument(
         "infile",
@@ -116,8 +115,4 @@ def _parse_cmd_arguments():
         metavar="N",
         help="number of concurrent HTTPS requests (default: 10)",
     )
-    return parser.parse_args()
-
-
-if __name__ == "__main__":
-    _main()
+    return parser

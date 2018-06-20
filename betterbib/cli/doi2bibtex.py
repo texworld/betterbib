@@ -1,24 +1,23 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 from __future__ import print_function, unicode_literals
 
 import sys
 
-import betterbib
-from betterbib import pybtex_to_bibtex_string
+from .. import tools, Crossref, __about__
 
 
-def _main():
-    args = _parse_cmd_arguments()
-    source = betterbib.Crossref()
+def main(argv=None):
+    parser = _get_parser()
+    args = parser.parse_args(argv)
+    source = Crossref()
     entry = source.get_by_doi(args.doi)
     bibtex_key = "bibtex"
-    print(pybtex_to_bibtex_string(entry, bibtex_key))
+    print(tools.pybtex_to_bibtex_string(entry, bibtex_key))
     return
 
 
-def _parse_cmd_arguments():
+def _get_parser():
     import argparse
 
     parser = argparse.ArgumentParser(description="Turn a DOI into a BibTeX entry.")
@@ -27,11 +26,7 @@ def _parse_cmd_arguments():
         "--version",
         help="display version information",
         action="version",
-        version="betterbib {}, Python {}".format(betterbib.__version__, sys.version),
+        version="betterbib {}, Python {}".format(__about__.__version__, sys.version),
     )
     parser.add_argument("doi", type=str, help="input DOI")
-    return parser.parse_args()
-
-
-if __name__ == "__main__":
-    _main()
+    return parser

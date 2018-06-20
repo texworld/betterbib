@@ -24,5 +24,5 @@ clean:
 	@rm -rf *.egg-info/ build/ dist/
 
 lint:
-	black --check setup.py betterbib/ test/ tools/betterbib-doi2bibtex tools/betterbib-format tools/betterbib-journal-abbrev tools/betterbib-sync tools/bibitems2bibtex
-	flake8 setup.py betterbib/ test/ tools/betterbib-dedup-doi tools/betterbib-doi2bibtex tools/betterbib-format tools/betterbib-journal-abbrev tools/betterbib-sync tools/bibitems2bibtex
+	black --check setup.py betterbib/ test/
+	flake8 setup.py betterbib/ test/

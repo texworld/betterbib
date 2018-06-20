@@ -50,14 +50,14 @@ setup(
         "Topic :: Scientific/Engineering",
         "Topic :: Utilities",
     ],
-    scripts=[
-        "tools/betterbib",
-        "tools/betterbib-doi2bibtex",
-        "tools/betterbib-format",
-        "tools/betterbib-journal-abbrev",
-        "tools/betterbib-sync",
-    ],
+    scripts=["tools/betterbib"],
     entry_points={
-        "console_scripts": ["betterbib-dedup-doi = betterbib.cli.dedup_doi:main"]
+        "console_scripts": [
+            "betterbib-dedup-doi = betterbib.cli.dedup_doi:main"
+            "betterbib-doi2bibtex = betterbib.cli.doi2bibtex:main",
+            "betterbib-format = betterbib.cli.format:main",
+            "betterbib-journal-abbrev = betterbib.cli.journal_abbrev:main",
+            "betterbib-sync = betterbib.cli.sync:main",
+        ]
     },
 )
