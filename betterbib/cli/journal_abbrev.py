@@ -13,7 +13,7 @@ from .. import tools, __about__
 
 def main(argv=None):
     parser = _get_parser()
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     updater = tools.JournalNameUpdater(args.long_journal_names)
 
