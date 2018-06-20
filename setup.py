@@ -32,7 +32,7 @@ setup(
     platforms="any",
     install_requires=[
         "latexcodec",
-        "pipdate >=0.2.0, <0.3.0",
+        "pipdate >=0.3.0, <0.4.0",
         "pybtex >= 0.19.0",
         "pyenchant",
         "requests",
@@ -50,12 +50,14 @@ setup(
         "Topic :: Scientific/Engineering",
         "Topic :: Utilities",
     ],
-    scripts=[
-        "tools/betterbib",
-        "tools/betterbib-dedup-doi",
-        "tools/betterbib-doi2bibtex",
-        "tools/betterbib-format",
-        "tools/betterbib-journal-abbrev",
-        "tools/betterbib-sync",
-    ],
+    scripts=["tools/betterbib"],
+    entry_points={
+        "console_scripts": [
+            "betterbib-dedup-doi = betterbib.cli.dedup_doi:main"
+            "betterbib-doi2bibtex = betterbib.cli.doi2bibtex:main",
+            "betterbib-format = betterbib.cli.format:main",
+            "betterbib-journal-abbrev = betterbib.cli.journal_abbrev:main",
+            "betterbib-sync = betterbib.cli.sync:main",
+        ]
+    },
 )

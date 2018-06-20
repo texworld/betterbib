@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 from __future__ import print_function, unicode_literals
@@ -9,32 +8,32 @@ import sys
 
 from pybtex.database.input import bibtex
 
-# pylint: disable=import-self
-import betterbib
+from .. import tools, __about__
 
 
-def _main():
-    args = _parse_cmd_arguments()
+def main(argv=None):
+    parser = _get_parser()
+    args = parser.parse_args(argv)
 
-    updater = betterbib.JournalNameUpdater(args.long_journal_names)
+    updater = tools.JournalNameUpdater(args.long_journal_names)
 
     data = bibtex.Parser().parse_file(args.infile)
     for key in data.entries:
         updater.update(data.entries[key])
 
-    od = betterbib.decode(collections.OrderedDict(data.entries.items()))
-    betterbib.write(od, args.outfile, "braces", tab_indent=False)
+    od = tools.decode(collections.OrderedDict(data.entries.items()))
+    tools.write(od, args.outfile, "braces", tab_indent=False)
     return
 
 
-def _parse_cmd_arguments():
+def _get_parser():
     parser = argparse.ArgumentParser(description="(Un)abbreviate journal names.")
     parser.add_argument(
         "-v",
         "--version",
         help="display version information",
         action="version",
-        version="betterbib {}, Python {}".format(betterbib.__version__, sys.version),
+        version="betterbib {}, Python {}".format(__about__.__version__, sys.version),
     )
     parser.add_argument(
         "infile",
@@ -56,8 +55,4 @@ def _parse_cmd_arguments():
         action="store_true",
         help="use long journal names (default: false)",
     )
-    return parser.parse_args()
-
-
-if __name__ == "__main__":
-    _main()
+    return parser

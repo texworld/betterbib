@@ -1,19 +1,19 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-from __future__ import print_function, unicode_literals
+from __future__ import unicode_literals
 
 import argparse
 import sys
 
 from pybtex.database.input import bibtex
 
-import betterbib
-from betterbib import pybtex_to_bibtex_string
+from .. import tools
+from .. import __about__
 
 
-def _main():
-    args = _parse_cmd_arguments()
+def main(argv=None):
+    parser = _get_parser()
+    args = parser.parse_args(argv)
 
     data = bibtex.Parser().parse_file(args.infile)
 
@@ -22,7 +22,7 @@ def _main():
     # deduplicate
     for key in data.entries:
         if "url" in od[key].fields and "doi" in od[key].fields:
-            doi = betterbib.tools.doi_from_url(od[key].fields["url"])
+            doi = tools.doi_from_url(od[key].fields["url"])
             if doi == od[key].fields["doi"]:
                 # Would be nicer to remove it completely; see
                 # <https://bitbucket.org/pybtex-devs/pybtex/issues/104/implement>.
@@ -38,26 +38,25 @@ def _main():
 def _write(od, out, delimeter_type):
     # Write header to the output file.
     out.write(
-        "%%comment{This file was created with betterbib v%s.}\n\n"
-        % betterbib.__version__
+        "%comment{{This file was created with betterbib v{}.}}\n\n".format(
+            __about__.__version__
+        )
     )
 
     # Create the dictionary only once
-    dictionary = betterbib.create_dict()
+    dictionary = tools.create_dict()
 
     # write the data out sequentially to respect ordering
     for bib_id, d in od.items():
         brace_delimeters = delimeter_type == "curly"
-        a = pybtex_to_bibtex_string(
+        a = tools.pybtex_to_bibtex_string(
             d, bib_id, brace_delimeters=brace_delimeters, dictionary=dictionary
         )
         out.write(a + "\n\n")
-
-    out.close()
     return
 
 
-def _parse_cmd_arguments():
+def _get_parser():
     parser = argparse.ArgumentParser(
         description="Removes one of DOI and URL in a BibTeX file "
         "if both are identical."
@@ -67,7 +66,7 @@ def _parse_cmd_arguments():
         "--version",
         help="display version information",
         action="version",
-        version="betterbib {}, Python {}".format(betterbib.__version__, sys.version),
+        version="betterbib {}, Python {}".format(__about__.__version__, sys.version),
     )
     parser.add_argument(
         "infile",
@@ -89,8 +88,4 @@ def _parse_cmd_arguments():
         action="store_true",
         help="keep the DOI rather than the URL (default: false)",
     )
-    return parser.parse_args()
-
-
-if __name__ == "__main__":
-    _main()
+    return parser

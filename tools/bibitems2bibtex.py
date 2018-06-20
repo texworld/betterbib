@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
 """
@@ -11,13 +10,13 @@ import argparse
 import re
 import sys
 
-import betterbib
+from .. import __about__
 
 
-def _main():
-    """Extra
-    """
-    args = _parse_args()
+def main(argv=None):
+    parser = _get_parser()
+    args = parser.parse_args(argv)
+
     bibitem_strings = extract_bibitems(args.input)
     previous_author = None
     for bibitem_string in bibitem_strings:
@@ -225,18 +224,14 @@ def extract_bibitems(filename):
     return bibitems
 
 
-def _parse_args():
+def _get_parser():
     parser = argparse.ArgumentParser(description="Extract bibitems.")
     parser.add_argument(
         "-v",
         "--version",
         help="display version information",
         action="version",
-        version="betterbib {}, Python {}".format(betterbib.__version__, sys.version),
+        version="betterbib {}, Python {}".format(__about__.__version__, sys.version),
     )
     parser.add_argument("input", type=str, help="input LaTeX file")
-    return parser.parse_args()
-
-
-if __name__ == "__main__":
-    _main()
+    return parser
