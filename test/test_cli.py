@@ -72,9 +72,7 @@ def test_cli_format():
 def test_cli_journal_abbrev():
     infile = tempfile.NamedTemporaryFile().name
     with open(infile, "w") as f:
-        f.write(
-            "@article{foobar,\njournal={SIAM Journal on Scientific Computing}\n}"
-        )
+        f.write("@article{foobar,\njournal={SIAM Journal on Scientific Computing}\n}")
 
     outfile = tempfile.NamedTemporaryFile().name
 
