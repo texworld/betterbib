@@ -100,9 +100,9 @@ def test_cli_sync():
     infile = tempfile.NamedTemporaryFile().name
     with open(infile, "w") as f:
         f.write(
-            "@article{krylov,\n"
-            " author = {Liesen and Gaul and Nabben},\n"
-            "title = {Framework Deflation Krylov Augmented}\n"
+            "@article{stockman,\n"
+            " author = {Stockman},\n"
+            "title = {A New Equation to Estimate Glomerular Filtration Rate}\n"
             "}"
         )
 
@@ -117,19 +117,18 @@ def test_cli_sync():
                 "\n"
                 "\n"
                 "\n"
-                "@article{{krylov,\n"
-                " author = {{Gaul, André and Gutknecht, Martin H. and Liesen, Jörg and Nabben, Reinhard}},\n"
-                " title = {{A Framework for Deflated and Augmented {{Krylov}} Subspace Methods}},\n"
-                " doi = {{10.1137/110820713}},\n"
-                " number = {{2}},\n"
-                " pages = {{495-518}},\n"
+                "@article{{stockman,\n"
+                " author = {{Stockman, J.A.}},\n"
+                " title = {{A New Equation to Estimate Glomerular Filtration Rate}},\n"
+                " doi = {{10.1016/s0084-3954(09)79550-8}},\n"
+                " pages = {{193-194}},\n"
                 " source = {{Crossref}},\n"
-                " url = {{http://dx.doi.org/10.1137/110820713}},\n"
-                " volume = {{34}},\n"
-                " journal = {{SIAM J. Matrix Anal. \& Appl.}},\n"
-                " publisher = {{Society for Industrial \& Applied Mathematics (SIAM)}},\n"
-                " issn = {{0895-4798, 1095-7162}},\n"
-                " year = {{2013}},\n"
+                " url = {{http://dx.doi.org/10.1016/s0084-3954(09)79550-8}},\n"
+                " volume = {{2011}},\n"
+                " journal = {{Yearbook of Pediatrics}},\n"
+                " publisher = {{Elsevier BV}},\n"
+                " issn = {{0084-3954}},\n"
+                " year = {{2011}},\n"
                 " month = jan,\n"
                 "}}\n"
             ).format(betterbib.__version__)
@@ -143,24 +142,23 @@ def test_cli_sync():
 def test_cli_doit2bibtex():
     outfile = tempfile.NamedTemporaryFile().name
 
-    betterbib.cli.doi2bibtex(["10.1137/110820713", outfile])
+    betterbib.cli.doi2bibtex(["10.1016/s0084-3954(09)79550-8", outfile])
 
     with open(outfile, "r") as f:
         assert f.read() == (
             (
                 "@article{{key,\n"
-                " author = {{Gaul, André and Gutknecht, Martin H. and Liesen, Jörg and Nabben, Reinhard}},\n"
-                " doi = {{10.1137/110820713}},\n"
-                " number = {{2}},\n"
-                " pages = {{495-518}},\n"
+                " author = {{Stockman, J.A.}},\n"
+                " doi = {{10.1016/s0084-3954(09)79550-8}},\n"
+                " pages = {{193-194}},\n"
                 " source = {{Crossref}},\n"
-                " url = {{http://dx.doi.org/10.1137/110820713}},\n"
-                " volume = {{34}},\n"
-                " journal = {{SIAM J. Matrix Anal. \& Appl.}},\n"
-                " publisher = {{Society for Industrial \& Applied Mathematics (SIAM)}},\n"
-                " title = {{A Framework for Deflated and Augmented {{Krylov}} Subspace Methods}},\n"
-                " issn = {{0895-4798, 1095-7162}},\n"
-                " year = {{2013}},\n"
+                " url = {{http://dx.doi.org/10.1016/s0084-3954(09)79550-8}},\n"
+                " volume = {{2011}},\n"
+                " journal = {{Yearbook of Pediatrics}},\n"
+                " publisher = {{Elsevier BV}},\n"
+                " title = {{A New Equation to Estimate Glomerular Filtration Rate}},\n"
+                " issn = {{0084-3954}},\n"
+                " year = {{2011}},\n"
                 " month = jan,\n"
                 "}}"
             ).format(betterbib.__version__)
