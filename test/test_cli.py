@@ -18,7 +18,7 @@ def test_cli_dedup_doi():
 
     outfile = tempfile.NamedTemporaryFile().name
 
-    betterbib.cli.dedup_doi.main([infile, outfile])
+    betterbib.cli.dedup_doi([infile, outfile])
     with open(outfile, "r") as f:
         assert f.read() == (
             (
