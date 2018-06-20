@@ -142,3 +142,33 @@ def test_cli_sync():
     os.remove(infile)
     os.remove(outfile)
     return
+
+
+def test_cli_doit2bibtex():
+    outfile = tempfile.NamedTemporaryFile().name
+
+    betterbib.cli.doi2bibtex(["10.1137/110820713", outfile])
+
+    with open(outfile, "r") as f:
+        assert f.read() == (
+            (
+                "@article{{key,\n"
+                " author = {{Gaul, André and Gutknecht, Martin H. and Liesen, Jörg and Nabben, Reinhard}},\n"
+                " doi = {{10.1137/110820713}},\n"
+                " number = {{2}},\n"
+                " pages = {{495-518}},\n"
+                " source = {{Crossref}},\n"
+                " url = {{http://dx.doi.org/10.1137/110820713}},\n"
+                " volume = {{34}},\n"
+                " journal = {{SIAM J. Matrix Anal. \& Appl.}},\n"
+                " publisher = {{Society for Industrial \& Applied Mathematics (SIAM)}},\n"
+                " title = {{A Framework for Deflated and Augmented {{Krylov}} Subspace Methods}},\n"
+                " issn = {{0895-4798, 1095-7162}},\n"
+                " year = {{2013}},\n"
+                " month = jan,\n"
+                "}}"
+            ).format(betterbib.__version__)
+        )
+
+    os.remove(outfile)
+    return
