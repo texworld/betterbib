@@ -194,8 +194,10 @@ def pybtex_to_bibtex_string(
         value = entry.fields[key]
         try:
             value = codecs.encode(value, 'ulatex')
-        except TypeError:
+        except Exception as exc:
             # expected unicode for encode input, but got int instead
+            import warnings
+            warnings.warn("For key: %s\n%s" % (key, str(exc)))
             pass
 
         # Always make keys lowercase
