@@ -16,25 +16,24 @@ def _main():
         t = time.time()
         _test_connection(source)
         elapsed = time.time() - t
-        print('OK ({}s).'.format(elapsed))
+        print("OK ({}s).".format(elapsed))
     except:
-        print('FAILED.\n')
+        print("FAILED.\n")
         raise
 
 
 def _test_connection(source):
 
     test_entry = {
-            'genre': 'book',
-            'title': 'A Framework for Deflated and Augmented '
-                     'Krylov Subspace Methods',
-            'author': 'Gaul and Liesen',
-            'year': '2013'
-            }
+        "genre": "book",
+        "title": "A Framework for Deflated and Augmented " "Krylov Subspace Methods",
+        "author": "Gaul and Liesen",
+        "year": "2013",
+    }
 
     # Define the expected return string. Note that special characters need
     # to be escaped.
-    expected = '''@book {MR3024841,
+    expected = """@book {MR3024841,
     AUTHOR = {Liesen, J{\\"o}rg and Strako{\\v{s}}, Zden{\\v{e}}k},
      TITLE = {Krylov subspace methods},
     SERIES = {Numerical Mathematics and Scientific Computation},
@@ -46,7 +45,7 @@ def _test_connection(source):
    MRCLASS = {65F10 (65F15)},
   MRNUMBER = {3024841},
 MRREVIEWER = {Melina A. Freitag},
-}'''
+}"""
 
     bt = source.find_unique(test_entry)
     print(bt)
@@ -54,27 +53,27 @@ MRREVIEWER = {Melina A. Freitag},
     # Check the result.
     if bt != expected:
         diff = difflib.Differ().compare(bt, expected)
-        diff = ''.join([
-            '***' + i[2:] + '***' if i[:1] == '+'
-            else i[2:] for i in diff if not i[:1] in '-?'
-            ])
+        diff = "".join(
+            [
+                "***" + i[2:] + "***" if i[:1] == "+" else i[2:]
+                for i in diff
+                if not i[:1] in "-?"
+            ]
+        )
         print
-        print('Unexpected test result. Differences:')
+        print("Unexpected test result. Differences:")
         print(diff)
         print
-        raise RuntimeError(
-            'Connection established, but wrong search result.'
-            )
+        raise RuntimeError("Connection established, but wrong search result.")
     return
 
 
 def _parse_cmd_arguments():
     import argparse
-    parser = argparse.ArgumentParser(
-        description='Test a BibTeX source.'
-        )
+
+    parser = argparse.ArgumentParser(description="Test a BibTeX source.")
     return parser.parse_args()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     _main()

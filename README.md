@@ -3,6 +3,7 @@
 [![CircleCI](https://img.shields.io/circleci/project/github/nschloe/betterbib/master.svg)](https://circleci.com/gh/nschloe/betterbib)
 [![codecov](https://img.shields.io/codecov/c/github/nschloe/betterbib.svg)](https://codecov.io/gh/nschloe/betterbib)
 [![Codacy grade](https://img.shields.io/codacy/grade/8ce98e78f7ef427292593d08815c4fa3.svg)](https://app.codacy.com/app/nschloe/betterbib/dashboard)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 [![awesome](https://img.shields.io/badge/awesome-yes-ff69b4.svg)](https://github.com/nschloe/betterbib)
 [![PyPi Version](https://img.shields.io/pypi/v/betterbib.svg)](https://pypi.org/project/betterbib)
 [![GitHub stars](https://img.shields.io/github/stars/nschloe/betterbib.svg?logo=github&label=Stars)](https://github.com/nschloe/betterbib)
