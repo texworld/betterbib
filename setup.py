@@ -53,7 +53,7 @@ setup(
     scripts=["tools/betterbib"],
     entry_points={
         "console_scripts": [
-            "betterbib-dedup-doi = betterbib.cli.dedup_doi:main"
+            "betterbib-dedup-doi = betterbib.cli.dedup_doi:main",
             "betterbib-doi2bibtex = betterbib.cli.doi2bibtex:main",
             "betterbib-format = betterbib.cli.format:main",
             "betterbib-journal-abbrev = betterbib.cli.journal_abbrev:main",
