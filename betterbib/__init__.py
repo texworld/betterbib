@@ -17,6 +17,7 @@ from .tools import (
 )
 from .crossref import Crossref
 from .dblp import Dblp
+from .sync import sync
 
 __all__ = [
     "__version__",
@@ -34,6 +35,7 @@ __all__ = [
     "translate_month",
     "Crossref",
     "Dblp",
+    "sync",
 ]
 
 try:

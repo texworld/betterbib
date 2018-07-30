@@ -31,7 +31,7 @@ _config_file = os.path.join(_config_dir, "config.ini")
 
 
 def decode(od):
-    """Decode an OrderedDict with LaTeX strings into a dict with unicode
+    """Decode an OrderedDict with LaTeX strings into an OrderedDict with unicode
     strings.
     """
     for entry in od.values():

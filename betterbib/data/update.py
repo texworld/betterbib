@@ -46,9 +46,7 @@ def _main():
 
 
 def _parse_cmd_arguments():
-    parser = argparse.ArgumentParser(
-        description="Update journals.json."
-    )
+    parser = argparse.ArgumentParser(description="Update journals.json.")
     return parser.parse_args()
 
 

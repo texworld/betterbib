@@ -3,70 +3,24 @@
 from __future__ import print_function, unicode_literals
 
 import argparse
-import collections
 
-import concurrent.futures
 import sys
 
-from pybtex.database.input import bibtex
-from tqdm import tqdm
-
-from .. import tools, crossref, dblp, errors, __about__
+from .. import __about__
+from ..sync import sync
 
 
 def main(argv=None):
     parser = _get_parser()
     args = parser.parse_args(argv)
-
-    data = bibtex.Parser().parse_file(args.infile)
-
-    # Use an ordered dictionary to make sure that the entries are written out
-    # the way they came in.
-    od = tools.decode(collections.OrderedDict(data.entries.items()))
-
-    if args.source == "crossref":
-        source = crossref.Crossref(args.long_journal_name)
-    else:
-        assert args.source == "dblp", "Illegal source."
-        source = dblp.Dblp()
-
-    print()
-    od, num_success = _update_from_source(od, source, args.num_concurrent_requests)
-
-    print("\n\nTotal number of entries: {}".format(len(data.entries)))
-    print("Found: {}".format(num_success))
-
-    tools.write(od, args.outfile, "braces", tab_indent=False)
+    sync(
+        args.infile,
+        args.outfile,
+        args.source,
+        args.long_journal_name,
+        args.num_concurrent_requests,
+    )
     return
-
-
-def _update_from_source(od, source, num_concurrent_requests):
-    num_success = 0
-    # pylint: disable=bad-continuation
-    with concurrent.futures.ThreadPoolExecutor(
-        max_workers=num_concurrent_requests
-    ) as executor:
-        responses = {
-            executor.submit(source.find_unique, entry): (bib_id, entry)
-            for bib_id, entry in od.items()
-        }
-        for future in tqdm(
-            concurrent.futures.as_completed(responses), total=len(responses)
-        ):
-            bib_id, entry = responses[future]
-            data = None
-            try:
-                data = future.result()
-            except (errors.NotFoundError, errors.UniqueError):
-                pass
-            except errors.HttpError as e:
-                print(e.args[0])
-            else:
-                num_success += 1
-
-            od[bib_id] = tools.update(entry, data)
-
-    return od, num_success
 
 
 def _get_parser():
