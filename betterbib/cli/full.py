@@ -5,11 +5,11 @@ import sys
 
 from pybtex.database.input import bibtex
 
-from . import __about__
-from . import tools
-from .sync import sync
-from .adapt_doi_urls import adapt_doi_urls
-from .journal_abbrev import journal_abbrev
+from .. import __about__
+from .. import tools
+from ..sync import sync
+from ..adapt_doi_urls import adapt_doi_urls
+from ..journal_abbrev import journal_abbrev
 
 
 def main(argv=None):
@@ -90,7 +90,7 @@ def _get_parser():
     )
     parser.add_argument(
         "-t",
-        "--tabs-indent",
+        "--tab-indent",
         action="store_true",
         help="use tabs for indentation (default: false, use spaces)",
     )

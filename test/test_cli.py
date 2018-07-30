@@ -3,6 +3,8 @@
 import os
 import tempfile
 
+import difflib
+
 import betterbib
 
 
@@ -164,5 +166,49 @@ def test_cli_doit2bibtex():
             ).format(betterbib.__version__)
         )
 
+    os.remove(outfile)
+    return
+
+
+def test_cli_full():
+    infile = tempfile.NamedTemporaryFile().name
+    with open(infile, "w") as f:
+        f.write(
+            "@article{stockman,\n"
+            " author = {Stockman},\n"
+            "title = {A New Equation to Estimate Glomerular Filtration Rate}\n"
+            "}"
+        )
+
+    outfile = tempfile.NamedTemporaryFile().name
+
+    betterbib.cli.full([infile, outfile])
+
+    ref = (
+        "%comment{{This file was created with betterbib v{}.}}\n"
+        "\n"
+        "\n"
+        "\n"
+        "@article{{stockman,\n"
+        " author = {{Stockman, J.A.}},\n"
+        " title = {{A New Equation to Estimate Glomerular Filtration Rate}},\n"
+        " doi = {{10.1016/s0084-3954(09)79550-8}},\n"
+        " pages = {{193-194}},\n"
+        " source = {{Crossref}},\n"
+        " url = {{https://doi.org/10.1016/s0084-3954(09)79550-8}},\n"
+        " volume = {{2011}},\n"
+        " journal = {{Yearbook of Pediatrics}},\n"
+        " publisher = {{Elsevier BV}},\n"
+        " issn = {{0084-3954}},\n"
+        " year = {{2011}},\n"
+        " month = jan,\n"
+        "}}\n"
+    ).format(betterbib.__version__)
+
+    with open(outfile, "r") as f:
+        data = f.read()
+        assert data == ref
+
+    os.remove(infile)
     os.remove(outfile)
     return

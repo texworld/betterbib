@@ -27,7 +27,7 @@ def main(argv=None):
 
     d = adapt_doi_urls(d, args.doi_url_type)
 
-    tools.write(d, args.outfile, args.delimeter_type, tab_indent=args.tabs_indent)
+    tools.write(d, args.outfile, args.delimeter_type, tab_indent=args.tab_indent)
     return
 
 
@@ -63,7 +63,7 @@ def _get_parser():
     )
     parser.add_argument(
         "-t",
-        "--tabs-indent",
+        "--tab-indent",
         action="store_true",
         help="use tabs for indentation (default: false)",
     )
