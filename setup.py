@@ -9,7 +9,6 @@ from setuptools import setup, find_packages
 base_dir = os.path.abspath(os.path.dirname(__file__))
 about = {}
 with open(os.path.join(base_dir, "betterbib", "__about__.py"), "rb") as f:
-    # pylint: disable=exec-used
     exec(f.read(), about)
 
 
@@ -50,9 +49,9 @@ setup(
         "Topic :: Scientific/Engineering",
         "Topic :: Utilities",
     ],
-    scripts=["tools/betterbib"],
     entry_points={
         "console_scripts": [
+            "betterbib = betterbib.cli.full:main",
             "betterbib-dedup-doi = betterbib.cli.dedup_doi:main",
             "betterbib-doi2bibtex = betterbib.cli.doi2bibtex:main",
             "betterbib-format = betterbib.cli.format:main",

@@ -3,7 +3,6 @@
 from __future__ import print_function
 
 import codecs
-import json
 import os
 import re
 import requests
@@ -30,14 +29,13 @@ if not os.path.exists(_config_dir):
 _config_file = os.path.join(_config_dir, "config.ini")
 
 
-def decode(od):
-    """Decode an OrderedDict with LaTeX strings into a dict with unicode
-    strings.
+def decode(d):
+    """Decode a dictionary with LaTeX strings into a dictionary with unicode strings.
     """
-    for entry in od.values():
+    for entry in d.values():
         for key, value in entry.fields.items():
             entry.fields[key] = codecs.decode(value, "ulatex")
-    return od
+    return d
 
 
 def pybtex_to_dict(entry):
@@ -167,7 +165,6 @@ def _translate_title(val, dictionary=create_dict()):
         val = val.title()
 
     words = val.split()
-    # pylint: disable=consider-using-enumerate
     # Handle colons as in
     # ```
     # Algorithm 694: {A} collection...
@@ -184,7 +181,6 @@ def _translate_title(val, dictionary=create_dict()):
     return " ".join(words)
 
 
-# pylint: disable=too-many-locals,too-many-arguments
 def pybtex_to_bibtex_string(
     entry,
     bibtex_key,
@@ -347,7 +343,7 @@ def write(od, file_handle, delimeter_type, tab_indent):
 
     # Write header to the output file.
     segments = [
-        "%comment{{This file was created with betterbib v{}.}}\n\n".format(__version__)
+        "%comment{{This file was created with betterbib v{}.}}\n".format(__version__)
     ]
 
     brace_delimeters = delimeter_type == "braces"
@@ -389,22 +385,3 @@ def update(entry1, entry2):
                 out.fields[key] = value
 
     return out
-
-
-class JournalNameUpdater(object):
-    def __init__(self, long_journal_names=False):
-        this_dir = os.path.dirname(os.path.realpath(__file__))
-        with open(os.path.join(this_dir, "data/journals.json"), "r") as f:
-            self.table = json.load(f)
-
-        if long_journal_names:
-            self.table = {v: k for k, v in self.table.items()}
-        return
-
-    def update(self, entry):
-        try:
-            journal_name = entry.fields["journal"]
-            entry.fields["journal"] = self.table[journal_name]
-        except KeyError:
-            pass
-        return

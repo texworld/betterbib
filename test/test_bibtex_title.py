@@ -3,7 +3,6 @@
 import betterbib
 
 
-# pylint: disable=protected-access
 def test():
     assert (
         betterbib.tools._translate_title(

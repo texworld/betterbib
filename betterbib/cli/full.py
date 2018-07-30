@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 #
-from __future__ import print_function, unicode_literals
-
 import argparse
 import sys
 
 from pybtex.database.input import bibtex
 
 from .. import __about__
+from .. import tools
 from ..sync import sync
-from ..tools import decode, write
+from ..adapt_doi_urls import adapt_doi_urls
+from ..journal_abbrev import journal_abbrev
 
 
 def main(argv=None):
@@ -18,15 +18,21 @@ def main(argv=None):
 
     # As of Python 3.6, all dictionaries are ordered.
     data = bibtex.Parser().parse_file(args.infile)
-    # data.entries.items() is a list of tuples, the first item being the BibTeX key.
-    input_dict = dict(data.entries.items())
-    input_dict = decode(input_dict)
+    # Use an ordered dictionary to make sure that the entries are written out
+    # sorted by their BibTeX key if demanded.
+    tuples = data.entries.items()
+    if args.sort_by_bibkey:
+        tuples = sorted(data.entries.items())
 
-    out = sync(
-        input_dict, args.source, args.long_journal_name, args.num_concurrent_requests
-    )
+    d = dict(tuples)
 
-    write(out, args.outfile, "braces", tab_indent=False)
+    d = tools.decode(d)
+
+    d = sync(d, args.source, args.long_journal_names, args.num_concurrent_requests)
+    d = adapt_doi_urls(d, args.doi_url_type)
+    d = journal_abbrev(d, args.long_journal_names)
+
+    tools.write(d, args.outfile, args.delimeter_type, tab_indent=args.tab_indent)
     return
 
 
@@ -64,7 +70,7 @@ def _get_parser():
     )
     parser.add_argument(
         "-l",
-        "--long-journal-name",
+        "--long-journal-names",
         action="store_true",
         help="prefer long journal names (default: false)",
     )
@@ -75,5 +81,34 @@ def _get_parser():
         default=10,
         metavar="N",
         help="number of concurrent HTTPS requests (default: 10)",
+    )
+    parser.add_argument(
+        "-b",
+        "--sort-by-bibkey",
+        action="store_true",
+        help="sort entries by BibTeX key (default: false)",
+    )
+    parser.add_argument(
+        "-t",
+        "--tab-indent",
+        action="store_true",
+        help="use tabs for indentation (default: false, use spaces)",
+    )
+    parser.add_argument(
+        "-d",
+        "--delimeter-type",
+        choices=["braces", "quotes"],
+        default="braces",
+        help=("which delimeters to use in the output file " "(default: braces {...})"),
+    )
+    parser.add_argument(
+        "-u",
+        "--doi-url-type",
+        choices=["unchanged", "new", "short"],
+        default="new",
+        help=(
+            "DOI URL (new: https://doi.org/<DOI> (default), "
+            "short: https://doi.org/abcde)"
+        ),
     )
     return parser

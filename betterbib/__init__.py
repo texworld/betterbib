@@ -12,11 +12,13 @@ from .tools import (
     pybtex_to_bibtex_string,
     write,
     update,
-    JournalNameUpdater,
     translate_month,
 )
 from .crossref import Crossref
 from .dblp import Dblp
+from .sync import sync
+from .journal_abbrev import journal_abbrev
+from .adapt_doi_urls import adapt_doi_urls
 
 __all__ = [
     "__version__",
@@ -30,10 +32,12 @@ __all__ = [
     "pybtex_to_bibtex_string",
     "write",
     "update",
-    "JournalNameUpdater",
     "translate_month",
     "Crossref",
     "Dblp",
+    "sync",
+    "journal_abbrev",
+    "adapt_doi_urls",
 ]
 
 try:

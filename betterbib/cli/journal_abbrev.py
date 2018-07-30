@@ -3,26 +3,24 @@
 from __future__ import print_function, unicode_literals
 
 import argparse
-import collections
 import sys
 
 from pybtex.database.input import bibtex
 
-from .. import tools, __about__
+from .. import __about__, tools
+from ..journal_abbrev import journal_abbrev
 
 
 def main(argv=None):
     parser = _get_parser()
     args = parser.parse_args(argv)
 
-    updater = tools.JournalNameUpdater(args.long_journal_names)
-
     data = bibtex.Parser().parse_file(args.infile)
-    for key in data.entries:
-        updater.update(data.entries[key])
+    d = tools.decode(dict(data.entries.items()))
 
-    od = tools.decode(collections.OrderedDict(data.entries.items()))
-    tools.write(od, args.outfile, "braces", tab_indent=False)
+    d = journal_abbrev(d, args.long_journal_names)
+
+    tools.write(d, args.outfile, "braces", tab_indent=False)
     return
 
 
