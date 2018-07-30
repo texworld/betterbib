@@ -3,23 +3,35 @@
 from __future__ import print_function, unicode_literals
 
 import argparse
-
+import collections
 import sys
+
+from pybtex.database.input import bibtex
 
 from .. import __about__
 from ..sync import sync
+from ..tools import decode, write
 
 
 def main(argv=None):
     parser = _get_parser()
     args = parser.parse_args(argv)
-    sync(
-        args.infile,
-        args.outfile,
+
+    # Use an ordered dictionary to make sure that the entries are written out
+    # the way they came in.
+    data = bibtex.Parser().parse_file(args.infile)
+    # data.entries.items() is a list of tuples, the first item being the BibTeX key.
+    input_od = collections.OrderedDict(data.entries.items())
+    input_od = decode(input_od)
+
+    out = sync(
+        input_od,
         args.source,
         args.long_journal_name,
         args.num_concurrent_requests,
     )
+
+    write(out, args.outfile, "braces", tab_indent=False)
     return
 
 

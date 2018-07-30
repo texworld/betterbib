@@ -1,23 +1,13 @@
 # -*- coding: utf-8 -*-
 #
-import collections
 import concurrent.futures
 
-from pybtex.database.input import bibtex
 from tqdm import tqdm
 
 from . import tools, crossref, dblp, errors
 
 
-def sync(infile, outfile, source, long_journal_name, num_concurrent_requests):
-    data = bibtex.Parser().parse_file(infile)
-
-    # Use an ordered dictionary to make sure that the entries are written out
-    # the way they came in.
-    # data.entries.items() is a list of tuples, the first item being the BibTeX key.
-    od = collections.OrderedDict(data.entries.items())
-    od = tools.decode(od)
-
+def sync(od, source, long_journal_name, num_concurrent_requests):
     if source == "crossref":
         source = crossref.Crossref(long_journal_name)
     else:
@@ -27,11 +17,9 @@ def sync(infile, outfile, source, long_journal_name, num_concurrent_requests):
     print()
     od, num_success = _update_from_source(od, source, num_concurrent_requests)
 
-    print("\n\nTotal number of entries: {}".format(len(data.entries)))
+    print("\n\nTotal number of entries: {}".format(len(od)))
     print("Found: {}".format(num_success))
-
-    tools.write(od, outfile, "braces", tab_indent=False)
-    return
+    return od
 
 
 def _update_from_source(od, source, num_concurrent_requests):

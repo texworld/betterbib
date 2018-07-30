@@ -15,13 +15,13 @@ def main(argv=None):
     parser = _get_parser()
     args = parser.parse_args(argv)
 
-    updater = tools.JournalNameUpdater(args.long_journal_names)
-
     data = bibtex.Parser().parse_file(args.infile)
-    for key in data.entries:
-        updater.update(data.entries[key])
-
     od = tools.decode(collections.OrderedDict(data.entries.items()))
+
+    updater = tools.JournalNameUpdater(args.long_journal_names)
+    for key in od:
+        updater.update(od[key])
+
     tools.write(od, args.outfile, "braces", tab_indent=False)
     return
 
