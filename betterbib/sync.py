@@ -14,6 +14,7 @@ def sync(d, source, long_journal_name, max_workers):
         assert source == "dblp", "Illegal source."
         source = dblp.Dblp()
 
+    print()
     num_success = 0
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
         responses = {
@@ -36,4 +37,7 @@ def sync(d, source, long_journal_name, max_workers):
 
             d[bib_id] = tools.update(entry, data)
 
-    return d, num_success
+    print("\n\nTotal number of entries: {}".format(len(d)))
+    print("Found: {}".format(num_success))
+
+    return d
