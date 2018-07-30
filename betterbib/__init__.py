@@ -12,7 +12,6 @@ from .tools import (
     pybtex_to_bibtex_string,
     write,
     update,
-    JournalNameUpdater,
     translate_month,
 )
 from .crossref import Crossref
@@ -32,7 +31,6 @@ __all__ = [
     "pybtex_to_bibtex_string",
     "write",
     "update",
-    "JournalNameUpdater",
     "translate_month",
     "Crossref",
     "Dblp",
