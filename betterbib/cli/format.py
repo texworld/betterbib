@@ -3,7 +3,6 @@
 from __future__ import print_function, unicode_literals
 
 import argparse
-import collections
 import sys
 
 from pybtex.database.input import bibtex
@@ -19,17 +18,15 @@ def main(argv=None):
 
     # Use an ordered dictionary to make sure that the entries are written out
     # sorted by their BibTeX key if demanded.
-    od = tools.decode(
-        collections.OrderedDict(
-            sorted(data.entries.items())
-            if args.sort_by_bibkey
-            else data.entries.items()
-        )
-    )
+    tuples = data.entries.items()
+    if args.sort_by_bibkey:
+        tuples = sorted(data.entries.items())
 
-    od = _adapt_doi_urls(od, args.doi_url_type)
+    d = tools.decode(dict(tuples))
 
-    tools.write(od, args.outfile, args.delimeter_type, tab_indent=args.tabs_indent)
+    d = _adapt_doi_urls(d, args.doi_url_type)
+
+    tools.write(d, args.outfile, args.delimeter_type, tab_indent=args.tabs_indent)
     return
 
 

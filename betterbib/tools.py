@@ -30,14 +30,13 @@ if not os.path.exists(_config_dir):
 _config_file = os.path.join(_config_dir, "config.ini")
 
 
-def decode(od):
-    """Decode an OrderedDict with LaTeX strings into an OrderedDict with unicode
-    strings.
+def decode(d):
+    """Decode a dictionary with LaTeX strings into a dictionary with unicode strings.
     """
-    for entry in od.values():
+    for entry in d.values():
         for key, value in entry.fields.items():
             entry.fields[key] = codecs.decode(value, "ulatex")
-    return od
+    return d
 
 
 def pybtex_to_dict(entry):

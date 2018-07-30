@@ -3,7 +3,6 @@
 from __future__ import print_function, unicode_literals
 
 import argparse
-import collections
 import sys
 
 from pybtex.database.input import bibtex
@@ -17,18 +16,14 @@ def main(argv=None):
     parser = _get_parser()
     args = parser.parse_args(argv)
 
-    # Use an ordered dictionary to make sure that the entries are written out
-    # the way they came in.
+    # As of Python 3.6, all dictionaries are ordered.
     data = bibtex.Parser().parse_file(args.infile)
     # data.entries.items() is a list of tuples, the first item being the BibTeX key.
-    input_od = collections.OrderedDict(data.entries.items())
-    input_od = decode(input_od)
+    input_dict = dict(data.entries.items())
+    input_dict = decode(input_dict)
 
     out = sync(
-        input_od,
-        args.source,
-        args.long_journal_name,
-        args.num_concurrent_requests,
+        input_dict, args.source, args.long_journal_name, args.num_concurrent_requests
     )
 
     write(out, args.outfile, "braces", tab_indent=False)

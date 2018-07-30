@@ -3,7 +3,6 @@
 from __future__ import print_function, unicode_literals
 
 import argparse
-import collections
 import sys
 
 from pybtex.database.input import bibtex
@@ -16,13 +15,13 @@ def main(argv=None):
     args = parser.parse_args(argv)
 
     data = bibtex.Parser().parse_file(args.infile)
-    od = tools.decode(collections.OrderedDict(data.entries.items()))
+    d = tools.decode(dict(data.entries.items()))
 
     updater = tools.JournalNameUpdater(args.long_journal_names)
-    for key in od:
-        updater.update(od[key])
+    for key in d:
+        updater.update(d[key])
 
-    tools.write(od, args.outfile, "braces", tab_indent=False)
+    tools.write(d, args.outfile, "braces", tab_indent=False)
     return
 
 
