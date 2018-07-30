@@ -7,7 +7,8 @@ import sys
 
 from pybtex.database.input import bibtex
 
-from .. import tools, __about__
+from .. import __about__, tools
+from ..journal_abbrev import journal_abbrev
 
 
 def main(argv=None):
@@ -17,9 +18,7 @@ def main(argv=None):
     data = bibtex.Parser().parse_file(args.infile)
     d = tools.decode(dict(data.entries.items()))
 
-    updater = tools.JournalNameUpdater(args.long_journal_names)
-    for key in d:
-        updater.update(d[key])
+    d = journal_abbrev(d, args.long_journal_names)
 
     tools.write(d, args.outfile, "braces", tab_indent=False)
     return
