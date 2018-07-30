@@ -7,7 +7,7 @@ from tqdm import tqdm
 from . import tools, crossref, dblp, errors
 
 
-def sync(d, source, long_journal_name, num_concurrent_requests):
+def sync(d, source, long_journal_name, max_workers):
     if source == "crossref":
         source = crossref.Crossref(long_journal_name)
     else:
@@ -15,10 +15,7 @@ def sync(d, source, long_journal_name, num_concurrent_requests):
         source = dblp.Dblp()
 
     num_success = 0
-    # pylint: disable=bad-continuation
-    with concurrent.futures.ThreadPoolExecutor(
-        max_workers=num_concurrent_requests
-    ) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
         responses = {
             executor.submit(source.find_unique, entry): (bib_id, entry)
             for bib_id, entry in d.items()

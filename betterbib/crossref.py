@@ -170,7 +170,6 @@ class Crossref(object):
 
         return self._crossref_to_pybtex(heuristic_unique_result(results, d))
 
-    # pylint: disable=too-many-locals
     def _crossref_to_pybtex(self, data):
         """Translate a given data set into the bibtex data structure.
         """

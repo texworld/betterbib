@@ -166,7 +166,6 @@ def _translate_title(val, dictionary=create_dict()):
         val = val.title()
 
     words = val.split()
-    # pylint: disable=consider-using-enumerate
     # Handle colons as in
     # ```
     # Algorithm 694: {A} collection...
@@ -183,7 +182,6 @@ def _translate_title(val, dictionary=create_dict()):
     return " ".join(words)
 
 
-# pylint: disable=too-many-locals,too-many-arguments
 def pybtex_to_bibtex_string(
     entry,
     bibtex_key,
