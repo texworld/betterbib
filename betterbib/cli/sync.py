@@ -22,9 +22,12 @@ def main(argv=None):
     input_dict = dict(data.entries.items())
     input_dict = decode(input_dict)
 
-    out = sync(
+    print()
+    out, num_success = sync(
         input_dict, args.source, args.long_journal_name, args.num_concurrent_requests
     )
+    print("\n\nTotal number of entries: {}".format(len(out)))
+    print("Found: {}".format(num_success))
 
     write(out, args.outfile, "braces", tab_indent=False)
     return
