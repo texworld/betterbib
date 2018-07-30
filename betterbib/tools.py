@@ -344,7 +344,7 @@ def write(od, file_handle, delimeter_type, tab_indent):
 
     # Write header to the output file.
     segments = [
-        "%comment{{This file was created with betterbib v{}.}}\n\n".format(__version__)
+        "%comment{{This file was created with betterbib v{}.}}\n".format(__version__)
     ]
 
     brace_delimeters = delimeter_type == "braces"

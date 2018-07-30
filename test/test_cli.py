@@ -58,7 +58,6 @@ def test_cli_format():
                 "%comment{{This file was created with betterbib v{}.}}\n"
                 "\n"
                 "\n"
-                "\n"
                 "@article{{foobar,\n"
                 " doi = {{foobar}},\n"
                 " url = {{https://doi.org/foobar}},\n"
@@ -84,7 +83,6 @@ def test_cli_journal_abbrev():
         assert f.read() == (
             (
                 "%comment{{This file was created with betterbib v{}.}}\n"
-                "\n"
                 "\n"
                 "\n"
                 "@article{{foobar,\n"
@@ -116,7 +114,6 @@ def test_cli_sync():
         assert f.read() == (
             (
                 "%comment{{This file was created with betterbib v{}.}}\n"
-                "\n"
                 "\n"
                 "\n"
                 "@article{{stockman,\n"
@@ -186,7 +183,6 @@ def test_cli_full():
 
     ref = (
         "%comment{{This file was created with betterbib v{}.}}\n"
-        "\n"
         "\n"
         "\n"
         "@article{{stockman,\n"
