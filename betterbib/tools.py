@@ -3,7 +3,6 @@
 from __future__ import print_function
 
 import codecs
-import json
 import os
 import re
 import requests

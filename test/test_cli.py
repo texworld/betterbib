@@ -3,8 +3,6 @@
 import os
 import tempfile
 
-import difflib
-
 import betterbib
 
 
