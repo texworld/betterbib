@@ -49,9 +49,9 @@ setup(
         "Topic :: Scientific/Engineering",
         "Topic :: Utilities",
     ],
-    scripts=["tools/betterbib"],
     entry_points={
         "console_scripts": [
+            "betterbib = betterbib.cli.full:main",
             "betterbib-dedup-doi = betterbib.cli.dedup_doi:main",
             "betterbib-doi2bibtex = betterbib.cli.doi2bibtex:main",
             "betterbib-format = betterbib.cli.format:main",

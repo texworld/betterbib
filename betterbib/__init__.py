@@ -18,6 +18,7 @@ from .crossref import Crossref
 from .dblp import Dblp
 from .sync import sync
 from .journal_abbrev import journal_abbrev
+from .adapt_doi_urls import adapt_doi_urls
 
 __all__ = [
     "__version__",
@@ -36,6 +37,7 @@ __all__ = [
     "Dblp",
     "sync",
     "journal_abbrev",
+    "adapt_doi_urls",
 ]
 
 try:

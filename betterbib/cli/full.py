@@ -1,39 +1,42 @@
 # -*- coding: utf-8 -*-
 #
-from __future__ import print_function, unicode_literals
-
 import argparse
 import sys
 
 from pybtex.database.input import bibtex
 
-from .. import tools, __about__
-from ..adapt_doi_urls import adapt_doi_urls
+from . import __about__
+from . import tools
+from .sync import sync
+from .adapt_doi_urls import adapt_doi_urls
+from .journal_abbrev import journal_abbrev
 
 
 def main(argv=None):
     parser = _get_parser()
     args = parser.parse_args(argv)
 
+    # As of Python 3.6, all dictionaries are ordered.
     data = bibtex.Parser().parse_file(args.infile)
-
     # Use an ordered dictionary to make sure that the entries are written out
     # sorted by their BibTeX key if demanded.
     tuples = data.entries.items()
     if args.sort_by_bibkey:
         tuples = sorted(data.entries.items())
 
-    d = tools.decode(dict(tuples))
+    d = dict(tuples)
 
+    d = tools.decode(d)
+    d = sync(d, args.source, args.long_journal_names, args.max_workers)
     d = adapt_doi_urls(d, args.doi_url_type)
-
-    tools.write(d, args.outfile, args.delimeter_type, tab_indent=args.tabs_indent)
-    return
+    d = journal_abbrev(d, args.long_journal_names)
+    return d
 
 
 def _get_parser():
-    parser = argparse.ArgumentParser(description="Reformat BibTeX files.")
-
+    parser = argparse.ArgumentParser(
+        description="Sync BibTeX files with information from online sources."
+    )
     parser.add_argument(
         "-v",
         "--version",
@@ -56,6 +59,27 @@ def _get_parser():
         help="output BibTeX file (default: stdout)",
     )
     parser.add_argument(
+        "-s",
+        "--source",
+        choices=["crossref", "dblp"],
+        default="crossref",
+        help="data source (default: crossref)",
+    )
+    parser.add_argument(
+        "-l",
+        "--long-journal-names",
+        action="store_true",
+        help="prefer long journal names (default: false)",
+    )
+    parser.add_argument(
+        "-c",
+        "--num-concurrent-requests",
+        type=int,
+        default=10,
+        metavar="N",
+        help="number of concurrent HTTPS requests (default: 10)",
+    )
+    parser.add_argument(
         "-b",
         "--sort-by-bibkey",
         action="store_true",
@@ -65,7 +89,7 @@ def _get_parser():
         "-t",
         "--tabs-indent",
         action="store_true",
-        help="use tabs for indentation (default: false)",
+        help="use tabs for indentation (default: false, use spaces)",
     )
     parser.add_argument(
         "-d",
