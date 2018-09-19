@@ -18,7 +18,7 @@ def main(argv=None):
     data = bibtex.Parser().parse_file(args.infile)
     d = tools.decode(dict(data.entries.items()))
 
-    d = journal_abbrev(d, args.long_journal_names)
+    d = journal_abbrev(d, args.long_journal_names, args.extra_abbrev_file)
 
     tools.write(d, args.outfile, "braces", tab_indent=False)
     return
@@ -52,5 +52,10 @@ def _get_parser():
         "--long-journal-names",
         action="store_true",
         help="use long journal names (default: false)",
+    )
+    parser.add_argument(
+        "--extra-abbrev-file",
+        default=None,
+        help="custom journal abbreviations, as JSON file",
     )
     return parser
