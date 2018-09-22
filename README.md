@@ -81,6 +81,26 @@ betterbib-journal-abbrev in.bib out.bib
 allows you to apply consistent abbreviation of journal names. See `-h`/`--help`
 for options.
 
+#### Custom journal abbreviations
+
+To use custom abbrebiations for journal names, create a file as a JSON
+dictionary, and provide that as a command line argument with 
+`--extra-abbrev-file`. For example, if the file `correct_pnas.json` is:
+
+```json
+{"PNAS": "Proc. Natl. Acad. Sci.  U.S.A."}
+```
+
+and you call `betterbib-journal-abbrev --extra-abbrev-file=correct_pnas.json`,
+this will replace any bibtex entries listed with journal "PNAS" with the
+correct abbreviation.
+
+This option is included in the `betterbib`, `betterbib-journal-abbrev`, and
+`betterbib-sync` commands.
+
+When combined with the `--long-journal-names` option, this will override
+default options only if both have the same abbreviation.
+
 
 ### Configuration
 
