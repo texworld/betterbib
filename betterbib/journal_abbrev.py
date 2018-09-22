@@ -16,7 +16,7 @@ def journal_abbrev(d, long_journal_names=False, custom_abbrev=None):
         custom_table = {}
 
     if long_journal_names:
-        custom_table = {v: k for k, v in table.items()}
+        custom_table = {v: k for k, v in custom_table.items()}
         table = {v: k for k, v in table.items()}
 
     table.update(custom_table)
