@@ -12,14 +12,19 @@ def journal_abbrev(d, long_journal_names=False, custom_abbrev=None):
     if custom_abbrev is not None:
         with open(custom_abbrev) as f:
             custom_table = json.load(f)
-        table.update(custom_table)
+    else:
+        custom_table = {}
 
     if long_journal_names:
+        custom_table = {v: k for k, v in table.items()}
         table = {v: k for k, v in table.items()}
+
+    table.update(custom_table)
+    table = {k.lower(): v for k, v in table.items()}
 
     for value in d.values():
         try:
-            value.fields["journal"] = table[value.fields["journal"]]
+            value.fields["journal"] = table[value.fields["journal"].lower()]
         except KeyError:
             pass
 
