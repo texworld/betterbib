@@ -30,7 +30,7 @@ def main(argv=None):
 
     d = sync(d, args.source, args.long_journal_names, args.num_concurrent_requests)
     d = adapt_doi_urls(d, args.doi_url_type)
-    d = journal_abbrev(d, args.long_journal_names)
+    d = journal_abbrev(d, args.long_journal_names, args.extra_abbrev_file)
 
     tools.write(d, args.outfile, args.delimeter_type, tab_indent=args.tab_indent)
     return
@@ -73,6 +73,11 @@ def _get_parser():
         "--long-journal-names",
         action="store_true",
         help="prefer long journal names (default: false)",
+    )
+    parser.add_argument(
+        "--extra-abbrev-file",
+        default=None,
+        help="custom journal abbreviations, as JSON file",
     )
     parser.add_argument(
         "-c",
