@@ -54,7 +54,7 @@ def pybtex_to_dict(entry):
             }
             for p in persons
         ]
-    for field, value in entry.fields.iteritems():
+    for field, value in entry.fields.items():
         d[field.lower()] = value
     return d
 
