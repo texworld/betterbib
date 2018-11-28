@@ -46,15 +46,15 @@ def pybtex_to_dict(entry):
     for key, persons in entry.persons.items():
         d[key.lower()] = [
             {
-                "first": p.first(),
-                "middle": p.middle(),
-                "prelast": p.prelast(),
-                "last": p.last(),
-                "lineage": p.lineage(),
+                "first": p.first_names,
+                "middle": p.middle_names,
+                "prelast": p.prelast_names,
+                "last": p.last_names,
+                "lineage": p.lineage_names,
             }
             for p in persons
         ]
-    for field, value in entry.fields.iteritems():
+    for field, value in entry.fields.items():
         d[field.lower()] = value
     return d
 
@@ -271,9 +271,9 @@ def _get_person_str(p):
         filter(
             None,
             [
-                " ".join(p.prelast() + p.last()),
-                " ".join(p.lineage()),
-                " ".join(p.first() + p.middle()),
+                " ".join(p.prelast_names + p.last_names),
+                " ".join(p.lineage_names),
+                " ".join(p.first_names + p.middle_names),
             ],
         )
     )
