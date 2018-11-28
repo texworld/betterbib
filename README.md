@@ -3,6 +3,7 @@
 [![CircleCI](https://img.shields.io/circleci/project/github/nschloe/betterbib/master.svg)](https://circleci.com/gh/nschloe/betterbib)
 [![codecov](https://img.shields.io/codecov/c/github/nschloe/betterbib.svg)](https://codecov.io/gh/nschloe/betterbib)
 [![Codacy grade](https://img.shields.io/codacy/grade/8ce98e78f7ef427292593d08815c4fa3.svg)](https://app.codacy.com/app/nschloe/betterbib/dashboard)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 [![awesome](https://img.shields.io/badge/awesome-yes-ff69b4.svg)](https://github.com/nschloe/betterbib)
 [![PyPi Version](https://img.shields.io/pypi/v/betterbib.svg)](https://pypi.org/project/betterbib)
 [![GitHub stars](https://img.shields.io/github/stars/nschloe/betterbib.svg?logo=github&label=Stars)](https://github.com/nschloe/betterbib)
@@ -79,6 +80,24 @@ betterbib-journal-abbrev in.bib out.bib
 ```
 allows you to apply consistent abbreviation of journal names. See `-h`/`--help`
 for options.
+
+#### Custom journal abbreviations
+
+To use custom abbrebiations for journal names, create a file as a JSON
+dictionary, and provide that as a command line argument with 
+`--extra-abbrev-file`. For example, if the file `correct_pnas.json` is:
+```json
+{"PNAS": "Proc. Natl. Acad. Sci.  U.S.A."}
+```
+and you call `betterbib-journal-abbrev --extra-abbrev-file=correct_pnas.json`,
+this will replace any bibtex entries listed with journal "PNAS" with the
+correct abbreviation.
+
+This option is included in the `betterbib` and `betterbib-journal-abbrev`
+commands.
+
+When combined with the `--long-journal-names` option, this will override
+default options only if both have the same abbreviation.
 
 
 ### Configuration
