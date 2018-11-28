@@ -17,6 +17,9 @@ def main(argv=None):
 
     data = bibtex.Parser().parse_file(args.infile)
 
+    if args.drop:
+        data = tools.filter_fields(data, args.drop)
+
     # Use an ordered dictionary to make sure that the entries are written out
     # sorted by their BibTeX key if demanded.
     tuples = data.entries.items()
@@ -83,5 +86,11 @@ def _get_parser():
             "DOI URL (new: https://doi.org/<DOI> (default), "
             "short: https://doi.org/abcde)"
         ),
+    )
+    parser.add_argument(
+        "--drop",
+        nargs="+",
+        default=[],
+        help="Drops fields from bibtex entry if they exist.",
     )
     return parser

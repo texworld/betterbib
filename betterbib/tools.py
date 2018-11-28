@@ -393,3 +393,11 @@ def update(entry1, entry2):
                 out.fields[key] = value
 
     return out
+
+
+def filter_fields(data, excludes=None):
+    excludes = excludes or []
+    for entry in data.entries.values():
+        if entry.fields:
+            entry.fields = {k: v for k, v in entry.fields.items() if k not in excludes}
+    return data
