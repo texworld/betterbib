@@ -110,6 +110,9 @@ class Crossref(object):
     def find_unique(self, entry):
         d = pybtex_to_dict(entry)
 
+        if "title" not in d and "doi" not in d and "author" not in d:
+            raise NotFoundError("Not enough input data")
+
         L = []
 
         keys = [

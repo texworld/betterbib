@@ -56,3 +56,15 @@ def test_journal_name():
 def test_month_range():
     assert betterbib.translate_month("June-July") == 'jun # "-" # jul'
     return
+
+
+def test_decode():
+    url = "https://www.wolframalpha.com/input/?i=integrate+from+0+to+2pi+(cos(x)+e%5E(i+*+(m+-+n)+*+x))"
+    d = {
+        "wolframalphai1": pybtex.database.Entry(
+            "misc", fields=[("url", url), ("note", "Online; accessed 19-February-2019")]
+        )
+    }
+    out = betterbib.decode(d)
+    assert out["wolframalphai1"].fields["url"] == url
+    return
