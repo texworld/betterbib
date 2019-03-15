@@ -128,10 +128,10 @@ remove=hermitian,
 betterbib is [available from the Python Package
 Index](https://pypi.org/project/betterbib/), so simply do
 ```
-pip install -U betterbib
+pip3 install -U betterbib
 ```
 to install or upgrade. Use `sudo -H` to install as root or the `--user` option
-of `pip` to install in `$HOME`.
+of `pip3` to install in `$HOME`.
 
 
 ### Testing

@@ -34,6 +34,9 @@ def decode(d):
     """
     for entry in d.values():
         for key, value in entry.fields.items():
+            if key == "url":
+                # The url can contain special LaTeX characters (like %) and that's fine
+                continue
             entry.fields[key] = codecs.decode(value, "ulatex")
     return d
 
