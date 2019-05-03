@@ -6,6 +6,7 @@
 [![awesome](https://img.shields.io/badge/awesome-yes-ff69b4.svg)](https://github.com/nschloe/betterbib)
 [![PyPi Version](https://img.shields.io/pypi/v/betterbib.svg)](https://pypi.org/project/betterbib)
 [![GitHub stars](https://img.shields.io/github/stars/nschloe/betterbib.svg?logo=github&label=Stars&logoColor=white)](https://github.com/nschloe/betterbib)
+[![PyPi downloads](https://img.shields.io/pypi/dd/betterbib.svg)](https://pypistats.org/packages/betterbib)
 
 BibTeX files are typically manually maintained and thus often contain
 inconsistencies, mistakes, or are missing information. betterbib helps
