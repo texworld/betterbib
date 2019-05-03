@@ -211,9 +211,10 @@ def pybtex_to_bibtex_string(
     for key in keys:
         value = entry.fields[key]
 
-        # Remove once <https://github.com/mcmtroffaes/latexcodec/issues/56> is
-        # *released*.
+        # Remove once <https://github.com/mcmtroffaes/latexcodec/issues/56> and
+        # <https://github.com/mcmtroffaes/latexcodec/issues/68> are *released*.
         try:
+            value = value.replace("\u2009", " ")
             value = value.replace("\u2010", "-")
         except AttributeError:
             pass
