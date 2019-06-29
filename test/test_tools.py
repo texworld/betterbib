@@ -68,3 +68,15 @@ def test_decode():
     out = betterbib.decode(d)
     assert out["wolframalphai1"].fields["url"] == url
     return
+
+
+def test_decode_doi():
+    doi = "10.1007/978-1-4615-7419-4_6"
+    d = {
+        "karwowski": pybtex.database.Entry(
+            "misc", fields=[("doi", doi), ("note", "Online; accessed 19-February-2019")]
+        )
+    }
+    out = betterbib.decode(d)
+    assert out["karwowski"].fields["doi"] == doi
+    return
