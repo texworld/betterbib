@@ -29,7 +29,6 @@ setup(
     platforms="any",
     install_requires=[
         "latexcodec",
-        "pipdate >=0.3.0, <0.4.0",
         "pybtex >= 0.19.0",
         "pyenchant",
         "requests",

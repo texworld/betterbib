@@ -1,9 +1,21 @@
-from __future__ import print_function, unicode_literals
-
 import argparse
 import sys
 
 from .. import tools, crossref, __about__
+
+
+def _get_version_text():
+    return "\n".join(
+        [
+            "betterbib {} [Python {}.{}.{}]".format(
+                __about__.__version__,
+                sys.version_info.major,
+                sys.version_info.minor,
+                sys.version_info.micro,
+            ),
+            __about__.__copyright__,
+        ]
+    )
 
 
 def main(argv=None):
@@ -25,7 +37,7 @@ def _get_parser():
         "--version",
         help="display version information",
         action="version",
-        version="betterbib {}, Python {}".format(__about__.__version__, sys.version),
+        version=_get_version_text(),
     )
     parser.add_argument("doi", type=str, help="input DOI")
     parser.add_argument(

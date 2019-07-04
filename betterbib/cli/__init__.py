@@ -1,4 +1,3 @@
-
 from .dedup_doi import main as dedup_doi
 from .doi2bibtex import main as doi2bibtex
 from .format import main as format
