@@ -152,7 +152,7 @@ def test_crossref_book1():
             "source": u"Crossref",
             "publisher": u"Princeton University Press",
             "year": 2009,
-            "month": 1,
+            "month": 12,
             "doi": "10.1515/9781400833887",
             "url": u"http://dx.doi.org/10.1515/9781400833887",
             "isbn": "9781400833887",
