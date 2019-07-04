@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*-
-#
-import os
 import codecs
+import os
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 # https://packaging.python.org/single_source_version/
 base_dir = os.path.abspath(os.path.dirname(__file__))
@@ -30,21 +28,21 @@ setup(
     license=about["__license__"],
     platforms="any",
     install_requires=[
+        "appdirs",
         "latexcodec",
-        "pipdate >=0.3.0, <0.4.0",
         "pybtex >= 0.19.0",
         "pyenchant",
         "requests",
         "requests_cache",
         "tqdm",
     ],
+    python_requires=">=3",
     classifiers=[
         about["__status__"],
         about["__license__"],
         "Intended Audience :: Science/Research",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2",
         "Programming Language :: Python :: 3",
         "Topic :: Scientific/Engineering",
         "Topic :: Utilities",
