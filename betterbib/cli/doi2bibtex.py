@@ -1,7 +1,7 @@
 import argparse
 import sys
 
-from .. import tools, crossref, __about__
+from .. import __about__, crossref, tools
 
 
 def _get_version_text():

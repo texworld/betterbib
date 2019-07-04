@@ -5,8 +5,8 @@ import pybtex.database
 import requests
 import requests_cache
 
-from .errors import NotFoundError, HttpError
-from .tools import pybtex_to_dict, heuristic_unique_result
+from .errors import HttpError, NotFoundError
+from .tools import heuristic_unique_result, pybtex_to_dict
 
 
 def _to_bibtex_type(entry):

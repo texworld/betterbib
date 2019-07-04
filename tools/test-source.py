@@ -1,7 +1,7 @@
-import betterbib
-
 import difflib
 import time
+
+import betterbib
 
 
 def _main():

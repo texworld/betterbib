@@ -2,7 +2,7 @@ import concurrent.futures
 
 from tqdm import tqdm
 
-from . import tools, crossref, dblp, errors
+from . import crossref, dblp, errors, tools
 
 
 def sync(d, source, long_journal_name, max_workers):

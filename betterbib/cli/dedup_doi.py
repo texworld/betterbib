@@ -3,8 +3,7 @@ import sys
 
 from pybtex.database.input import bibtex
 
-from .. import tools
-from .. import __about__
+from .. import __about__, tools
 
 
 def main(argv=None):

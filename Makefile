@@ -23,9 +23,13 @@ clean:
 	@find . | grep -E "(__pycache__|\.pyc|\.pyo$\)" | xargs rm -rf
 	@rm -rf *.egg-info/ build/ dist/ betterbib_cache.sqlite/
 
+format:
+	isort -rc .
+	black .
+
 black:
-	black setup.py betterbib/ test/
+	black .
 
 lint:
-	black --check setup.py betterbib/ test/
+	black --check .
 	flake8 setup.py betterbib/ test/

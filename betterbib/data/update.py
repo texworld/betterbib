@@ -8,8 +8,8 @@ python3 update.py
 ```
 """
 import argparse
-
 import json
+
 import requests
 
 
