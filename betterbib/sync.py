@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 import concurrent.futures
 
 from tqdm import tqdm

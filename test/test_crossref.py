@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 import pybtex
 import pybtex.database
 import pytest

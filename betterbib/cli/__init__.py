@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-#
 
 from .dedup_doi import main as dedup_doi
 from .doi2bibtex import main as doi2bibtex
