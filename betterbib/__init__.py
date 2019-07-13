@@ -1,24 +1,19 @@
-# -*- coding: utf-8 -*-
-#
-from __future__ import print_function
-
-from .__about__ import __version__, __author__, __author_email__, __website__
-
 from . import cli
+from .__about__ import __author__, __author_email__, __version__, __website__
+from .adapt_doi_urls import adapt_doi_urls
+from .crossref import Crossref
+from .dblp import Dblp
+from .journal_abbrev import journal_abbrev
+from .sync import sync
 from .tools import (
     create_dict,
     decode,
-    pybtex_to_dict,
     pybtex_to_bibtex_string,
-    write,
-    update,
+    pybtex_to_dict,
     translate_month,
+    update,
+    write,
 )
-from .crossref import Crossref
-from .dblp import Dblp
-from .sync import sync
-from .journal_abbrev import journal_abbrev
-from .adapt_doi_urls import adapt_doi_urls
 
 __all__ = [
     "__version__",
@@ -39,11 +34,3 @@ __all__ = [
     "journal_abbrev",
     "adapt_doi_urls",
 ]
-
-try:
-    import pipdate
-except ImportError:
-    pass
-else:
-    if pipdate.needs_checking(__name__):
-        print(pipdate.check(__name__, __version__), end="")

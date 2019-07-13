@@ -1,15 +1,12 @@
-# -*- coding: utf-8 -*-
-#
 import argparse
 import sys
 
 from pybtex.database.input import bibtex
 
-from .. import __about__
-from .. import tools
-from ..sync import sync
+from .. import __about__, tools
 from ..adapt_doi_urls import adapt_doi_urls
 from ..journal_abbrev import journal_abbrev
+from ..sync import sync
 
 
 def main(argv=None):

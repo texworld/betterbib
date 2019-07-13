@@ -1,26 +1,21 @@
-# -*- coding: utf-8 -*-
-#
-from __future__ import print_function
-
 import codecs
 import os
 import re
-import requests
 
+import appdirs
 import enchant
 
 # for "ulatex" codec
 import latexcodec  # noqa
+import requests
 
-import appdirs
+from .__about__ import __version__
+from .errors import UniqueError
 
 try:
     import configparser
 except ImportError:
     import ConfigParser as configparser
-
-from .__about__ import __version__
-from .errors import UniqueError
 
 
 _config_dir = appdirs.user_config_dir("betterbib")

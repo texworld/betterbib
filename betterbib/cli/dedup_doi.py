@@ -1,14 +1,9 @@
-# -*- coding: utf-8 -*-
-#
-from __future__ import unicode_literals
-
 import argparse
 import sys
 
 from pybtex.database.input import bibtex
 
-from .. import tools
-from .. import __about__
+from .. import __about__, tools
 
 
 def main(argv=None):

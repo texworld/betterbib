@@ -1,7 +1,3 @@
-# -*- coding: utf-8 -*-
-#
-from __future__ import print_function
-
 import codecs
 import re
 
@@ -10,9 +6,9 @@ import pybtex.database
 import requests
 import requests_cache
 
-from .__about__ import __version__, __website__, __author_email__
-from .errors import NotFoundError, HttpError
-from .tools import pybtex_to_dict, heuristic_unique_result
+from .__about__ import __author_email__, __version__, __website__
+from .errors import HttpError, NotFoundError
+from .tools import heuristic_unique_result, pybtex_to_dict
 
 
 def _bibtex_to_crossref_type(bibtex_type):

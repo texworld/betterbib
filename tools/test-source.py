@@ -1,10 +1,7 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-#
-import betterbib
-
 import difflib
 import time
+
+import betterbib
 
 
 def _main():

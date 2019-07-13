@@ -1,13 +1,9 @@
-# -*- coding: utf-8 -*-
-#
-from __future__ import print_function, unicode_literals
-
 import argparse
 import sys
 
 from pybtex.database.input import bibtex
 
-from .. import tools, __about__
+from .. import __about__, tools
 from ..adapt_doi_urls import adapt_doi_urls
 
 

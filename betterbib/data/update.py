@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-#
 """This tool is used for converting JabRef's journal name abbreviation files,
 <https://github.com/JabRef/jabref/tree/master/src/main/resources/journals>,
 into JSON.
@@ -11,8 +8,8 @@ python3 update.py
 ```
 """
 import argparse
-
 import json
+
 import requests
 
 
