@@ -66,3 +66,50 @@ def test_decode():
     out = betterbib.decode(d)
     assert out["wolframalphai1"].fields["url"] == url
     return
+
+
+def test_decode_doi():
+    doi = "10.1007/978-1-4615-7419-4_6"
+    d = {
+        "karwowski": pybtex.database.Entry(
+            "misc", fields=[("doi", doi), ("note", "Online; accessed 19-February-2019")]
+        )
+    }
+    out = betterbib.decode(d)
+    assert out["karwowski"].fields["doi"] == doi
+    return
+
+
+def test_encode_url():
+    url = "https://www.wolframalpha.com/input/?i=integrate+from+0+to+2pi+(cos(x)+e%5E(i+*+(m+-+n)+*+x))"
+    d = {
+        "wolframalphai1": pybtex.database.Entry(
+            "misc", fields=[("url", url), ("note", "Online; accessed 19-February-2019")]
+        )
+    }
+
+    out = betterbib.pybtex_to_bibtex_string(d["wolframalphai1"], "wolframalphai1")
+
+    # Split string and fetch entry with url
+    url_entry = out.split()[3]
+    # Remove braces and trailing comma
+    url_entry = url_entry[1:-2]
+    assert url_entry == url
+    return
+
+
+def test_encode_doi():
+    doi = "10.1007/978-1-4615-7419-4_6"
+    d = {
+        "karwowski": pybtex.database.Entry(
+            "misc", fields=[("doi", doi), ("note", "Online; accessed 19-February-2019")]
+        )
+    }
+    out = betterbib.pybtex_to_bibtex_string(d["karwowski"], "karwowski")
+
+    # Split string and fetch entry with doi
+    doi_entry = out.split()[3]
+    # Remove braces and trailing comma
+    doi_entry = doi_entry[1:-2]
+    assert doi_entry == doi
+    return
