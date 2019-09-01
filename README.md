@@ -4,11 +4,11 @@
 
 [![CircleCI](https://img.shields.io/circleci/project/github/nschloe/betterbib/master.svg?style=flat-square)](https://circleci.com/gh/nschloe/betterbib)
 [![codecov](https://img.shields.io/codecov/c/github/nschloe/betterbib.svg?style=flat-square)](https://codecov.io/gh/nschloe/betterbib)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg?style=flat-square)](https://github.com/ambv/black)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg?style=flat-square)](https://github.com/psf/black)
 [![awesome](https://img.shields.io/badge/awesome-yes-ff69b4.svg?style=flat-square)](https://github.com/nschloe/betterbib)
 [![PyPi Version](https://img.shields.io/pypi/v/betterbib.svg?style=flat-square)](https://pypi.org/project/betterbib)
 [![GitHub stars](https://img.shields.io/github/stars/nschloe/betterbib.svg?style=flat-square&logo=github&label=Stars&logoColor=white)](https://github.com/nschloe/betterbib)
-[![PyPi downloads](https://img.shields.io/pypi/dd/betterbib.svg?style=flat-square)](https://pypistats.org/packages/betterbib)
+[![PyPi downloads](https://img.shields.io/pypi/dm/betterbib.svg?style=flat-square)](https://pypistats.org/packages/betterbib)
 
 BibTeX files are typically manually maintained and thus often contain inconsistencies,
 mistakes, or are missing information. betterbib helps maintaining your BibTeX files by

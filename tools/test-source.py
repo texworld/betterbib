@@ -1,5 +1,6 @@
 import difflib
-import time
+
+# import time
 
 import betterbib
 
@@ -9,14 +10,15 @@ def _main():
 
     source = betterbib.Crossref()
 
-    try:
-        t = time.time()
-        _test_connection(source)
-        elapsed = time.time() - t
-        print("OK ({}s).".format(elapsed))
-    except:
-        print("FAILED.\n")
-        raise
+    # t = time.time()
+    _test_connection(source)
+    # elapsed = time.time() - t
+    # print("OK ({}s).".format(elapsed))
+    # try:
+    # except:
+    #     print("FAILED.\n")
+    #     raise
+    return
 
 
 def _test_connection(source):
