@@ -152,11 +152,11 @@ def _translate_word(word, d):
 
 
 def _translate_title(val, dictionary=create_dict()):
-    """The capitalization of BibTeX entries is handled by the style, so names
-    (Newton) or abbreviations (GMRES) may not be capitalized. This is unless
-    they are wrapped in curly braces.
-    This function takes a raw title string as input and {}-protects those parts
-    whose capitalization should not change.
+    """The capitalization of BibTeX entries is handled by the style, so names (Newton)
+    or abbreviations (GMRES) may not be capitalized. This is unless they are wrapped in
+    curly braces.
+    This function takes a raw title string as input and {}-protects those parts whose
+    capitalization should not change.
     """
     # If the title is completely capitalized, it's probably by mistake.
     if val == val.upper():
@@ -266,6 +266,23 @@ def get_short_doi(doi):
     return data["ShortDOI"]
 
 
+def _join_abbreviated_names(lst):
+    """Joins a list of name strings like ["J.", "Frank"] such that it adds a space if
+    one of the two names is not abbreviated. See
+    <https://english.stackexchange.com/a/105529/23644>.
+    """
+    out = lst[0]
+    last_ends_in_dot = lst[0][-1] == "."
+    for item in lst[1:]:
+        ends_in_dot = item[-1] == "."
+        if last_ends_in_dot and ends_in_dot:
+            out += item
+        else:
+            out += " " + item
+        last_ends_in_dot = ends_in_dot
+    return out
+
+
 def _get_person_str(p):
     out = ", ".join(
         filter(
@@ -273,15 +290,13 @@ def _get_person_str(p):
             [
                 " ".join(p.prelast_names + p.last_names),
                 " ".join(p.lineage_names),
-                " ".join(p.first_names + p.middle_names),
+                _join_abbreviated_names(p.first_names + p.middle_names),
             ],
         )
     )
-
     # If the name is completely capitalized, it's probably by mistake.
     if out == out.upper():
         out = out.title()
-
     return out
 
 

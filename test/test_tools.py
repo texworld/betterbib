@@ -27,8 +27,6 @@ def test_update():
         merged, "key", sort=True
     ) == betterbib.pybtex_to_bibtex_string(reference, "key", sort=True)
 
-    return
-
 
 def test_journal_name():
     shrt = pybtex.database.Entry(
@@ -48,12 +46,10 @@ def test_journal_name():
     )
     tmp = betterbib.journal_abbrev({"key": shrt}, long_journal_names=True)
     assert tmp["key"].fields["journal"] == lng.fields["journal"]
-    return
 
 
 def test_month_range():
     assert betterbib.translate_month("June-July") == 'jun # "-" # jul'
-    return
 
 
 def test_decode():
@@ -65,7 +61,6 @@ def test_decode():
     }
     out = betterbib.decode(d)
     assert out["wolframalphai1"].fields["url"] == url
-    return
 
 
 def test_decode_doi():
@@ -77,7 +72,6 @@ def test_decode_doi():
     }
     out = betterbib.decode(d)
     assert out["karwowski"].fields["doi"] == doi
-    return
 
 
 def test_encode_url():
@@ -95,7 +89,6 @@ def test_encode_url():
     # Remove braces and trailing comma
     url_entry = url_entry[1:-2]
     assert url_entry == url
-    return
 
 
 def test_encode_doi():
@@ -112,4 +105,18 @@ def test_encode_doi():
     # Remove braces and trailing comma
     doi_entry = doi_entry[1:-2]
     assert doi_entry == doi
-    return
+
+
+def test_first_name_space():
+    d = {
+        "doe": pybtex.database.Entry(
+            "misc",
+            persons={"author": [pybtex.database.Person("Doe, J. J.")]},
+        )
+    }
+    out = betterbib.pybtex_to_bibtex_string(d["doe"], "doe")
+    ref = """@misc{doe,
+ author = {Doe, J.J.},
+}"""
+
+    assert out == ref
