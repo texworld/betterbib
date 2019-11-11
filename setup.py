@@ -1,4 +1,3 @@
-import codecs
 import os
 
 from setuptools import find_packages, setup
@@ -10,10 +9,6 @@ with open(os.path.join(base_dir, "betterbib", "__about__.py"), "rb") as f:
     exec(f.read(), about)
 
 
-def read(fname):
-    return codecs.open(os.path.join(base_dir, fname), encoding="utf-8").read()
-
-
 setup(
     name="betterbib",
     version=about["__version__"],
@@ -22,7 +17,7 @@ setup(
     packages=find_packages(),
     package_data={"betterbib": ["data/journals.json"]},
     description="Better BibTeX data",
-    long_description=read("README.md"),
+    long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     url=about["__website__"],
     license=about["__license__"],

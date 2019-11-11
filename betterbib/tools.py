@@ -1,4 +1,5 @@
 import codecs
+import configparser
 import os
 import re
 
@@ -11,12 +12,6 @@ import requests
 
 from .__about__ import __version__
 from .errors import UniqueError
-
-try:
-    import configparser
-except ImportError:
-    import ConfigParser as configparser
-
 
 _config_dir = appdirs.user_config_dir("betterbib")
 if not os.path.exists(_config_dir):
@@ -58,9 +53,9 @@ def pybtex_to_dict(entry):
 
 
 def translate_month(key):
-    """The month value can take weird forms. Sometimes, it's given as an int,
-    sometimes as a string representing an int, and sometimes the name of the
-    month is spelled out. Try to handle most of this here.
+    """The month value can take weird forms. Sometimes, it's given as an int, sometimes
+    as a string representing an int, and sometimes the name of the month is spelled out.
+    Try to handle most of this here.
     """
     months = [
         "jan",
@@ -152,11 +147,11 @@ def _translate_word(word, d):
 
 
 def _translate_title(val, dictionary=create_dict()):
-    """The capitalization of BibTeX entries is handled by the style, so names
-    (Newton) or abbreviations (GMRES) may not be capitalized. This is unless
-    they are wrapped in curly braces.
-    This function takes a raw title string as input and {}-protects those parts
-    whose capitalization should not change.
+    """The capitalization of BibTeX entries is handled by the style, so names (Newton)
+    or abbreviations (GMRES) may not be capitalized. This is unless they are wrapped in
+    curly braces.
+    This function takes a raw title string as input and {}-protects those parts whose
+    capitalization should not change.
     """
     # If the title is completely capitalized, it's probably by mistake.
     if val == val.upper():
@@ -266,6 +261,23 @@ def get_short_doi(doi):
     return data["ShortDOI"]
 
 
+def _join_abbreviated_names(lst):
+    """Joins a list of name strings like ["J.", "Frank"] such that it adds a space if
+    one of the two names is not abbreviated. See
+    <https://english.stackexchange.com/a/105529/23644>.
+    """
+    out = lst[0]
+    last_ends_in_dot = lst[0][-1] == "."
+    for item in lst[1:]:
+        ends_in_dot = item[-1] == "."
+        if last_ends_in_dot and ends_in_dot:
+            out += item
+        else:
+            out += " " + item
+        last_ends_in_dot = ends_in_dot
+    return out
+
+
 def _get_person_str(p):
     out = ", ".join(
         filter(
@@ -273,24 +285,20 @@ def _get_person_str(p):
             [
                 " ".join(p.prelast_names + p.last_names),
                 " ".join(p.lineage_names),
-                " ".join(p.first_names + p.middle_names),
+                _join_abbreviated_names(p.first_names + p.middle_names),
             ],
         )
     )
-
     # If the name is completely capitalized, it's probably by mistake.
     if out == out.upper():
         out = out.title()
-
     return out
 
 
 def heuristic_unique_result(results, d):
-    # Q: How to we find the correct solution if there's more than one
-    #    search result?
-    # As a heuristic, assume that the top result is the unique answer if
-    # its score is at least 1.5 times the score of the the second-best
-    # result.
+    # Q: How to we find the correct solution if there's more than one search result?
+    # As a heuristic, assume that the top result is the unique answer if its score is at
+    # least 1.5 times the score of the the second-best result.
     for score in ["score", "@score"]:
         try:
             if float(results[0][score]) > 1.5 * float(results[1][score]):
@@ -298,8 +306,7 @@ def heuristic_unique_result(results, d):
         except KeyError:
             pass
 
-    # If that doesn't work, check if the DOI matches exactly with the
-    # input.
+    # If that doesn't work, check if the DOI matches exactly with the input.
     if "doi" in d:
         # sometimes, the doi field contains a doi url
         doi = doi_from_url(d["doi"])
@@ -323,16 +330,14 @@ def heuristic_unique_result(results, d):
             ):
                 return result
 
-    # If that doesn't work, check if the page range matches exactly
-    # with the input.
+    # If that doesn't work, check if the page range matches exactly with the input.
     if "pages" in d:
         for result in results:
             if "page" in result and result["page"] == d["pages"]:
                 return result
 
-    # If that doesn't work, check if the second entry is a JSTOR copy
-    # of the original article -- yes, that happens --, and take the
-    # first one.
+    # If that doesn't work, check if the second entry is a JSTOR copy of the original
+    # article -- yes, that happens --, and take the first one.
     if (
         "publisher" in results[1]
         and results[1]["publisher"] == "JSTOR"
@@ -375,8 +380,7 @@ def write(od, file_handle, delimeter_type, tab_indent):
 
 
 def update(entry1, entry2):
-    """Create a merged BibTeX entry with the data from entry2 taking
-    precedence.
+    """Create a merged BibTeX entry with the data from entry2 taking precedence.
     """
     out = entry1
     if entry2 is not None:
