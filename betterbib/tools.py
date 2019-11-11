@@ -1,4 +1,5 @@
 import codecs
+import configparser
 import os
 import re
 
@@ -11,12 +12,6 @@ import requests
 
 from .__about__ import __version__
 from .errors import UniqueError
-
-try:
-    import configparser
-except ImportError:
-    import ConfigParser as configparser
-
 
 _config_dir = appdirs.user_config_dir("betterbib")
 if not os.path.exists(_config_dir):
@@ -58,9 +53,9 @@ def pybtex_to_dict(entry):
 
 
 def translate_month(key):
-    """The month value can take weird forms. Sometimes, it's given as an int,
-    sometimes as a string representing an int, and sometimes the name of the
-    month is spelled out. Try to handle most of this here.
+    """The month value can take weird forms. Sometimes, it's given as an int, sometimes
+    as a string representing an int, and sometimes the name of the month is spelled out.
+    Try to handle most of this here.
     """
     months = [
         "jan",
@@ -301,11 +296,9 @@ def _get_person_str(p):
 
 
 def heuristic_unique_result(results, d):
-    # Q: How to we find the correct solution if there's more than one
-    #    search result?
-    # As a heuristic, assume that the top result is the unique answer if
-    # its score is at least 1.5 times the score of the the second-best
-    # result.
+    # Q: How to we find the correct solution if there's more than one search result?
+    # As a heuristic, assume that the top result is the unique answer if its score is at
+    # least 1.5 times the score of the the second-best result.
     for score in ["score", "@score"]:
         try:
             if float(results[0][score]) > 1.5 * float(results[1][score]):
@@ -313,8 +306,7 @@ def heuristic_unique_result(results, d):
         except KeyError:
             pass
 
-    # If that doesn't work, check if the DOI matches exactly with the
-    # input.
+    # If that doesn't work, check if the DOI matches exactly with the input.
     if "doi" in d:
         # sometimes, the doi field contains a doi url
         doi = doi_from_url(d["doi"])
@@ -338,16 +330,14 @@ def heuristic_unique_result(results, d):
             ):
                 return result
 
-    # If that doesn't work, check if the page range matches exactly
-    # with the input.
+    # If that doesn't work, check if the page range matches exactly with the input.
     if "pages" in d:
         for result in results:
             if "page" in result and result["page"] == d["pages"]:
                 return result
 
-    # If that doesn't work, check if the second entry is a JSTOR copy
-    # of the original article -- yes, that happens --, and take the
-    # first one.
+    # If that doesn't work, check if the second entry is a JSTOR copy of the original
+    # article -- yes, that happens --, and take the first one.
     if (
         "publisher" in results[1]
         and results[1]["publisher"] == "JSTOR"
@@ -390,8 +380,7 @@ def write(od, file_handle, delimeter_type, tab_indent):
 
 
 def update(entry1, entry2):
-    """Create a merged BibTeX entry with the data from entry2 taking
-    precedence.
+    """Create a merged BibTeX entry with the data from entry2 taking precedence.
     """
     out = entry1
     if entry2 is not None:
