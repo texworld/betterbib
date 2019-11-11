@@ -1,4 +1,4 @@
-name: test
+name: ci
 
 on: [push]
 
@@ -37,5 +37,5 @@ jobs:
         mkdir -p ~/.config/betterbib/ && echo -e "[DICTIONARY]\nadd=Magnus,Peano,Kutta,Runge,Hermitian,Jacobian\nremove=hermitian" > ~/.config/betterbib/config.ini
         pip install pytest pytest-cov
         cd test && pytest --cov betterbib
-    - name: Submit to codecov
-      run: bash <(curl -s https://codecov.io/bash)
+    # - name: Submit to codecov
+    #   run: bash <(curl -s https://codecov.io/bash)
