@@ -201,11 +201,9 @@ def pybtex_to_bibtex_string(
     for key in keys:
         value = entry.fields[key]
 
-        # Remove once <https://github.com/mcmtroffaes/latexcodec/issues/56> and
-        # <https://github.com/mcmtroffaes/latexcodec/issues/68> are *released*.
+        # Remove once <https://github.com/mcmtroffaes/latexcodec/issues/74> is released.
         try:
-            value = value.replace("\u2009", " ")
-            value = value.replace("\u2010", "-")
+            value = value.replace("\u2217", "*")
         except AttributeError:
             pass
 
@@ -266,6 +264,9 @@ def _join_abbreviated_names(lst):
     one of the two names is not abbreviated. See
     <https://english.stackexchange.com/a/105529/23644>.
     """
+    if len(lst) == 0:
+        return ""
+
     out = lst[0]
     last_ends_in_dot = lst[0][-1] == "."
     for item in lst[1:]:
