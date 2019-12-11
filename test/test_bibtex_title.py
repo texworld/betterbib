@@ -58,4 +58,5 @@ def test():
         betterbib.tools._translate_title("{Aaa ${\\text{Pt/Co/AlO}}_{x}$ aaa bbb}")
         == "{Aaa {${\\text{Pt/Co/AlO}}_{x}$} aaa bbb}"
     )
-    return
+
+    assert betterbib.tools._translate_title("z*") == "z*"
