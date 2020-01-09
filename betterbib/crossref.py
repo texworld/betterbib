@@ -87,6 +87,7 @@ class Crossref(object):
             "proceedings": "proceedings",
             "proceedings-article": "inproceedings",
             "report": "techreport",
+            "reference-book": "book",
         }
         return _crossref_to_bibtex_type[crossref_type]
 
