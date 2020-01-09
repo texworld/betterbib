@@ -30,11 +30,11 @@ def test_update():
 
 def test_journal_name():
     shrt = pybtex.database.Entry(
-        "article", fields={"journal": u"SIAM J. Matrix Anal. Appl."}
+        "article", fields={"journal": "SIAM J. Matrix Anal. Appl."}
     )
     lng = pybtex.database.Entry(
         "article",
-        fields={"journal": u"SIAM Journal on Matrix Analysis and Applications"},
+        fields={"journal": "SIAM Journal on Matrix Analysis and Applications"},
     )
 
     tmp = betterbib.journal_abbrev({"key": lng})
@@ -42,7 +42,7 @@ def test_journal_name():
 
     lng = pybtex.database.Entry(
         "article",
-        fields={"journal": u"SIAM Journal on Matrix Analysis and Applications"},
+        fields={"journal": "SIAM Journal on Matrix Analysis and Applications"},
     )
     tmp = betterbib.journal_abbrev({"key": shrt}, long_journal_names=True)
     assert tmp["key"].fields["journal"] == lng.fields["journal"]

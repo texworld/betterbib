@@ -28,7 +28,7 @@ def _bibtex_to_crossref_type(bibtex_type):
         return []
 
 
-class Crossref(object):
+class Crossref:
     """
     Documentation of the Crossref Search API:
     <https://github.com/Crossref/rest-api-doc/blob/master/rest_api.md>.
@@ -344,7 +344,7 @@ class Crossref(object):
         try:
             persons = {
                 "author": [
-                    pybtex.database.Person(u"{}, {}".format(au["family"], au["given"]))
+                    pybtex.database.Person("{}, {}".format(au["family"], au["given"]))
                     for au in data["author"]
                 ]
             }

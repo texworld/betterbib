@@ -94,7 +94,7 @@ def _dblp_to_pybtex(data):
     return pybtex.database.Entry(bibtex_type, fields=fields_dict, persons=persons)
 
 
-class Dblp(object):
+class Dblp:
     """
     Documentation of the DBLP Search API:
     <http://dblp.uni-trier.de/faq/How+to+use+the+dblp+search+API.html>.
