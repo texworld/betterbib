@@ -192,7 +192,7 @@ def pybtex_to_bibtex_string(
 
     for key, persons in entry.persons.items():
         persons_str = " and ".join([_get_person_str(p) for p in persons])
-        content.append(u"{} = {}{}{}".format(key.lower(), left, persons_str, right))
+        content.append("{} = {}{}{}".format(key.lower(), left, persons_str, right))
 
     keys = entry.fields.keys()
     if sort:
@@ -223,13 +223,13 @@ def pybtex_to_bibtex_string(
                 content.append("{} = {}".format(key, month_string))
         elif key == "title":
             content.append(
-                u"{} = {}{}{}".format(
+                "{} = {}{}{}".format(
                     key, left, _translate_title(value, dictionary), right
                 )
             )
         else:
             if value is not None:
-                content.append(u"{} = {}{}{}".format(key, left, value, right))
+                content.append("{} = {}{}{}".format(key, left, value, right))
 
     # Make sure that every line ends with a comma
     out += indent.join([line + ",\n" for line in content])
@@ -296,6 +296,28 @@ def _get_person_str(p):
     return out
 
 
+def prettyprint_result(res):
+    string = []
+    string.append(f"score:     {res['score']}")
+    string.append(f"type:      {res['type']}")
+    string.append(f"title:     {res['title'][0]}")
+    if "DOI" in res:
+        string.append(f"DOI:       {res['DOI']}")
+    if "page" in res:
+        string.append(f"page:      {res['page']}")
+    string.append(f"publisher: {res['publisher']}")
+    if "container-title" in res:
+        string.append(f"container: {res['container-title'][0]}")
+    if "volume" in res:
+        string.append(f"volume:    {res['volume']}")
+    if "issue" in res:
+        string.append(f"issue:     {res['issue']}")
+    string.append(f"ref count: {res['reference-count']}")
+    if "language" in res:
+        string.append(f"language:  {res['language']}")
+    return "\n".join(string)
+
+
 def heuristic_unique_result(results, d):
     # Q: How to we find the correct solution if there's more than one search result?
     # As a heuristic, assume that the top result is the unique answer if its score is at
@@ -348,7 +370,12 @@ def heuristic_unique_result(results, d):
     ):
         return results[0]
 
-    raise UniqueError("Could not find a positively unique match.")
+    raise UniqueError(
+        "Could not find a positively unique match. "
+        "Got\n\n{}\n\nand\n\n{}\n".format(
+            prettyprint_result(results[0]), prettyprint_result(results[1])
+        )
+    )
 
 
 def write(od, file_handle, delimeter_type, tab_indent):
