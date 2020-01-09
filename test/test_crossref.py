@@ -6,7 +6,6 @@ import betterbib
 
 
 def test_crossref_article0():
-
     source = betterbib.Crossref()
 
     test_entry = pybtex.database.Entry(
@@ -61,8 +60,6 @@ def test_crossref_article0():
         == "10/f44kd7"
     )
 
-    return
-
 
 # This test is unreliable.
 # def test_crossref_article1():
@@ -85,12 +82,9 @@ def test_crossref_article0():
 #     with pytest.raises(RuntimeError):
 #         # No unique match found!
 #         source.find_unique(test_entry)
-#
-#     return
 
 
 def test_crossref_book0():
-
     source = betterbib.Crossref()
 
     test_entry = pybtex.database.Entry(
@@ -125,8 +119,6 @@ def test_crossref_book0():
     assert betterbib.pybtex_to_bibtex_string(
         bt, "key", sort=True
     ) == betterbib.pybtex_to_bibtex_string(reference, "key", sort=True)
-
-    return
 
 
 def test_crossref_book1():
@@ -171,11 +163,8 @@ def test_crossref_book1():
         bt, "key", sort=True
     ) == betterbib.pybtex_to_bibtex_string(reference, "key", sort=True)
 
-    return
-
 
 def test_crossref_inbook0():
-
     source = betterbib.Crossref()
 
     test_entry = pybtex.database.Entry(
@@ -206,11 +195,8 @@ def test_crossref_inbook0():
         bt, "key", sort=True
     ) == betterbib.pybtex_to_bibtex_string(reference, "key", sort=True)
 
-    return
-
 
 def test_crossref_incollection0():
-
     source = betterbib.Crossref()
 
     test_entry = pybtex.database.Entry(
@@ -262,11 +248,8 @@ def test_crossref_incollection0():
         bt, "key", sort=True
     ) == betterbib.pybtex_to_bibtex_string(reference, "key", sort=True)
 
-    return
-
 
 def test_crossref_techreport0():
-
     source = betterbib.Crossref()
 
     test_entry = pybtex.database.Entry(
@@ -302,11 +285,8 @@ def test_crossref_techreport0():
         bt, "key", sort=True
     ) == betterbib.pybtex_to_bibtex_string(reference, "key", sort=True)
 
-    return
-
 
 def test_crossref_inproceedings0():
-
     source = betterbib.Crossref()
 
     test_entry = pybtex.database.Entry(
@@ -338,11 +318,8 @@ def test_crossref_inproceedings0():
         bt, "key", sort=True
     ) == betterbib.pybtex_to_bibtex_string(reference, "key", sort=True)
 
-    return
-
 
 def test_crossref_proceedings0():
-
     source = betterbib.Crossref()
 
     test_entry = pybtex.database.Entry(
@@ -370,8 +347,6 @@ def test_crossref_proceedings0():
     assert betterbib.pybtex_to_bibtex_string(
         bt, "key", sort=True
     ) == betterbib.pybtex_to_bibtex_string(reference, "key", sort=True)
-
-    return
 
 
 def test_doi_only():
@@ -411,47 +386,6 @@ def test_doi_only():
         bt, "key", sort=True
     ) == betterbib.pybtex_to_bibtex_string(reference, "key", sort=True)
 
-    return
-
-
-def test_standard():
-
-    source = betterbib.Crossref()
-
-    test_entry = pybtex.database.Entry(
-        "misc",
-        fields={
-            "title": (
-                "{STD 42}: {A} Standard for the transmission of {IP} "
-                "datagrams over experimental {Ethernet} Networks"
-            ),
-            "doi": "10.5594/s9781614827788",
-        },
-    )
-
-    reference = pybtex.database.Entry(
-        "misc",
-        fields={
-            "title": (
-                "{ST} 2022-7:2013 : {Seamless} Protection Switching "
-                "of {SMPTE} {ST} 2022 {IP} Datagrams"
-            ),
-            "doi": u"10.5594/s9781614827788",
-            "url": u"http://dx.doi.org/10.5594/s9781614827788",
-            "isbn": "9781614827788",
-            "publisher": ("The Society of Motion Picture " "and Television Engineers"),
-            "source": u"Crossref",
-        },
-    )
-
-    bt = source.find_unique(test_entry)
-
-    assert betterbib.pybtex_to_bibtex_string(
-        bt, "key", sort=True
-    ) == betterbib.pybtex_to_bibtex_string(reference, "key", sort=True)
-
-    return
-
 
 def test_crossref_no_title():
     source = betterbib.Crossref()
@@ -469,7 +403,6 @@ def test_crossref_no_title():
     # Make sure and exception is thrown when not finding a unique match
     with pytest.raises(betterbib.errors.UniqueError):
         source.find_unique(test_entry)
-    return
 
 
 def test_crossref_all_capitals():
@@ -506,8 +439,6 @@ def test_crossref_all_capitals():
     assert betterbib.pybtex_to_bibtex_string(
         bt, "key", sort=True
     ) == betterbib.pybtex_to_bibtex_string(reference, "key", sort=True)
-
-    return
 
 
 def test_subtitle():
@@ -566,7 +497,6 @@ def test_subtitle():
     assert betterbib.pybtex_to_bibtex_string(
         bt, "key", sort=True
     ) == betterbib.pybtex_to_bibtex_string(reference, "key", sort=True)
-    return
 
 
 if __name__ == "__main__":
