@@ -25,24 +25,24 @@ def test_article0():
     reference = pybtex.database.Entry(
         "article",
         fields={
-            "doi": u"10.1137/110820713",
-            "title": u"A Framework for Deflated and Augmented "
+            "doi": "10.1137/110820713",
+            "title": "A Framework for Deflated and Augmented "
             + "Krylov Subspace Methods.",
-            "url": u"https://doi.org/10.1137/110820713",
-            "journal": u"SIAM J. Matrix Analysis Applications",
-            "number": u"2",
-            "volume": u"34",
-            "source": u"DBLP",
+            "url": "https://doi.org/10.1137/110820713",
+            "journal": "SIAM J. Matrix Analysis Applications",
+            "number": "2",
+            "volume": "34",
+            "source": "DBLP",
             "year": 2013,
-            "pages": u"495-518",
+            "pages": "495-518",
         },
         persons=pybtex.database.OrderedCaseInsensitiveDict(
             {
                 "author": [
-                    pybtex.database.Person(u"Gaul, Andr\xe9"),
-                    pybtex.database.Person(u"Gutknecht, Martin H."),
-                    pybtex.database.Person(u"Liesen, J\xf6rg"),
-                    pybtex.database.Person(u"Nabben, Reinhard"),
+                    pybtex.database.Person("Gaul, Andr\xe9"),
+                    pybtex.database.Person("Gutknecht, Martin H."),
+                    pybtex.database.Person("Liesen, J\xf6rg"),
+                    pybtex.database.Person("Nabben, Reinhard"),
                 ]
             }
         ),
