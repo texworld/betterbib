@@ -6,9 +6,12 @@ import pybtex.database
 import requests
 import requests_cache
 
-from .__about__ import __author_email__, __version__, __website__
+from .__about__ import __version__
 from .errors import HttpError, NotFoundError
 from .tools import heuristic_unique_result, pybtex_to_dict
+
+__author_email__ = "nico.schloemer@gmail.com"
+__website__ = "https://github.com/nschloe/betterbib"
 
 
 def _bibtex_to_crossref_type(bibtex_type):
