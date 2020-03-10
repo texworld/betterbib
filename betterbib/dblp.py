@@ -86,7 +86,9 @@ def _dblp_to_pybtex(data):
 
     try:
         persons = {
-            "author": [pybtex.database.Person(au) for au in data["authors"]["author"]]
+            "author": [
+                pybtex.database.Person(au["text"]) for au in data["authors"]["author"]
+            ]
         }
     except (KeyError, pybtex.database.InvalidNameString):
         persons = None
