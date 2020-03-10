@@ -1,5 +1,5 @@
 from . import cli
-from .__about__ import __author__, __author_email__, __version__, __website__
+from .__about__ import __version__
 from .adapt_doi_urls import adapt_doi_urls
 from .crossref import Crossref
 from .dblp import Dblp
@@ -17,9 +17,6 @@ from .tools import (
 
 __all__ = [
     "__version__",
-    "__author__",
-    "__author_email__",
-    "__website__",
     "cli",
     "create_dict",
     "decode",
