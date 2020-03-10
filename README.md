@@ -126,7 +126,7 @@ remove=hermitian,
 betterbib is [available from the Python Package
 Index](https://pypi.org/project/betterbib/), so simply do
 ```
-pip3 install betterbib --user
+pip install betterbib
 ```
 to install.
 
