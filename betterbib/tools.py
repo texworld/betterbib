@@ -298,21 +298,26 @@ def _get_person_str(p):
 
 def prettyprint_result(res):
     string = []
-    string.append(f"score:     {res['score']}")
-    string.append(f"type:      {res['type']}")
-    string.append(f"title:     {res['title'][0]}")
+    if "score" in res:
+        string.append(f"score:     {res['score']}")
+    if "type" in res:
+        string.append(f"type:      {res['type']}")
+    if "title" in res:
+        string.append(f"title:     {res['title'][0]}")
     if "DOI" in res:
         string.append(f"DOI:       {res['DOI']}")
     if "page" in res:
         string.append(f"page:      {res['page']}")
-    string.append(f"publisher: {res['publisher']}")
+    if "publisher" in res:
+        string.append(f"publisher: {res['publisher']}")
     if "container-title" in res:
         string.append(f"container: {res['container-title'][0]}")
     if "volume" in res:
         string.append(f"volume:    {res['volume']}")
     if "issue" in res:
         string.append(f"issue:     {res['issue']}")
-    string.append(f"ref count: {res['reference-count']}")
+    if "reference-count" in res:
+        string.append(f"ref count: {res['reference-count']}")
     if "language" in res:
         string.append(f"language:  {res['language']}")
     return "\n".join(string)
