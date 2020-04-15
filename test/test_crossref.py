@@ -478,7 +478,7 @@ def test_subtitle():
             "volume": "42",
             "source": "Crossref",
             "year": 2012,
-            "pages": "247",
+            "pages": "247-258",
         },
         persons=pybtex.database.OrderedCaseInsensitiveDict(
             {

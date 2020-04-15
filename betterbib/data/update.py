@@ -8,6 +8,7 @@ python3 update.py
 ```
 """
 import argparse
+import csv
 import json
 
 import requests
@@ -17,8 +18,8 @@ def _main():
     _parse_cmd_arguments()
 
     urls = [
-        "https://raw.githubusercontent.com/JabRef/jabref/master/src/main/resources/journals/IEEEJournalListText.txt",
-        "https://raw.githubusercontent.com/JabRef/jabref/master/src/main/resources/journals/journalList.txt",
+        "https://raw.githubusercontent.com/JabRef/jabref/master/src/main/resources/journals/IEEEJournalListText.csv",
+        "https://raw.githubusercontent.com/JabRef/jabref/master/src/main/resources/journals/journalList.csv",
     ]
 
     out = {}
@@ -28,14 +29,12 @@ def _main():
         assert r.status_code == 200
 
         # read input file into dictionary
-        for line in r.text.split("\n"):
-            sline = line.strip()
-            if sline is None:
-                break
-            if len(sline) == 0 or sline[0] == "#":
-                continue
-            k, v = sline.split("=")
-            out[k.strip()] = v.strip()
+        # only take the first two entries per row
+        new = {
+            item[0]: item[1] for item in csv.reader(r.text.splitlines(), delimiter=";")
+        }
+        # merge dicts
+        out = {**out, **new}
 
     with open("journals.json", "w") as f:
         json.dump(out, f, indent=2)
