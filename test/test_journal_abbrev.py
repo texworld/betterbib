@@ -7,7 +7,7 @@ FieldHolder = namedtuple("FieldHolder", "fields")
 
 # the following are re-used in several tests
 FULL_PNAS = (
-    "Proceedings of the National academy of Sciences of the United States of America"
+    "Proceedings of the National Academy of Sciences of the United States of America"
 )
 PNAS_ABBREV = "Proc. Natl. Acad. Sci. U.S.A."
 
