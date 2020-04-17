@@ -207,6 +207,12 @@ def pybtex_to_bibtex_string(
         except AttributeError:
             pass
 
+        # Remove once <https://github.com/mcmtroffaes/latexcodec/issues/83> is released.
+        try:
+            value = value.replace("\ufffd", "?")
+        except AttributeError:
+            pass
+
         try:
             if key not in ["url", "doi"]:
                 value = codecs.encode(value, "ulatex")
