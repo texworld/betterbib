@@ -201,17 +201,18 @@ def pybtex_to_bibtex_string(
     for key in keys:
         value = entry.fields[key]
 
-        # Remove once <https://github.com/mcmtroffaes/latexcodec/issues/74> is released.
-        try:
-            value = value.replace("\u2217", "*")
-        except AttributeError:
-            pass
-
-        # Remove once <https://github.com/mcmtroffaes/latexcodec/issues/83> is released.
-        try:
-            value = value.replace("\ufffd", "?")
-        except AttributeError:
-            pass
+        # handle things that latexcodec can't handle yet
+        repl = {
+            # https://github.com/mcmtroffaes/latexcodec/issues/74:
+            # "\u2217": "\\ast",
+            # https://github.com/mcmtroffaes/latexcodec/issues/83:
+            "\ufffd": "?"
+        }
+        for k, val in repl.items():
+            try:
+                value = value.replace(k, val)
+            except AttributeError:
+                pass
 
         try:
             if key not in ["url", "doi"]:
