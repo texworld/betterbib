@@ -85,19 +85,10 @@ def _dblp_to_pybtex(data):
         fields_dict["title"] = title
 
     try:
-        # [{'@pid': '...', 'text': '...'}, ...]
-        persons = {
-            "author": [
-                pybtex.database.Person(au["text"]) for au in data["authors"]["author"]
-            ]
-        }
-    except TypeError:
-        # {'@pid': '...', 'text': '...'}
-        persons = {
-            "author": [
-                pybtex.database.Person(data["authors"]["author"]["text"])
-            ]
-        }
+        authors = data["authors"]["author"]
+        if isinstance(authors, dict):
+            authors = [authors]
+        persons = {"author": [pybtex.database.Person(au["text"]) for au in authors]}
     except (KeyError, pybtex.database.InvalidNameString):
         persons = None
 
