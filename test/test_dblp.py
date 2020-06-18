@@ -29,7 +29,7 @@ def test_article0():
             "title": "A Framework for Deflated and Augmented "
             + "Krylov Subspace Methods.",
             "url": "https://doi.org/10.1137/110820713",
-            "journal": "SIAM J. Matrix Analysis Applications",
+            "journal": "SIAM J. Matrix Anal. Appl.",
             "number": "2",
             "volume": "34",
             "source": "DBLP",

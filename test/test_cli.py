@@ -28,10 +28,8 @@ def test_cli_dedup_doi():
                 "\n"
             ).format(betterbib.__version__)
         )
-
     os.remove(infile)
     os.remove(outfile)
-    return
 
 
 def test_cli_format():
@@ -63,7 +61,6 @@ def test_cli_format():
 
     os.remove(infile)
     os.remove(outfile)
-    return
 
 
 def test_cli_journal_abbrev():
@@ -89,7 +86,6 @@ def test_cli_journal_abbrev():
 
     os.remove(infile)
     os.remove(outfile)
-    return
 
 
 def test_cli_sync():
@@ -128,39 +124,31 @@ def test_cli_sync():
                 "}}\n"
             ).format(betterbib.__version__)
         )
-
     os.remove(infile)
     os.remove(outfile)
-    return
 
 
 def test_cli_doit2bibtex():
     outfile = tempfile.NamedTemporaryFile().name
-
     betterbib.cli.doi2bibtex(["10.1016/s0084-3954(09)79550-8", outfile])
-
     with open(outfile, "r") as f:
         assert f.read() == (
-            (
-                "@article{{key,\n"
-                " author = {{Stockman, J.A.}},\n"
-                " doi = {{10.1016/s0084-3954(09)79550-8}},\n"
-                " pages = {{193-194}},\n"
-                " source = {{Crossref}},\n"
-                " url = {{http://dx.doi.org/10.1016/s0084-3954(09)79550-8}},\n"
-                " volume = {{2011}},\n"
-                " journal = {{Yearbook of Pediatrics}},\n"
-                " publisher = {{Elsevier BV}},\n"
-                " title = {{A New Equation to Estimate Glomerular Filtration Rate}},\n"
-                " issn = {{0084-3954}},\n"
-                " year = {{2011}},\n"
-                " month = jan,\n"
-                "}}"
-            ).format(betterbib.__version__)
+            "@article{key,\n"
+            " author = {Stockman, J.A.},\n"
+            " doi = {10.1016/s0084-3954(09)79550-8},\n"
+            " pages = {193-194},\n"
+            " source = {Crossref},\n"
+            " url = {http://dx.doi.org/10.1016/s0084-3954(09)79550-8},\n"
+            " volume = {2011},\n"
+            " journal = {Yearbook of Pediatrics},\n"
+            " publisher = {Elsevier BV},\n"
+            " title = {A New Equation to Estimate Glomerular Filtration Rate},\n"
+            " issn = {0084-3954},\n"
+            " year = {2011},\n"
+            " month = jan,\n"
+            "}"
         )
-
     os.remove(outfile)
-    return
 
 
 def test_cli_full():
@@ -203,4 +191,3 @@ def test_cli_full():
 
     os.remove(infile)
     os.remove(outfile)
-    return

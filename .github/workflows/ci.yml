@@ -23,11 +23,11 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.5, 3.6, 3.7, 3.8]
+        python-version: [3.6, 3.7, 3.8]
     steps:
     - uses: actions/setup-python@v1
       with:
-        python-version: "3.x"
+        python-version: ${{ matrix.python-version }}
     - uses: actions/checkout@v2
     - name: Install package
       run: |
@@ -38,5 +38,6 @@ jobs:
         mkdir -p ~/.config/betterbib/ && echo -e "[DICTIONARY]\nadd=Magnus,Peano,Kutta,Runge,Hermitian,Jacobian\nremove=hermitian" > ~/.config/betterbib/config.ini
         pip install pytest pytest-cov
         cd test && pytest --cov betterbib
-    # - name: Submit to codecov
-    #   run: bash <(curl -s https://codecov.io/bash)
+    - name: Submit to codecov
+      if: ${{ matrix.python-version == '3.8' }}
+      run: bash <(curl -s https://codecov.io/bash)
