@@ -206,7 +206,10 @@ def pybtex_to_bibtex_string(
             # https://github.com/mcmtroffaes/latexcodec/issues/74:
             # "\u2217": "\\ast",
             # https://github.com/mcmtroffaes/latexcodec/issues/83:
-            "\ufffd": "?"
+            "\ufffd": "?",
+            # https://github.com/mcmtroffaes/latexcodec/issues/84:
+            "\u02bb": "'",
+            "\u02bc": "'",
         }
         for k, val in repl.items():
             try:
