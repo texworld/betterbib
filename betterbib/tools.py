@@ -208,8 +208,10 @@ def pybtex_to_bibtex_string(
             # https://github.com/mcmtroffaes/latexcodec/issues/83:
             "\ufffd": "?",
             # https://github.com/mcmtroffaes/latexcodec/issues/84:
-            "\u02bb": "'",
-            "\u02bc": "'",
+            "\u02bb": "`",
+            "\u02bc": "`",
+            "«": r"{\guillemotleft}",
+            "»": r"{\guillemotlright}"
         }
         for k, val in repl.items():
             try:
