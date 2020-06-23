@@ -5,7 +5,6 @@ import re
 
 import appdirs
 import enchant
-
 # for "ulatex" codec
 import latexcodec  # noqa
 import requests
@@ -204,13 +203,16 @@ def pybtex_to_bibtex_string(
 
         # handle things that latexcodec can't handle yet
         repl = {
-            # https://github.com/mcmtroffaes/latexcodec/issues/74:
+            # <https://github.com/mcmtroffaes/latexcodec/issues/74>:
             # "\u2217": "\\ast",
-            # https://github.com/mcmtroffaes/latexcodec/issues/83:
+            # <https://github.com/mcmtroffaes/latexcodec/issues/83>:
             "\ufffd": "?",
-            # https://github.com/mcmtroffaes/latexcodec/issues/84:
-            "\u02bb": "`",
-            "\u02bc": "`",
+            # <https://github.com/mcmtroffaes/latexcodec/issues/84>:
+            "\N{MODIFIER LETTER PRIME}": "'",
+            "\N{MODIFIER LETTER DOUBLE PRIME}": "''",
+            "\N{MODIFIER LETTER TURNED COMMA}": "`",
+            "\N{MODIFIER LETTER APOSTROPHE}": "'",
+            "\N{MODIFIER LETTER REVERSED COMMA}": "`",
             "«": r"{\guillemotleft}",
             "»": r"{\guillemotlright}",
         }
