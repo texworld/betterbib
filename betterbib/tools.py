@@ -19,16 +19,15 @@ if not os.path.exists(_config_dir):
 _config_file = os.path.join(_config_dir, "config.ini")
 
 
-def decode(d):
+def decode(entry):
     """Decode a dictionary with LaTeX strings into a dictionary with unicode strings.
     """
-    for entry in d.values():
-        for key, value in entry.fields.items():
-            if key == "url":
-                # The url can contain special LaTeX characters (like %) and that's fine
-                continue
-            entry.fields[key] = codecs.decode(value, "ulatex")
-    return d
+    for key, value in entry.fields.items():
+        if key == "url":
+            # The url can contain special LaTeX characters (like %) and that's fine
+            continue
+        entry.fields[key] = codecs.decode(value, "ulatex")
+    return entry
 
 
 def pybtex_to_dict(entry):
@@ -174,13 +173,15 @@ def _translate_title(val, dictionary=create_dict()):
     return " ".join(words)
 
 
+def sanitize_title(d):
+    for _, entry in d.items():
+        title = entry.fields["title"]
+        entry.fields["title"] = _translate_title(title)
+    return d
+
+
 def pybtex_to_bibtex_string(
-    entry,
-    bibtex_key,
-    brace_delimeters=True,
-    tab_indent=False,
-    dictionary=create_dict(),
-    sort=False,
+    entry, bibtex_key, brace_delimeters=True, tab_indent=False, sort=False,
 ):
     """String representation of BibTeX entry.
     """
@@ -233,12 +234,6 @@ def pybtex_to_bibtex_string(
             month_string = translate_month(value)
             if month_string:
                 content.append("{} = {}".format(key, month_string))
-        elif key == "title":
-            content.append(
-                "{} = {}{}{}".format(
-                    key, left, _translate_title(value, dictionary), right
-                )
-            )
         else:
             if value is not None:
                 content.append("{} = {}{}{}".format(key, left, value, right))
@@ -396,9 +391,6 @@ def heuristic_unique_result(results, d):
 
 
 def write(od, file_handle, delimeter_type, tab_indent):
-    # Create the dictionary only once
-    dictionary = create_dict()
-
     # Write header to the output file.
     segments = [
         "%comment{{This file was created with betterbib v{}.}}\n".format(__version__)
@@ -410,11 +402,7 @@ def write(od, file_handle, delimeter_type, tab_indent):
     segments.extend(
         [
             pybtex_to_bibtex_string(
-                d,
-                bib_id,
-                brace_delimeters=brace_delimeters,
-                tab_indent=tab_indent,
-                dictionary=dictionary,
+                d, bib_id, brace_delimeters=brace_delimeters, tab_indent=tab_indent,
             )
             for bib_id, d in od.items()
         ]

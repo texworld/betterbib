@@ -38,15 +38,10 @@ def _write(od, out, delimeter_type):
         )
     )
 
-    # Create the dictionary only once
-    dictionary = tools.create_dict()
-
     # write the data out sequentially to respect ordering
     for bib_id, d in od.items():
         brace_delimeters = delimeter_type == "curly"
-        a = tools.pybtex_to_bibtex_string(
-            d, bib_id, brace_delimeters=brace_delimeters, dictionary=dictionary
-        )
+        a = tools.pybtex_to_bibtex_string(d, bib_id, brace_delimeters=brace_delimeters)
         out.write(a + "\n\n")
     return
 

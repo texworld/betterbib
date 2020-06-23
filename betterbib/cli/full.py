@@ -13,24 +13,20 @@ def main(argv=None):
     parser = _get_parser()
     args = parser.parse_args(argv)
 
-    # As of Python 3.6, all dictionaries are ordered.
+    # Make sure that the entries are written out sorted by their BibTeX key if demanded.
     data = bibtex.Parser().parse_file(args.infile)
-    # Use an ordered dictionary to make sure that the entries are written out
-    # sorted by their BibTeX key if demanded.
     tuples = data.entries.items()
     if args.sort_by_bibkey:
         tuples = sorted(data.entries.items())
 
     d = dict(tuples)
 
-    d = tools.decode(d)
-
     d = sync(d, args.source, args.long_journal_names, args.num_concurrent_requests)
     d = adapt_doi_urls(d, args.doi_url_type)
+    d = tools.sanitize_title(d)
     d = journal_abbrev(d, args.long_journal_names, args.extra_abbrev_file)
 
     tools.write(d, args.outfile, args.delimeter_type, tab_indent=args.tab_indent)
-    return
 
 
 def _get_parser():
@@ -69,6 +65,7 @@ def _get_parser():
         "-l",
         "--long-journal-names",
         action="store_true",
+        default=False,
         help="prefer long journal names (default: false)",
     )
     parser.add_argument(

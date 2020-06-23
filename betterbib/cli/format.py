@@ -22,12 +22,11 @@ def main(argv=None):
     if args.sort_by_bibkey:
         tuples = sorted(data.entries.items())
 
-    d = tools.decode(dict(tuples))
+    d = dict(tuples)
 
     d = adapt_doi_urls(d, args.doi_url_type)
 
     tools.write(d, args.outfile, args.delimeter_type, tab_indent=args.tab_indent)
-    return
 
 
 def _get_parser():
