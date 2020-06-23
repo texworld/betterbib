@@ -54,24 +54,20 @@ def test_month_range():
 
 def test_decode():
     url = "https://www.wolframalpha.com/input/?i=integrate+from+0+to+2pi+(cos(x)+e%5E(i+*+(m+-+n)+*+x))"
-    d = {
-        "wolframalphai1": pybtex.database.Entry(
-            "misc", fields=[("url", url), ("note", "Online; accessed 19-February-2019")]
-        )
-    }
-    out = betterbib.decode(d)
-    assert out["wolframalphai1"].fields["url"] == url
+    entry = pybtex.database.Entry(
+        "misc", fields=[("url", url), ("note", "Online; accessed 19-February-2019")]
+    )
+    out = betterbib.decode(entry)
+    assert out.fields["url"] == url
 
 
 def test_decode_doi():
     doi = "10.1007/978-1-4615-7419-4_6"
-    d = {
-        "karwowski": pybtex.database.Entry(
-            "misc", fields=[("doi", doi), ("note", "Online; accessed 19-February-2019")]
-        )
-    }
+    d = pybtex.database.Entry(
+        "misc", fields=[("doi", doi), ("note", "Online; accessed 19-February-2019")]
+    )
     out = betterbib.decode(d)
-    assert out["karwowski"].fields["doi"] == doi
+    assert out.fields["doi"] == doi
 
 
 def test_encode_url():

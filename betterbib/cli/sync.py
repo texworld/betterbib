@@ -5,25 +5,22 @@ from pybtex.database.input import bibtex
 
 from .. import __about__
 from ..sync import sync
-from ..tools import decode, write
+from ..tools import write
 
 
 def main(argv=None):
     parser = _get_parser()
     args = parser.parse_args(argv)
 
-    # As of Python 3.6, all dictionaries are ordered.
     data = bibtex.Parser().parse_file(args.infile)
     # data.entries.items() is a list of tuples, the first item being the BibTeX key.
     input_dict = dict(data.entries.items())
-    input_dict = decode(input_dict)
 
     out = sync(
         input_dict, args.source, args.long_journal_name, args.num_concurrent_requests
     )
 
     write(out, args.outfile, "braces", tab_indent=False)
-    return
 
 
 def _get_parser():
@@ -62,6 +59,7 @@ def _get_parser():
         "-l",
         "--long-journal-name",
         action="store_true",
+        default=False,
         help="prefer long journal names (default: false)",
     )
     parser.add_argument(

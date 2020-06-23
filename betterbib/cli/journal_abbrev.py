@@ -12,12 +12,11 @@ def main(argv=None):
     args = parser.parse_args(argv)
 
     data = bibtex.Parser().parse_file(args.infile)
-    d = tools.decode(dict(data.entries.items()))
+    d = dict(data.entries.items())
 
     d = journal_abbrev(d, args.long_journal_names, args.extra_abbrev_file)
 
     tools.write(d, args.outfile, "braces", tab_indent=False)
-    return
 
 
 def _get_parser():
