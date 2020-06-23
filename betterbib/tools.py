@@ -5,6 +5,7 @@ import re
 
 import appdirs
 import enchant
+
 # for "ulatex" codec
 import latexcodec  # noqa
 import requests
