@@ -106,7 +106,8 @@ def test_encode_doi():
 def test_first_name_space():
     d = {
         "doe": pybtex.database.Entry(
-            "misc", persons={"author": [pybtex.database.Person("Doe, J. J.")]},
+            "misc",
+            persons={"author": [pybtex.database.Person("Doe, J. J.")]},
         )
     }
     out = betterbib.pybtex_to_bibtex_string(d["doe"], "doe")

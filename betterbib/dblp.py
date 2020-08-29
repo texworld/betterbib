@@ -19,8 +19,7 @@ def _to_bibtex_type(entry):
 
 
 def _dblp_to_pybtex(data):
-    """Translate a given data set into the bibtex data structure.
-    """
+    """Translate a given data set into the bibtex data structure."""
     # A typcial search result is
     #
     #   'info': {

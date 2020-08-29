@@ -37,8 +37,7 @@ def main(argv=None):
 
 
 def clean(entry):
-    """Removes newlines and font specs from entries.
-    """
+    """Removes newlines and font specs from entries."""
     new = (
         entry.replace("\n", " ")
         .replace("\\em ", "")
@@ -179,8 +178,7 @@ def parse_bibitem_string(bibitem_string):
 
 
 def clean_bibitem_string(string):
-    """Removes surrounding whitespace, surrounding \\emph brackets etc.
-    """
+    """Removes surrounding whitespace, surrounding \\emph brackets etc."""
     out = string
     out = out.strip()
     if out[:6] == "\\emph{" and out[-1] == "}":

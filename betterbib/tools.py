@@ -20,8 +20,7 @@ _config_file = os.path.join(_config_dir, "config.ini")
 
 
 def decode(entry):
-    """Decode a dictionary with LaTeX strings into a dictionary with unicode strings.
-    """
+    """Decode a dictionary with LaTeX strings into a dictionary with unicode strings."""
     for key, value in entry.fields.items():
         if key == "url":
             # The url can contain special LaTeX characters (like %) and that's fine
@@ -31,8 +30,7 @@ def decode(entry):
 
 
 def pybtex_to_dict(entry):
-    """dict representation of BibTeX entry.
-    """
+    """dict representation of BibTeX entry."""
     d = {}
     d["genre"] = entry.type
     for key, persons in entry.persons.items():
@@ -181,10 +179,13 @@ def sanitize_title(d):
 
 
 def pybtex_to_bibtex_string(
-    entry, bibtex_key, brace_delimeters=True, tab_indent=False, sort=False,
+    entry,
+    bibtex_key,
+    brace_delimeters=True,
+    tab_indent=False,
+    sort=False,
 ):
-    """String representation of BibTeX entry.
-    """
+    """String representation of BibTeX entry."""
     indent = "\t" if tab_indent else " "
     out = "@{}{{{},\n{}".format(entry.type, bibtex_key, indent)
     content = []
@@ -248,8 +249,7 @@ def pybtex_to_bibtex_string(
 
 
 def doi_from_url(url):
-    """See if this is a DOI URL and return the DOI.
-    """
+    """See if this is a DOI URL and return the DOI."""
     m = re.match("https?://(?:dx\\.)?doi\\.org/(.*)", url)
     if m:
         return m.group(1)
@@ -405,7 +405,10 @@ def write(od, file_handle, delimeter_type, tab_indent):
     segments.extend(
         [
             pybtex_to_bibtex_string(
-                d, bib_id, brace_delimeters=brace_delimeters, tab_indent=tab_indent,
+                d,
+                bib_id,
+                brace_delimeters=brace_delimeters,
+                tab_indent=tab_indent,
             )
             for bib_id, d in od.items()
         ]
@@ -416,8 +419,7 @@ def write(od, file_handle, delimeter_type, tab_indent):
 
 
 def update(entry1, entry2):
-    """Create a merged BibTeX entry with the data from entry2 taking precedence.
-    """
+    """Create a merged BibTeX entry with the data from entry2 taking precedence."""
     out = entry1
     if entry2 is not None:
         if entry2.type:
