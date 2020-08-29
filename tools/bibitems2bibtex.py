@@ -39,7 +39,6 @@ def main(argv=None):
 def clean(entry):
     """Removes newlines and font specs from entries.
     """
-    new = entry
     new = (
         entry.replace("\n", " ")
         .replace("\\em ", "")
