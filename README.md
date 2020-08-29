@@ -2,18 +2,21 @@
   <img alt="betterbib" src="https://nschloe.github.io/betterbib/betterbib.svg" width="60%">
 </p>
 
-[![gh-actions](https://img.shields.io/github/workflow/status/nschloe/betterbib/ci?style=flat-square)](https://github.com/nschloe/betterbib/actions?query=workflow%3Aci)
-[![codecov](https://img.shields.io/codecov/c/github/nschloe/betterbib.svg?style=flat-square)](https://codecov.io/gh/nschloe/betterbib)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg?style=flat-square)](https://github.com/psf/black)
-[![awesome](https://img.shields.io/badge/awesome-yes-ff69b4.svg?style=flat-square)](https://github.com/nschloe/betterbib)
-[![PyPI pyversions](https://img.shields.io/pypi/pyversions/betterbib.svg?style=flat-square)](https://pypi.org/pypi/betterbib/)
 [![PyPi Version](https://img.shields.io/pypi/v/betterbib.svg?style=flat-square)](https://pypi.org/project/betterbib)
+[![PyPI pyversions](https://img.shields.io/pypi/pyversions/betterbib.svg?style=flat-square)](https://pypi.org/pypi/betterbib/)
 [![GitHub stars](https://img.shields.io/github/stars/nschloe/betterbib.svg?style=flat-square&logo=github&label=Stars&logoColor=white)](https://github.com/nschloe/betterbib)
 [![PyPi downloads](https://img.shields.io/pypi/dm/betterbib.svg?style=flat-square)](https://pypistats.org/packages/betterbib)
 
+[![awesome](https://img.shields.io/badge/awesome-yes-ff69b4.svg?style=flat-square)](https://github.com/nschloe/betterbib)
+
+[![gh-actions](https://img.shields.io/github/workflow/status/nschloe/betterbib/ci?style=flat-square)](https://github.com/nschloe/betterbib/actions?query=workflow%3Aci)
+[![codecov](https://img.shields.io/codecov/c/github/nschloe/betterbib.svg?style=flat-square)](https://codecov.io/gh/nschloe/betterbib)
+[![LGTM](https://img.shields.io/lgtm/grade/python/github/nschloe/betterbib.svg?style=flat-square)](https://lgtm.com/projects/g/nschloe/betterbib)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg?style=flat-square)](https://github.com/psf/black)
+
 BibTeX files are typically manually maintained and thus often contain inconsistencies,
 mistakes, or are missing information. betterbib helps maintaining your BibTeX files by
-comparing them with online sources and correcting whatever entries are found faulty.
+comparing them with online sources and correcting whatever entries are faulty.
 
 Simply run
 ```
