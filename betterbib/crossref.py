@@ -174,8 +174,7 @@ class Crossref:
         return self._crossref_to_pybtex(heuristic_unique_result(results, d))
 
     def _crossref_to_pybtex(self, data):
-        """Translate a given data set into the bibtex data structure.
-        """
+        """Translate a given data set into the bibtex data structure."""
         # A typcial search result is
         #
         # {
