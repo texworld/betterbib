@@ -1,6 +1,7 @@
 import concurrent.futures
 
-from tqdm import tqdm
+# from tqdm import tqdm
+from rich.progress import track
 
 from . import crossref, dblp, errors, tools
 
@@ -12,16 +13,16 @@ def sync(d, source, long_journal_name, max_workers):
         assert source == "dblp", "Illegal source."
         source = dblp.Dblp()
 
-    print()
-
     num_success = 0
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
         responses = {
             executor.submit(source.find_unique, entry): (bib_id, tools.decode(entry))
             for bib_id, entry in d.items()
         }
-        for future in tqdm(
-            concurrent.futures.as_completed(responses), total=len(responses)
+        for future in track(
+            concurrent.futures.as_completed(responses),
+            total=len(responses),
+            description="Syncing...",
         ):
             bib_id, entry = responses[future]
             try:
