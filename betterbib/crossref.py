@@ -46,18 +46,16 @@ class Crossref:
         return
 
     def _crossref_to_bibtex_type(self, entry):
-        # The difficulty here: Translating book-chapter. If the book is a
-        # monograph (all chapters written by the same set of authors), then
-        # return inbook, if all chapters are by different authors, return
-        # incollection.
+        # The difficulty here: Translating book-chapter. If the book is a monograph (all
+        # chapters written by the same set of authors), then return inbook, if all
+        # chapters are by different authors, return incollection.
         crossref_type = entry["type"]
         if crossref_type == "book-chapter":
-            # Get the containing book, and see if it has authors or editors. If
-            # authors, consider it a monograph and use inbook; otherwise
-            # incollection.
-            # To get the book, make use of the fact that the chapter DOIs are
-            # the book DOI plus some appendix, e.g., .ch3, _3, etc. In other
-            # words: Strip the last digits plus whatever is nondigit before it.
+            # Get the containing book, and see if it has authors or editors. If authors,
+            # consider it a monograph and use inbook; otherwise incollection.
+            # To get the book, make use of the fact that the chapter DOIs are the book
+            # DOI plus some appendix, e.g., .ch3, _3, etc. In other words: Strip the
+            # last digits plus whatever is nondigit before it.
             a = re.match("(.*?)([^0-9]+[0-9]+)$", entry["DOI"])
             if a is None:
                 # The DOI doesn't have that structure; assume 'incollection'.
@@ -84,6 +82,7 @@ class Crossref:
         _crossref_to_bibtex_type = {
             "book": "book",
             "dataset": "misc",
+            "dissertation": "phdthesis",
             "journal-article": "article",
             "monograph": "book",
             "other": "misc",
@@ -303,6 +302,10 @@ class Crossref:
                 fields_dict["institution"] = publisher
             if title:
                 fields_dict["title"] = title
+        elif bibtex_type == "phdthesis":
+            if title:
+                fields_dict["title"] = title
+            fields_dict["school"] = data["institution"]["name"]
         else:
             assert bibtex_type == "misc", "Unknown type '{}'".format(bibtex_type)
             if publisher:

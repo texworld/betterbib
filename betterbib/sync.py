@@ -1,6 +1,5 @@
 import concurrent.futures
 
-# from tqdm import tqdm
 from rich.progress import track
 
 from . import crossref, dblp, errors, tools
