@@ -18,7 +18,7 @@ publish: tag upload
 
 clean:
 	@find . | grep -E "(__pycache__|\.pyc|\.pyo$\)" | xargs rm -rf
-	@rm -rf *.egg-info/ build/ dist/ betterbib_cache.sqlite
+	@rm -rf *.egg-info/ build/ dist/ betterbib_cache.sqlite .cache/ .pytest-cache/
 
 format:
 	isort .
