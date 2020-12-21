@@ -9,7 +9,7 @@ FieldHolder = namedtuple("FieldHolder", "fields")
 FULL_PNAS = (
     "Proceedings of the National Academy of Sciences of the United States of America"
 )
-PNAS_ABBREV = "Proc. Natl. Acad. Sci. U.S.A."
+PNAS_ABBREV = "PNAS"
 
 
 def make_fake_entry(journal, citekey="foo"):
