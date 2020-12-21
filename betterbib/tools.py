@@ -85,7 +85,7 @@ def translate_month(key):
         if month in months:
             strings.append(month)
         else:
-            print("Unknown month value '{}'. Skipping.".format(key))
+            print(f"Unknown month value '{key}'. Skipping.")
             return None
 
     return ' # "-" # '.join(strings)
@@ -187,14 +187,14 @@ def pybtex_to_bibtex_string(
 ):
     """String representation of BibTeX entry."""
     indent = "\t" if tab_indent else " "
-    out = "@{}{{{},\n{}".format(entry.type, bibtex_key, indent)
+    out = f"@{entry.type}{{{bibtex_key},\n{indent}"
     content = []
 
     left, right = ["{", "}"] if brace_delimeters else ['"', '"']
 
     for key, persons in entry.persons.items():
         persons_str = " and ".join([_get_person_str(p) for p in persons])
-        content.append("{} = {}{}{}".format(key.lower(), left, persons_str, right))
+        content.append(f"{key.lower()} = {left}{persons_str}{right}")
 
     keys = entry.fields.keys()
     if sort:
@@ -237,10 +237,10 @@ def pybtex_to_bibtex_string(
         if key == "month":
             month_string = translate_month(value)
             if month_string:
-                content.append("{} = {}".format(key, month_string))
+                content.append(f"{key} = {month_string}")
         else:
             if value is not None:
-                content.append("{} = {}{}{}".format(key, left, value, right))
+                content.append(f"{key} = {left}{value}{right}")
 
     # Make sure that every line ends with a comma
     out += indent.join([line + ",\n" for line in content])
@@ -385,19 +385,16 @@ def heuristic_unique_result(results, d):
     ):
         return results[0]
 
+    pretty_res = [prettyprint_result(results[0]), prettyprint_result(results[1])]
     raise UniqueError(
         "Could not find a positively unique match. "
-        "Got\n\n{}\n\nand\n\n{}\n".format(
-            prettyprint_result(results[0]), prettyprint_result(results[1])
-        )
+        f"Got\n\n{pretty_res[0]}\n\nand\n\n{pretty_res[1]}\n"
     )
 
 
 def write(od, file_handle, delimeter_type, tab_indent):
     # Write header to the output file.
-    segments = [
-        "%comment{{This file was created with betterbib v{}.}}\n".format(__version__)
-    ]
+    segments = [f"%comment{{This file was created with betterbib v{__version__}.}}\n"]
 
     brace_delimeters = delimeter_type == "braces"
 

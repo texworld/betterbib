@@ -140,7 +140,7 @@ class Dblp:
 
         r = requests.get(self.api_url, params=params)
         if not r.ok:
-            raise HttpError("Failed request to {}".format(self.api_url))
+            raise HttpError(f"Failed request to {self.api_url}")
 
         data = r.json()
 
