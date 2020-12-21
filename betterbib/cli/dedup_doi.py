@@ -32,9 +32,7 @@ def main(argv=None):
 
 def _write(od, out, delimeter_type):
     # Write header to the output file.
-    out.write(
-        f"%comment{{This file was created with betterbib v{__version__}.}}\n\n"
-    )
+    out.write(f"%comment{{This file was created with betterbib v{__version__}.}}\n\n")
 
     # write the data out sequentially to respect ordering
     for bib_id, d in od.items():
