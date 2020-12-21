@@ -267,8 +267,7 @@ def test_crossref_techreport0():
             "month": 7,
             "source": "Crossref",
             "year": 2004,
-            "institution": "Office of Scientific "
-            + "and Technical Information  (OSTI)",
+            "institution": "Office of Scientific and Technical Information (OSTI)",
         },
         persons=pybtex.database.OrderedCaseInsensitiveDict(
             {
