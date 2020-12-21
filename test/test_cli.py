@@ -19,14 +19,12 @@ def test_cli_dedup_doi():
     betterbib.cli.dedup_doi([infile, outfile])
     with open(outfile, "r") as f:
         assert f.read() == (
-            (
-                "%comment{{This file was created with betterbib v{}.}}\n"
-                "\n"
-                "@article{{foobar,\n"
-                " url = {{https://doi.org/foobar}},\n"
-                "}}\n"
-                "\n"
-            ).format(betterbib.__version__)
+            f"%comment{{This file was created with betterbib v{betterbib.__version__}.}}\n"
+            "\n"
+            "@article{foobar,\n"
+            " url = {https://doi.org/foobar},\n"
+            "}\n"
+            "\n"
         )
     os.remove(infile)
     os.remove(outfile)
@@ -48,15 +46,13 @@ def test_cli_format():
 
     with open(outfile, "r") as f:
         assert f.read() == (
-            (
-                "%comment{{This file was created with betterbib v{}.}}\n"
-                "\n"
-                "\n"
-                "@article{{foobar,\n"
-                " doi = {{foobar}},\n"
-                " url = {{https://doi.org/foobar}},\n"
-                "}}\n"
-            ).format(betterbib.__version__)
+            f"%comment{{This file was created with betterbib v{betterbib.__version__}.}}\n"
+            "\n"
+            "\n"
+            "@article{foobar,\n"
+            " doi = {foobar},\n"
+            " url = {https://doi.org/foobar},\n"
+            "}\n"
         )
 
     os.remove(infile)
@@ -74,14 +70,12 @@ def test_cli_journal_abbrev():
 
     with open(outfile, "r") as f:
         assert f.read() == (
-            (
-                "%comment{{This file was created with betterbib v{}.}}\n"
-                "\n"
-                "\n"
-                "@article{{foobar,\n"
-                " journal = {{SIAM J. Sci. Comput.}},\n"
-                "}}\n"
-            ).format(betterbib.__version__)
+            f"%comment{{This file was created with betterbib v{betterbib.__version__}.}}\n"
+            "\n"
+            "\n"
+            "@article{foobar,\n"
+            " journal = {SIAM J. Sci. Comput.},\n"
+            "}\n"
         )
 
     os.remove(infile)
@@ -104,25 +98,23 @@ def test_cli_sync():
 
     with open(outfile, "r") as f:
         assert f.read() == (
-            (
-                "%comment{{This file was created with betterbib v{}.}}\n"
-                "\n"
-                "\n"
-                "@article{{stockman,\n"
-                " author = {{Stockman, J.A.}},\n"
-                " title = {{A New Equation to Estimate Glomerular Filtration Rate}},\n"
-                " doi = {{10.1016/s0084-3954(09)79550-8}},\n"
-                " pages = {{193-194}},\n"
-                " source = {{Crossref}},\n"
-                " url = {{http://dx.doi.org/10.1016/s0084-3954(09)79550-8}},\n"
-                " volume = {{2011}},\n"
-                " journal = {{Yearbook of Pediatrics}},\n"
-                " publisher = {{Elsevier BV}},\n"
-                " issn = {{0084-3954}},\n"
-                " year = {{2011}},\n"
-                " month = jan,\n"
-                "}}\n"
-            ).format(betterbib.__version__)
+            f"%comment{{This file was created with betterbib v{betterbib.__version__}.}}\n"
+            "\n"
+            "\n"
+            "@article{stockman,\n"
+            " author = {Stockman, J.A.},\n"
+            " title = {A New Equation to Estimate Glomerular Filtration Rate},\n"
+            " doi = {10.1016/s0084-3954(09)79550-8},\n"
+            " pages = {193-194},\n"
+            " source = {Crossref},\n"
+            " url = {http://dx.doi.org/10.1016/s0084-3954(09)79550-8},\n"
+            " volume = {2011},\n"
+            " journal = {Yearbook of Pediatrics},\n"
+            " publisher = {Elsevier BV},\n"
+            " issn = {0084-3954},\n"
+            " year = {2011},\n"
+            " month = jan,\n"
+            "}\n"
         )
     os.remove(infile)
     os.remove(outfile)
@@ -166,24 +158,24 @@ def test_cli_full():
     betterbib.cli.full([infile, outfile])
 
     ref = (
-        "%comment{{This file was created with betterbib v{}.}}\n"
+        f"%comment{{This file was created with betterbib v{betterbib.__version__}.}}\n"
         "\n"
         "\n"
-        "@article{{stockman,\n"
-        " author = {{Stockman, J.A.}},\n"
-        " title = {{A New Equation to Estimate Glomerular Filtration Rate}},\n"
-        " doi = {{10.1016/s0084-3954(09)79550-8}},\n"
-        " pages = {{193-194}},\n"
-        " source = {{Crossref}},\n"
-        " url = {{https://doi.org/10.1016/s0084-3954(09)79550-8}},\n"
-        " volume = {{2011}},\n"
-        " journal = {{Yearbook of Pediatrics}},\n"
-        " publisher = {{Elsevier BV}},\n"
-        " issn = {{0084-3954}},\n"
-        " year = {{2011}},\n"
+        "@article{stockman,\n"
+        " author = {Stockman, J.A.},\n"
+        " title = {A New Equation to Estimate Glomerular Filtration Rate},\n"
+        " doi = {10.1016/s0084-3954(09)79550-8},\n"
+        " pages = {193-194},\n"
+        " source = {Crossref},\n"
+        " url = {https://doi.org/10.1016/s0084-3954(09)79550-8},\n"
+        " volume = {2011},\n"
+        " journal = {Yearbook of Pediatrics},\n"
+        " publisher = {Elsevier BV},\n"
+        " issn = {0084-3954},\n"
+        " year = {2011},\n"
         " month = jan,\n"
-        "}}\n"
-    ).format(betterbib.__version__)
+        "}\n"
+    )
 
     with open(outfile, "r") as f:
         data = f.read()

@@ -3,7 +3,8 @@ import sys
 
 from pybtex.database.input import bibtex
 
-from .. import __about__, tools
+from .. import tools
+from ..__about__ import __version__
 from ..adapt_doi_urls import adapt_doi_urls
 
 
@@ -37,7 +38,7 @@ def _get_parser():
         "--version",
         help="display version information",
         action="version",
-        version="betterbib {}, Python {}".format(__about__.__version__, sys.version),
+        version=f"betterbib {__version__}, Python {sys.version}",
     )
     parser.add_argument(
         "infile",
