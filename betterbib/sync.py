@@ -34,6 +34,6 @@ def sync(d, source, long_journal_name, max_workers):
                 num_success += 1
                 d[bib_id] = tools.update(entry, data)
 
-    print("\n\nTotal number of entries: {}".format(len(d)))
-    print("Found: {}".format(num_success))
+    print(f"\n\nTotal number of entries: {len(d)}")
+    print(f"Found: {num_success}")
     return d

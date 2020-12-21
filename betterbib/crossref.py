@@ -64,9 +64,7 @@ class Crossref:
             book_doi = a.group(1)
 
             headers = {
-                "User-Agent": "betterbib/{} ({}; mailto:{})".format(
-                    __version__, __website__, __author_email__
-                )
+                "User-Agent": f"betterbib/{__version__} ({__website__}; mailto:{__author_email__})"
             }
 
             # Try to get the book data
@@ -95,13 +93,12 @@ class Crossref:
 
     def get_by_doi(self, doi):
         headers = {
-            "User-Agent": "betterbib/{} ({}; mailto:{})".format(
-                __version__, __website__, __author_email__
-            )
+            "User-Agent": f"betterbib/{__version__} ({__website__}; mailto:{__author_email__})"
         }
         # https://api.crossref.org/works/10.1137/110820713
         r = requests.get(self.api_url + "/" + doi, headers=headers)
-        assert r.ok
+        if not r.ok:
+            raise HttpError(f"Failed request to {self.api_url}")
         data = r.json()
         result = data["message"]
         return self._crossref_to_pybtex(result)
@@ -148,19 +145,17 @@ class Crossref:
 
         crossref_types = _bibtex_to_crossref_type(entry.type)
         if crossref_types:
-            params["filter"] = ",".join("type:{}".format(ct) for ct in crossref_types)
+            params["filter"] = ",".join(f"type:{ct}" for ct in crossref_types)
 
         # crossref etiquette,
         # <https://github.com/CrossRef/rest-api-doc#good-manners--more-reliable-service>
         headers = {
-            "User-Agent": "betterbib/{} ({}; mailto:{})".format(
-                __version__, __website__, __author_email__
-            )
+            "User-Agent": f"betterbib/{__version__} ({__website__}; mailto:{__author_email__})"
         }
 
         r = requests.get(self.api_url, params=params, headers=headers)
         if not r.ok:
-            raise HttpError("Failed request to {}".format(self.api_url))
+            raise HttpError(f"Failed request to {self.api_url}")
 
         results = r.json()["message"]["items"]
 
@@ -307,7 +302,7 @@ class Crossref:
                 fields_dict["title"] = title
             fields_dict["school"] = data["institution"]["name"]
         else:
-            assert bibtex_type == "misc", "Unknown type '{}'".format(bibtex_type)
+            assert bibtex_type == "misc", f"Unknown type '{bibtex_type}'"
             if publisher:
                 fields_dict["publisher"] = publisher
             # Standards have the title in container_title

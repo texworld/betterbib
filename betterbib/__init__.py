@@ -1,4 +1,4 @@
-from . import cli
+from . import cli, errors
 from .__about__ import __version__
 from .adapt_doi_urls import adapt_doi_urls
 from .crossref import Crossref
@@ -20,6 +20,7 @@ __all__ = [
     "cli",
     "create_dict",
     "decode",
+    "errors",
     "pybtex_to_dict",
     "pybtex_to_bibtex_string",
     "write",

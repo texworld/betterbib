@@ -13,7 +13,7 @@ def _main():
     # t = time.time()
     _test_connection(source)
     # elapsed = time.time() - t
-    # print("OK ({}s).".format(elapsed))
+    # print(f"OK ({elapsed}s).")
     # try:
     # except:
     #     print("FAILED.\n")
@@ -22,7 +22,6 @@ def _main():
 
 
 def _test_connection(source):
-
     test_entry = {
         "genre": "book",
         "title": "A Framework for Deflated and Augmented " "Krylov Subspace Methods",

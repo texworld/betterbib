@@ -3,7 +3,8 @@ import sys
 
 from pybtex.database.input import bibtex
 
-from .. import __about__, tools
+from .. import tools
+from ..__about__ import __version__
 
 
 def main(argv=None):
@@ -27,23 +28,17 @@ def main(argv=None):
                     od[key].fields["doi"] = None
 
     _write(od, args.outfile, "curly")
-    return
 
 
 def _write(od, out, delimeter_type):
     # Write header to the output file.
-    out.write(
-        "%comment{{This file was created with betterbib v{}.}}\n\n".format(
-            __about__.__version__
-        )
-    )
+    out.write(f"%comment{{This file was created with betterbib v{__version__}.}}\n\n")
 
     # write the data out sequentially to respect ordering
     for bib_id, d in od.items():
         brace_delimeters = delimeter_type == "curly"
         a = tools.pybtex_to_bibtex_string(d, bib_id, brace_delimeters=brace_delimeters)
         out.write(a + "\n\n")
-    return
 
 
 def _get_parser():
@@ -56,7 +51,7 @@ def _get_parser():
         "--version",
         help="display version information",
         action="version",
-        version="betterbib {}, Python {}".format(__about__.__version__, sys.version),
+        version=f"betterbib {__version__}, Python {sys.version}",
     )
     parser.add_argument(
         "infile",
