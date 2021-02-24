@@ -26,7 +26,7 @@ def _get_parser():
         "--version",
         help="display version information",
         action="version",
-        version="betterbib {}, Python {}".format(__about__.__version__, sys.version),
+        version=f"betterbib {__about__.__version__}, Python {sys.version}",
     )
     parser.add_argument(
         "infile",
