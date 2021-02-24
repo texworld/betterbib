@@ -26,7 +26,11 @@ def main(argv=None):
     d = tools.sanitize_title(d)
     d = journal_abbrev(d, args.long_journal_names, args.extra_abbrev_file)
 
-    tools.write(d, args.outfile, args.delimeter_type, tab_indent=args.tab_indent)
+    if args.in_place:
+        with open(args.infile.name, "w") as f:
+            tools.write(d, f, args.delimeter_type, tab_indent=args.tab_indent)
+    else:
+        tools.write(d, args.outfile, args.delimeter_type, tab_indent=args.tab_indent)
 
 
 def _get_parser():
@@ -53,6 +57,9 @@ def _get_parser():
         type=argparse.FileType("w"),
         default=sys.stdout,
         help="output BibTeX file (default: stdout)",
+    )
+    parser.add_argument(
+        "-i", "--in-place", action="store_true", help="modify infile in place"
     )
     parser.add_argument(
         "-s",

@@ -45,6 +45,8 @@ is converted to
  month = jan,
 }
 ```
+Use `-i`/`--in-place` to modify the input file in place. Use `-h`/`--help` to see all
+options.
 
 ### Tools
 
