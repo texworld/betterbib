@@ -17,7 +17,7 @@ def test_cli_dedup_doi():
     outfile = tempfile.NamedTemporaryFile().name
 
     betterbib.cli.dedup_doi([infile, outfile])
-    with open(outfile, "r") as f:
+    with open(outfile) as f:
         assert f.read() == (
             f"%comment{{This file was created with betterbib v{betterbib.__version__}.}}\n"
             "\n"
@@ -44,7 +44,7 @@ def test_cli_format():
 
     betterbib.cli.format([infile, outfile])
 
-    with open(outfile, "r") as f:
+    with open(outfile) as f:
         assert f.read() == (
             f"%comment{{This file was created with betterbib v{betterbib.__version__}.}}\n"
             "\n"
@@ -68,7 +68,7 @@ def test_cli_journal_abbrev():
 
     betterbib.cli.journal_abbrev([infile, outfile])
 
-    with open(outfile, "r") as f:
+    with open(outfile) as f:
         assert f.read() == (
             f"%comment{{This file was created with betterbib v{betterbib.__version__}.}}\n"
             "\n"
@@ -96,7 +96,7 @@ def test_cli_sync():
 
     betterbib.cli.sync([infile, outfile])
 
-    with open(outfile, "r") as f:
+    with open(outfile) as f:
         assert f.read() == (
             f"%comment{{This file was created with betterbib v{betterbib.__version__}.}}\n"
             "\n"
@@ -123,7 +123,7 @@ def test_cli_sync():
 def test_cli_doit2bibtex():
     outfile = tempfile.NamedTemporaryFile().name
     betterbib.cli.doi2bibtex(["10.1016/s0084-3954(09)79550-8", outfile])
-    with open(outfile, "r") as f:
+    with open(outfile) as f:
         assert f.read() == (
             "@article{key,\n"
             " author = {Stockman, J.A.},\n"
@@ -177,7 +177,7 @@ def test_cli_full():
         "}\n"
     )
 
-    with open(outfile, "r") as f:
+    with open(outfile) as f:
         data = f.read()
         assert data == ref
 

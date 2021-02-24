@@ -195,7 +195,7 @@ def extract_bibitems(filename):
     """
     recording = False
     bibitems = []
-    with open(filename, "r") as f:
+    with open(filename) as f:
         for line in f:
             # Get first non-whitespace character
             m = re.match("^\\s*(\\S)", line)
@@ -224,7 +224,7 @@ def _get_parser():
         "--version",
         help="display version information",
         action="version",
-        version="betterbib {}, Python {}".format(__about__.__version__, sys.version),
+        version=f"betterbib {__about__.__version__}, Python {sys.version}",
     )
     parser.add_argument("input", type=str, help="input LaTeX file")
     return parser
