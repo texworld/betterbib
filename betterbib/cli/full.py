@@ -28,9 +28,9 @@ def main(argv=None):
 
     if args.in_place:
         with open(args.infile.name, "w") as f:
-            tools.write(d, f, args.delimeter_type, tab_indent=args.tab_indent)
+            tools.write(d, f, args.delimiter_type, tab_indent=args.tab_indent)
     else:
-        tools.write(d, args.outfile, args.delimeter_type, tab_indent=args.tab_indent)
+        tools.write(d, args.outfile, args.delimiter_type, tab_indent=args.tab_indent)
 
 
 def _get_parser():
@@ -102,10 +102,10 @@ def _get_parser():
     )
     parser.add_argument(
         "-d",
-        "--delimeter-type",
+        "--delimiter-type",
         choices=["braces", "quotes"],
         default="braces",
-        help=("which delimeters to use in the output file " "(default: braces {...})"),
+        help=("which delimiters to use in the output file " "(default: braces {...})"),
     )
     parser.add_argument(
         "-u",

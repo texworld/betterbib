@@ -181,7 +181,7 @@ def sanitize_title(d):
 def pybtex_to_bibtex_string(
     entry,
     bibtex_key,
-    brace_delimeters=True,
+    brace_delimiters=True,
     tab_indent=False,
     sort=False,
 ):
@@ -190,7 +190,7 @@ def pybtex_to_bibtex_string(
     out = f"@{entry.type}{{{bibtex_key},\n{indent}"
     content = []
 
-    left, right = ["{", "}"] if brace_delimeters else ['"', '"']
+    left, right = ["{", "}"] if brace_delimiters else ['"', '"']
 
     for key, persons in entry.persons.items():
         persons_str = " and ".join([_get_person_str(p) for p in persons])
@@ -392,11 +392,11 @@ def heuristic_unique_result(results, d):
     )
 
 
-def write(od, file_handle, delimeter_type, tab_indent):
+def write(od, file_handle, delimiter_type, tab_indent):
     # Write header to the output file.
     segments = [f"%comment{{This file was created with betterbib v{__version__}.}}\n"]
 
-    brace_delimeters = delimeter_type == "braces"
+    brace_delimiters = delimiter_type == "braces"
 
     # Add segments for each bibtex entry in order
     segments.extend(
@@ -404,7 +404,7 @@ def write(od, file_handle, delimeter_type, tab_indent):
             pybtex_to_bibtex_string(
                 d,
                 bib_id,
-                brace_delimeters=brace_delimeters,
+                brace_delimiters=brace_delimiters,
                 tab_indent=tab_indent,
             )
             for bib_id, d in od.items()

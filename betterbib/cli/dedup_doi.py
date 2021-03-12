@@ -30,14 +30,14 @@ def main(argv=None):
     _write(od, args.outfile, "curly")
 
 
-def _write(od, out, delimeter_type):
+def _write(od, out, delimiter_type):
     # Write header to the output file.
     out.write(f"%comment{{This file was created with betterbib v{__version__}.}}\n\n")
 
     # write the data out sequentially to respect ordering
     for bib_id, d in od.items():
-        brace_delimeters = delimeter_type == "curly"
-        a = tools.pybtex_to_bibtex_string(d, bib_id, brace_delimeters=brace_delimeters)
+        brace_delimiters = delimiter_type == "curly"
+        a = tools.pybtex_to_bibtex_string(d, bib_id, brace_delimiters=brace_delimiters)
         out.write(a + "\n\n")
 
 
