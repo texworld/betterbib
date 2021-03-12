@@ -398,8 +398,6 @@ def write(od, file_handle, delimiter_type: str, tab_indent: bool):
 
     delimiters = {"braces": ("{", "}"), "quotes": ('"', '"')}[delimiter_type]
 
-    indent = "\t" if tab_indent else " "
-
     # Add segments for each bibtex entry in order
     segments.extend(
         [
@@ -407,7 +405,7 @@ def write(od, file_handle, delimiter_type: str, tab_indent: bool):
                 d,
                 bib_id,
                 delimiters=delimiters,
-                indent=indent,
+                indent="\t" if tab_indent else " ",
             )
             for bib_id, d in od.items()
         ]
