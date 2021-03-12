@@ -2,6 +2,7 @@ import codecs
 import configparser
 import os
 import re
+from typing import Tuple
 
 import appdirs
 import enchant
@@ -49,7 +50,7 @@ def pybtex_to_dict(entry):
     return d
 
 
-def translate_month(key):
+def translate_month(key: str):
     """The month value can take weird forms. Sometimes, it's given as an int, sometimes
     as a string representing an int, and sometimes the name of the month is spelled out.
     Try to handle most of this here.
@@ -181,16 +182,15 @@ def sanitize_title(d):
 def pybtex_to_bibtex_string(
     entry,
     bibtex_key,
-    brace_delimiters=True,
-    tab_indent=False,
-    sort=False,
+    delimiters: Tuple[str, str] = ("{", "}"),
+    indent: str = " ",
+    sort: bool = False,
 ):
     """String representation of BibTeX entry."""
-    indent = "\t" if tab_indent else " "
     out = f"@{entry.type}{{{bibtex_key},\n{indent}"
     content = []
 
-    left, right = ["{", "}"] if brace_delimiters else ['"', '"']
+    left, right = delimiters
 
     for key, persons in entry.persons.items():
         persons_str = " and ".join([_get_person_str(p) for p in persons])
@@ -392,11 +392,13 @@ def heuristic_unique_result(results, d):
     )
 
 
-def write(od, file_handle, delimiter_type, tab_indent):
+def write(od, file_handle, delimiter_type: str, tab_indent: bool):
     # Write header to the output file.
     segments = [f"%comment{{This file was created with betterbib v{__version__}.}}\n"]
 
-    brace_delimiters = delimiter_type == "braces"
+    delimiters = {"braces": ("{", "}"), "quotes": ('"', '"')}[delimiter_type]
+
+    indent = "\t" if tab_indent else " "
 
     # Add segments for each bibtex entry in order
     segments.extend(
@@ -404,8 +406,8 @@ def write(od, file_handle, delimiter_type, tab_indent):
             pybtex_to_bibtex_string(
                 d,
                 bib_id,
-                brace_delimiters=brace_delimiters,
-                tab_indent=tab_indent,
+                delimiters=delimiters,
+                indent=indent,
             )
             for bib_id, d in od.items()
         ]
