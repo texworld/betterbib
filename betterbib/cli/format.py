@@ -27,7 +27,7 @@ def main(argv=None):
 
     d = adapt_doi_urls(d, args.doi_url_type)
 
-    tools.write(d, args.outfile, args.delimeter_type, tab_indent=args.tab_indent)
+    tools.write(d, args.outfile, args.delimiter_type, tab_indent=args.tab_indent)
 
 
 def _get_parser():
@@ -68,10 +68,10 @@ def _get_parser():
     )
     parser.add_argument(
         "-d",
-        "--delimeter-type",
+        "--delimiter-type",
         choices=["braces", "quotes"],
         default="braces",
-        help=("which delimeters to use in the output file " "(default: braces {...})"),
+        help=("which delimiters to use in the output file " "(default: braces {...})"),
     )
     parser.add_argument(
         "-u",
