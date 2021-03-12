@@ -36,8 +36,8 @@ def _write(od, out, delimiter_type):
 
     # write the data out sequentially to respect ordering
     for bib_id, d in od.items():
-        brace_delimiters = delimiter_type == "curly"
-        a = tools.pybtex_to_bibtex_string(d, bib_id, brace_delimiters=brace_delimiters)
+        delimiters = ("{", "}") if delimiter_type == "curly" else ('"', '"')
+        a = tools.pybtex_to_bibtex_string(d, bib_id, delimiters=delimiters)
         out.write(a + "\n\n")
 
 
