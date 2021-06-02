@@ -18,7 +18,11 @@ BibTeX files are typically manually maintained and thus often contain inconsiste
 mistakes, or are missing information. betterbib helps maintaining your BibTeX files by
 comparing them with online sources and correcting whatever entries are faulty.
 
-Simply run
+Install with
+```
+pip install betterbib
+```
+and run simply run
 ```
 betterbib in.bib out.bib
 ```
