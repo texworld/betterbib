@@ -7,3 +7,4 @@ example/
 betterbib.egg-info/
 .cache/
 .pytest_cache/
+.tox/
