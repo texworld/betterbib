@@ -1,6 +1,12 @@
 name: ci
 
-on: [pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   lint:
@@ -31,14 +37,15 @@ jobs:
     - uses: actions/checkout@v2
       with:
         lfs: true
-    - name: Install package
+    # - name: Test with pytest
+    #   run: |
+    #     # add some entries to the dict
+    #     mkdir -p ~/.config/betterbib/ && echo -e "[DICTIONARY]\nadd=Magnus,Peano,Kutta,Runge,Hermitian,Jacobian\nremove=hermitian" > ~/.config/betterbib/config.ini
+    #     pip install pytest pytest-cov
+    #     cd test && pytest --cov betterbib
+    - name: Test with tox
       run: |
-        pip install .[all]
-    - name: Test with pytest
-      run: |
-        # add some entries to the dict
-        mkdir -p ~/.config/betterbib/ && echo -e "[DICTIONARY]\nadd=Magnus,Peano,Kutta,Runge,Hermitian,Jacobian\nremove=hermitian" > ~/.config/betterbib/config.ini
-        pip install pytest pytest-cov
-        cd test && pytest --cov betterbib
+          pip install tox
+          tox -- --cov betterbib --cov-report xml --cov-report term
     - uses: codecov/codecov-action@v1
       if: ${{ matrix.python-version == '3.9' }}
