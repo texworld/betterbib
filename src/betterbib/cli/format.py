@@ -27,8 +27,9 @@ def main(argv=None):
 
     d = adapt_doi_urls(d, args.doi_url_type)
 
-    args.outfile.write(tools.to_string(d, args.delimiter_type,
-        tab_indent=args.tab_indent))
+    args.outfile.write(
+        tools.to_string(d, args.delimiter_type, tab_indent=args.tab_indent)
+    )
 
 
 def _get_parser():
