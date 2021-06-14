@@ -211,6 +211,8 @@ def pybtex_to_bibtex_string(
             "\ufffd": "?",
             # <https://github.com/mcmtroffaes/latexcodec/issues/84>:
             "\N{MODIFIER LETTER PRIME}": "'",
+            # <https://github.com/mcmtroffaes/latexcodec/issues/91>:
+            "\ufb03": "ffi",
             "\N{MODIFIER LETTER DOUBLE PRIME}": "''",
             "\N{MODIFIER LETTER TURNED COMMA}": "`",
             "\N{MODIFIER LETTER APOSTROPHE}": "'",
