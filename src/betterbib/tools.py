@@ -392,7 +392,9 @@ def heuristic_unique_result(results, d):
     )
 
 
-def write(od, file_handle, delimiter_type: str, tab_indent: bool):
+# This used to be a write() function, but beware of exceptions! Files would get
+# unintentionally overridden, see <https://github.com/nschloe/betterbib/issues/184>
+def to_string(od, delimiter_type: str, tab_indent: bool):
     # Write header to the output file.
     segments = [f"%comment{{This file was created with betterbib v{__version__}.}}\n"]
 
@@ -410,9 +412,7 @@ def write(od, file_handle, delimiter_type: str, tab_indent: bool):
             for bib_id, d in od.items()
         ]
     )
-
-    # Write all segments to the file at once
-    file_handle.write("\n\n".join(segments) + "\n")
+    return "\n\n".join(segments) + "\n"
 
 
 def update(entry1, entry2):
