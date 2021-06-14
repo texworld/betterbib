@@ -26,11 +26,13 @@ def main(argv=None):
     d = tools.sanitize_title(d)
     d = journal_abbrev(d, args.long_journal_names, args.extra_abbrev_file)
 
+    string = tools.to_string(d, args.delimiter_type, tab_indent=args.tab_indent)
+
     if args.in_place:
         with open(args.infile.name, "w") as f:
-            tools.write(d, f, args.delimiter_type, tab_indent=args.tab_indent)
+            f.write(string)
     else:
-        tools.write(d, args.outfile, args.delimiter_type, tab_indent=args.tab_indent)
+        args.outfile.write(string)
 
 
 def _get_parser():

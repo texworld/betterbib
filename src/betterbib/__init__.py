@@ -10,9 +10,9 @@ from .tools import (
     decode,
     pybtex_to_bibtex_string,
     pybtex_to_dict,
+    to_string,
     translate_month,
     update,
-    write,
 )
 
 __all__ = [
@@ -23,7 +23,7 @@ __all__ = [
     "errors",
     "pybtex_to_dict",
     "pybtex_to_bibtex_string",
-    "write",
+    "to_string",
     "update",
     "translate_month",
     "Crossref",

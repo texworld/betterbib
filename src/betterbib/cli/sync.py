@@ -5,7 +5,7 @@ from pybtex.database.input import bibtex
 
 from .. import __about__
 from ..sync import sync
-from ..tools import write
+from ..tools import to_string
 
 
 def main(argv=None):
@@ -20,7 +20,7 @@ def main(argv=None):
         input_dict, args.source, args.long_journal_name, args.num_concurrent_requests
     )
 
-    write(out, args.outfile, "braces", tab_indent=False)
+    args.outfile.write(to_string(out, "braces", tab_indent=False))
 
 
 def _get_parser():

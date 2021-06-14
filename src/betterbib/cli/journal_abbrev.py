@@ -16,7 +16,7 @@ def main(argv=None):
 
     d = journal_abbrev(d, args.long_journal_names, args.extra_abbrev_file)
 
-    tools.write(d, args.outfile, "braces", tab_indent=False)
+    args.outfile.write(tools.to_string(d, "braces", tab_indent=False))
 
 
 def _get_parser():
