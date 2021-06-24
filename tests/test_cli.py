@@ -1,6 +1,8 @@
 import os
 import tempfile
 
+import pybibtex
+
 import betterbib
 
 
@@ -120,12 +122,12 @@ def test_cli_sync():
     os.remove(outfile)
 
 
-def test_cli_doit2bibtex():
+def test_cli_doi2bibtex():
     outfile = tempfile.NamedTemporaryFile().name
     betterbib.cli.doi2bibtex(["10.1016/s0084-3954(09)79550-8", outfile])
     with open(outfile) as f:
         assert f.read() == (
-            "@article{key,\n"
+            "@article{stockman2011,\n"
             " author = {Stockman, J.A.},\n"
             " doi = {10.1016/s0084-3954(09)79550-8},\n"
             " pages = {193-194},\n"

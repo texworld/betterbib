@@ -52,9 +52,7 @@ def main(argv=None):
 
 
 def _get_parser():
-    parser = argparse.ArgumentParser(
-        description="Turn a DOI into a BibTeX entry."
-    )
+    parser = argparse.ArgumentParser(description="Turn a DOI into a BibTeX entry.")
     parser.add_argument(
         "-v",
         "--version",
