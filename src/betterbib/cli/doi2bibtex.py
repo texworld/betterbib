@@ -27,7 +27,7 @@ def _create_key_for_entry(entry):
         + "/nltk_english_stop_words.txt",
         "r",
     ) as f:
-        nltk_english_stop_words = set(f.readlines())
+        nltk_english_stop_words = set(f.read().splitlines())
     bibtex_key = ""
     if entry.persons and entry.persons["author"]:
         bibtex_key += "_".join(entry.persons["author"][0].last()).lower()
