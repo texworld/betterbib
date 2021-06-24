@@ -1,6 +1,8 @@
 import argparse
 import sys
 
+from unidecode import unidecode
+
 from .. import __about__, crossref, tools
 
 
@@ -32,7 +34,7 @@ def _create_citekey_for_entry(entry):
         and entry.persons["author"]
         and entry.persons["author"][0].last()
     ):
-        bibtex_key += entry.persons["author"][0].last()[0].lower()
+        bibtex_key += unidecode(entry.persons["author"][0].last()[0].lower())
     if "year" in entry.fields and entry.fields["year"]:
         bibtex_key += str(entry.fields["year"])
     if not bibtex_key:

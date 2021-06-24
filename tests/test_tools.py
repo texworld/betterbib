@@ -133,7 +133,8 @@ def test_create_citekey():
     entry = pybtex.database.Entry(
         "article",
         fields={
-            "year": 2013,
+            "year": 2021,
+            "title": "A fancy algorithm for generating citekeys",
         },
         persons=pybtex.database.OrderedCaseInsensitiveDict(
             {
@@ -144,3 +145,5 @@ def test_create_citekey():
             }
         ),
     )
+    citekey = _create_citekey_for_entry(entry)
+    assert citekey == "schlomer2021"
