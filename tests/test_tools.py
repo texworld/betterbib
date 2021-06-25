@@ -2,6 +2,7 @@ import pybtex
 import pybtex.database
 
 import betterbib
+from betterbib.cli.doi2bibtex import _create_citekey_for_entry
 
 
 def test_update():
@@ -55,7 +56,8 @@ def test_month_range():
 def test_decode():
     url = "https://www.wolframalpha.com/input/?i=integrate+from+0+to+2pi+(cos(x)+e%5E(i+*+(m+-+n)+*+x))"
     entry = pybtex.database.Entry(
-        "misc", fields=[("url", url), ("note", "Online; accessed 19-February-2019")]
+        "misc",
+        fields=[("url", url), ("note", "Online; accessed 19-February-2019")],
     )
     out = betterbib.decode(entry)
     assert out.fields["url"] == url
@@ -64,7 +66,8 @@ def test_decode():
 def test_decode_doi():
     doi = "10.1007/978-1-4615-7419-4_6"
     d = pybtex.database.Entry(
-        "misc", fields=[("doi", doi), ("note", "Online; accessed 19-February-2019")]
+        "misc",
+        fields=[("doi", doi), ("note", "Online; accessed 19-February-2019")],
     )
     out = betterbib.decode(d)
     assert out.fields["doi"] == doi
@@ -74,7 +77,11 @@ def test_encode_url():
     url = "https://www.wolframalpha.com/input/?i=integrate+from+0+to+2pi+(cos(x)+e%5E(i+*+(m+-+n)+*+x))"
     d = {
         "wolframalphai1": pybtex.database.Entry(
-            "misc", fields=[("url", url), ("note", "Online; accessed 19-February-2019")]
+            "misc",
+            fields=[
+                ("url", url),
+                ("note", "Online; accessed 19-February-2019"),
+            ],
         )
     }
 
@@ -91,7 +98,11 @@ def test_encode_doi():
     doi = "10.1007/978-1-4615-7419-4_6"
     d = {
         "karwowski": pybtex.database.Entry(
-            "misc", fields=[("doi", doi), ("note", "Online; accessed 19-February-2019")]
+            "misc",
+            fields=[
+                ("doi", doi),
+                ("note", "Online; accessed 19-February-2019"),
+            ],
         )
     }
     out = betterbib.pybtex_to_bibtex_string(d["karwowski"], "karwowski")
@@ -116,3 +127,23 @@ def test_first_name_space():
 }"""
 
     assert out == ref
+
+
+def test_create_citekey():
+    entry = pybtex.database.Entry(
+        "article",
+        fields={
+            "year": 2021,
+            "title": "A fancy algorithm for generating citekeys",
+        },
+        persons=pybtex.database.OrderedCaseInsensitiveDict(
+            {
+                "author": [
+                    pybtex.database.Person("Schlömer, Nico"),
+                    pybtex.database.Person("Iovene, Valentin"),
+                ]
+            }
+        ),
+    )
+    citekey = _create_citekey_for_entry(entry)
+    assert citekey == "schlomer2021"

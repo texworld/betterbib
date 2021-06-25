@@ -8,3 +8,4 @@ betterbib.egg-info/
 .cache/
 .pytest_cache/
 .tox/
+*.sqlite
