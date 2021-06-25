@@ -1,8 +1,6 @@
 import os
 import tempfile
 
-import pybibtex
-
 import betterbib
 
 
