@@ -12,14 +12,36 @@ def main(argv=None):
     parser = _get_parser()
     args = parser.parse_args(argv)
 
-    data = bibtex.Parser().parse_file(args.infile)
-
-    string = _format(args, data)
-
     if args.in_place:
+
+        data = bibtex.Parser().parse_file(args.infile)
+
+        string = _format(args, data)
+
         with open(args.infile.name, "w") as f:
             f.write(string)
+
+        # Special handling of "outfile" = second file in list
+
+        with open(args.outfile.name, "r") as f:
+            data = bibtex.Parser().parse_file(f)
+
+        string = _format(args, data)
+        args.outfile.write(string)
+
+        for infile in args.additional_files:
+            data = bibtex.Parser().parse_file(infile)
+
+            string = _format(args, data)
+
+            with open(infile.name, "w") as f:
+                f.write(string)
+
     else:
+        data = bibtex.Parser().parse_file(args.infile)
+
+        string = _format(args, data)
+
         args.outfile.write(string)
 
 
@@ -65,6 +87,12 @@ def _get_parser():
         type=argparse.FileType("w"),
         default=sys.stdout,
         help="output BibTeX file (default: stdout)",
+    )
+    parser.add_argument(
+        "additional_files",
+        nargs="*",
+        type=argparse.FileType("r"),
+        help="additional BibTeX files (only used in 'in_place'-mode)",
     )
     parser.add_argument(
         "-i", "--in-place", action="store_true", help="modify infile in place"
