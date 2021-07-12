@@ -12,37 +12,23 @@ def main(argv=None):
     parser = _get_parser()
     args = parser.parse_args(argv)
 
-    if args.in_place:
-
-        data = bibtex.Parser().parse_file(args.infile)
-
-        string = _format(args, data)
-
-        with open(args.infile.name, "w") as f:
-            f.write(string)
-
-        # Special handling of "outfile" = second file in list
-
-        with open(args.outfile.name, "r") as f:
-            data = bibtex.Parser().parse_file(f)
+    for infile in args.infiles:
+        data = bibtex.Parser().parse_file(infile)
 
         string = _format(args, data)
-        args.outfile.write(string)
 
-        for infile in args.additional_files:
-            data = bibtex.Parser().parse_file(infile)
+        if args.in_place:
 
-            string = _format(args, data)
+            # Probably should raise error if trying in_place with stdin
 
             with open(infile.name, "w") as f:
                 f.write(string)
 
-    else:
-        data = bibtex.Parser().parse_file(args.infile)
+        else:
 
-        string = _format(args, data)
+            # Maybe append to the outfile ?
 
-        args.outfile.write(string)
+            args.outfile.write(string)
 
 
 def _format(args, data):
@@ -75,24 +61,19 @@ def _get_parser():
         version=f"betterbib {__version__}, Python {sys.version}",
     )
     parser.add_argument(
-        "infile",
-        nargs="?",
+        "infiles",
+        nargs="+",
         type=argparse.FileType("r"),
         default=sys.stdin,
         help="input BibTeX file (default: stdin)",
     )
     parser.add_argument(
-        "outfile",
+        "-o",
+        "--outfile",
         nargs="?",
         type=argparse.FileType("w"),
         default=sys.stdout,
         help="output BibTeX file (default: stdout)",
-    )
-    parser.add_argument(
-        "additional_files",
-        nargs="*",
-        type=argparse.FileType("r"),
-        help="additional BibTeX files (only used in 'in_place'-mode)",
     )
     parser.add_argument(
         "-i", "--in-place", action="store_true", help="modify infile in place"
