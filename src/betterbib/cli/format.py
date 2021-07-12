@@ -27,9 +27,13 @@ def main(argv=None):
 
     d = adapt_doi_urls(d, args.doi_url_type)
 
-    args.outfile.write(
-        tools.to_string(d, args.delimiter_type, tab_indent=args.tab_indent)
-    )
+    string = tools.to_string(d, args.delimiter_type, tab_indent=args.tab_indent)
+
+    if args.in_place:
+        with open(args.infile.name, "w") as f:
+            f.write(string)
+    else:
+        args.outfile.write(string)
 
 
 def _get_parser():
@@ -55,6 +59,9 @@ def _get_parser():
         type=argparse.FileType("w"),
         default=sys.stdout,
         help="output BibTeX file (default: stdout)",
+    )
+    parser.add_argument(
+        "-i", "--in-place", action="store_true", help="modify infile in place"
     )
     parser.add_argument(
         "-b",
