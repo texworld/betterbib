@@ -14,6 +14,16 @@ def main(argv=None):
 
     data = bibtex.Parser().parse_file(args.infile)
 
+    string = _format(args, data)
+
+    if args.in_place:
+        with open(args.infile.name, "w") as f:
+            f.write(string)
+    else:
+        args.outfile.write(string)
+
+
+def _format(args, data):
     if args.drop:
         data = tools.filter_fields(data, args.drop)
 
@@ -29,11 +39,7 @@ def main(argv=None):
 
     string = tools.to_string(d, args.delimiter_type, tab_indent=args.tab_indent)
 
-    if args.in_place:
-        with open(args.infile.name, "w") as f:
-            f.write(string)
-    else:
-        args.outfile.write(string)
+    return string
 
 
 def _get_parser():
