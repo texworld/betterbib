@@ -1,33 +1,39 @@
 import argparse
-import sys
 
 from pybtex.database.input import bibtex
 
 from .. import tools
 from ..__about__ import __version__
+from .default_parser import get_default_parser_arguments
 
 
 def main(argv=None):
     parser = _get_parser()
     args = parser.parse_args(argv)
 
-    data = bibtex.Parser().parse_file(args.infile)
+    for infile in args.infiles:
 
-    od = data.entries
+        data = bibtex.Parser().parse_file(infile)
 
-    # deduplicate
-    for key in data.entries:
-        if "url" in od[key].fields and "doi" in od[key].fields:
-            doi = tools.doi_from_url(od[key].fields["url"])
-            if doi == od[key].fields["doi"]:
-                # Would be nicer to remove it completely; see
-                # <https://bitbucket.org/pybtex-devs/pybtex/issues/104/implement>.
-                if args.keep_doi:
-                    od[key].fields["url"] = None
-                else:
-                    od[key].fields["doi"] = None
+        od = data.entries
 
-    _write(od, args.outfile, "curly")
+        # deduplicate
+        for key in data.entries:
+            if "url" in od[key].fields and "doi" in od[key].fields:
+                doi = tools.doi_from_url(od[key].fields["url"])
+                if doi == od[key].fields["doi"]:
+                    # Would be nicer to remove it completely; see
+                    # <https://bitbucket.org/pybtex-devs/pybtex/issues/104/implement>.
+                    if args.keep_doi:
+                        od[key].fields["url"] = None
+                    else:
+                        od[key].fields["doi"] = None
+
+        if args.in_place:
+            with open(infile.name, "w") as f:
+                _write(od, f, "curly")
+        else:
+            _write(od, args.outfile, "curly")
 
 
 def _write(od, out, delimiter_type):
@@ -46,27 +52,7 @@ def _get_parser():
         description="Removes one of DOI and URL in a BibTeX file "
         "if both are identical."
     )
-    parser.add_argument(
-        "-v",
-        "--version",
-        help="display version information",
-        action="version",
-        version=f"betterbib {__version__}, Python {sys.version}",
-    )
-    parser.add_argument(
-        "infile",
-        nargs="?",
-        type=argparse.FileType("r"),
-        default=sys.stdin,
-        help="input BibTeX file (default: stdin)",
-    )
-    parser.add_argument(
-        "outfile",
-        nargs="?",
-        type=argparse.FileType("w"),
-        default=sys.stdout,
-        help="output BibTeX file (default: stdout)",
-    )
+    parser = get_default_parser_arguments(parser)
     parser.add_argument(
         "-k",
         "--keep-doi",

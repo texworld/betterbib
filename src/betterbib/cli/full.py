@@ -1,68 +1,49 @@
 import argparse
-import sys
 
 from pybtex.database.input import bibtex
 
-from .. import __about__, tools
+from .. import tools
 from ..adapt_doi_urls import adapt_doi_urls
 from ..journal_abbrev import journal_abbrev
 from ..sync import sync
+from .default_parser import get_default_parser_arguments
 
 
 def main(argv=None):
     parser = _get_parser()
     args = parser.parse_args(argv)
 
-    # Make sure that the entries are written out sorted by their BibTeX key if demanded.
-    data = bibtex.Parser().parse_file(args.infile)
-    tuples = data.entries.items()
-    if args.sort_by_bibkey:
-        tuples = sorted(data.entries.items())
+    for infile in args.infiles:
 
-    d = dict(tuples)
+        # Make sure that the entries are written out sorted by their BibTeX key if demanded.
+        data = bibtex.Parser().parse_file(infile)
+        tuples = data.entries.items()
+        if args.sort_by_bibkey:
+            tuples = sorted(data.entries.items())
 
-    d = sync(d, args.source, args.long_journal_names, args.num_concurrent_requests)
-    d = adapt_doi_urls(d, args.doi_url_type)
-    d = tools.sanitize_title(d)
-    d = journal_abbrev(d, args.long_journal_names, args.extra_abbrev_file)
+        d = dict(tuples)
 
-    string = tools.to_string(d, args.delimiter_type, tab_indent=args.tab_indent)
+        d = sync(d, args.source, args.long_journal_names, args.num_concurrent_requests)
+        d = adapt_doi_urls(d, args.doi_url_type)
+        d = tools.sanitize_title(d)
+        d = journal_abbrev(d, args.long_journal_names, args.extra_abbrev_file)
 
-    if args.in_place:
-        with open(args.infile.name, "w") as f:
-            f.write(string)
-    else:
-        args.outfile.write(string)
+        string = tools.to_string(d, args.delimiter_type, tab_indent=args.tab_indent)
+
+        if args.in_place:
+            with open(infile.name, "w") as f:
+                f.write(string)
+        else:
+            args.outfile.write(string)
 
 
 def _get_parser():
     parser = argparse.ArgumentParser(
         description="Sync BibTeX files with information from online sources."
     )
-    parser.add_argument(
-        "-v",
-        "--version",
-        help="display version information",
-        action="version",
-        version=f"betterbib {__about__.__version__}, Python {sys.version}",
-    )
-    parser.add_argument(
-        "infile",
-        nargs="?",
-        type=argparse.FileType("r"),
-        default=sys.stdin,
-        help="input BibTeX file (default: stdin)",
-    )
-    parser.add_argument(
-        "outfile",
-        nargs="?",
-        type=argparse.FileType("w"),
-        default=sys.stdout,
-        help="output BibTeX file (default: stdout)",
-    )
-    parser.add_argument(
-        "-i", "--in-place", action="store_true", help="modify infile in place"
-    )
+
+    parser = get_default_parser_arguments(parser)
+
     parser.add_argument(
         "-s",
         "--source",

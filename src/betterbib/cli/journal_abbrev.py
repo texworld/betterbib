@@ -1,47 +1,34 @@
 import argparse
-import sys
 
 from pybtex.database.input import bibtex
 
-from .. import __about__, tools
+from .. import tools
 from ..journal_abbrev import journal_abbrev
+from .default_parser import get_default_parser_arguments
 
 
 def main(argv=None):
     parser = _get_parser()
     args = parser.parse_args(argv)
 
-    data = bibtex.Parser().parse_file(args.infile)
-    d = dict(data.entries.items())
+    for infile in args.infiles:
 
-    d = journal_abbrev(d, args.long_journal_names, args.extra_abbrev_file)
+        data = bibtex.Parser().parse_file(infile)
+        d = dict(data.entries.items())
 
-    args.outfile.write(tools.to_string(d, "braces", tab_indent=False))
+        d = journal_abbrev(d, args.long_journal_names, args.extra_abbrev_file)
+
+        string = tools.to_string(d, "braces", tab_indent=False)
+        if args.in_place:
+            with open(infile.name, "w") as f:
+                f.write(string)
+        else:
+            args.outfile.write(string)
 
 
 def _get_parser():
     parser = argparse.ArgumentParser(description="(Un)abbreviate journal names.")
-    parser.add_argument(
-        "-v",
-        "--version",
-        help="display version information",
-        action="version",
-        version=f"betterbib {__about__.__version__}, Python {sys.version}",
-    )
-    parser.add_argument(
-        "infile",
-        nargs="?",
-        type=argparse.FileType("r"),
-        default=sys.stdin,
-        help="input BibTeX file (default: stdin)",
-    )
-    parser.add_argument(
-        "outfile",
-        nargs="?",
-        type=argparse.FileType("w"),
-        default=sys.stdout,
-        help="output BibTeX file (default: stdout)",
-    )
+    parser = get_default_parser_arguments(parser)
     parser.add_argument(
         "-l",
         "--long-journal-names",

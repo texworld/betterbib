@@ -1,11 +1,10 @@
 import argparse
-import sys
 
 from pybtex.database.input import bibtex
 
 from .. import tools
-from ..__about__ import __version__
 from ..adapt_doi_urls import adapt_doi_urls
+from .default_parser import get_default_parser_arguments
 
 
 def main(argv=None):
@@ -58,31 +57,8 @@ def _format(args, data):
 def _get_parser():
     parser = argparse.ArgumentParser(description="Reformat BibTeX files.")
 
-    parser.add_argument(
-        "-v",
-        "--version",
-        help="display version information",
-        action="version",
-        version=f"betterbib {__version__}, Python {sys.version}",
-    )
-    parser.add_argument(
-        "infiles",
-        nargs="+",
-        type=argparse.FileType("r"),
-        default=sys.stdin,
-        help="input BibTeX file (default: stdin)",
-    )
-    parser.add_argument(
-        "-o",
-        "--outfile",
-        nargs="?",
-        type=argparse.FileType("w"),
-        default=sys.stdout,
-        help="output BibTeX file (default: stdout)",
-    )
-    parser.add_argument(
-        "-i", "--in-place", action="store_true", help="modify infile in place"
-    )
+    parser = get_default_parser_arguments(parser)
+
     parser.add_argument(
         "-b",
         "--sort-by-bibkey",
