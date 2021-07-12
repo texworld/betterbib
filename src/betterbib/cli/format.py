@@ -13,22 +13,27 @@ def main(argv=None):
     args = parser.parse_args(argv)
 
     for infile in args.infiles:
-        data = bibtex.Parser().parse_file(infile)
+        try:
+            data = bibtex.Parser().parse_file(infile)
 
-        string = _format(args, data)
+            string = _format(args, data)
 
-        if args.in_place:
+            if args.in_place:
 
-            # Probably should raise error if trying in_place with stdin
+                # Probably should raise error if trying in_place with stdin
 
-            with open(infile.name, "w") as f:
-                f.write(string)
+                with open(infile.name, "w") as f:
+                    f.write(string)
 
-        else:
+            else:
 
-            # Maybe append to the outfile ?
+                # Maybe append to the outfile ?
 
-            args.outfile.write(string)
+                args.outfile.write(string)
+
+        except Exception as e:
+            print("There was an error when parsing " + infile.name)
+            raise e
 
 
 def _format(args, data):
