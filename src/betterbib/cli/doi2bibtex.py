@@ -3,7 +3,7 @@ import sys
 
 from unidecode import unidecode
 
-from .. import crossref, tools
+from .. import crossref
 from ..tools import bibtex_writer, to_string
 from .default_parser import (
     get_formatting_parser_arguments,
