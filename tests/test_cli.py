@@ -14,20 +14,17 @@ def test_cli_dedup_doi():
             "}"
         )
 
-    outfile = tempfile.NamedTemporaryFile().name
-
-    betterbib.cli.dedup_doi([infile, outfile])
-    with open(outfile) as f:
+    betterbib.cli.dedup_doi(["--in-place", infile])
+    with open(infile) as f:
         assert f.read() == (
             f"%comment{{This file was created with betterbib v{betterbib.__version__}.}}\n"
+            "\n"
             "\n"
             "@article{foobar,\n"
             " url = {https://doi.org/foobar},\n"
             "}\n"
-            "\n"
         )
     os.remove(infile)
-    os.remove(outfile)
 
 
 def test_cli_format():
@@ -40,11 +37,9 @@ def test_cli_format():
             "}"
         )
 
-    outfile = tempfile.NamedTemporaryFile().name
+    betterbib.cli.format(["--in-place", infile])
 
-    betterbib.cli.format([infile, outfile])
-
-    with open(outfile) as f:
+    with open(infile) as f:
         assert f.read() == (
             f"%comment{{This file was created with betterbib v{betterbib.__version__}.}}\n"
             "\n"
@@ -56,7 +51,6 @@ def test_cli_format():
         )
 
     os.remove(infile)
-    os.remove(outfile)
 
 
 def test_cli_journal_abbrev():
@@ -64,11 +58,9 @@ def test_cli_journal_abbrev():
     with open(infile, "w") as f:
         f.write("@article{foobar,\njournal={SIAM Journal on Scientific Computing}\n}")
 
-    outfile = tempfile.NamedTemporaryFile().name
+    betterbib.cli.journal_abbrev(["--in-place", infile])
 
-    betterbib.cli.journal_abbrev([infile, outfile])
-
-    with open(outfile) as f:
+    with open(infile) as f:
         assert f.read() == (
             f"%comment{{This file was created with betterbib v{betterbib.__version__}.}}\n"
             "\n"
@@ -79,7 +71,6 @@ def test_cli_journal_abbrev():
         )
 
     os.remove(infile)
-    os.remove(outfile)
 
 
 def test_cli_sync():
@@ -92,11 +83,9 @@ def test_cli_sync():
             "}"
         )
 
-    outfile = tempfile.NamedTemporaryFile().name
+    betterbib.cli.sync(["--in-place", infile])
 
-    betterbib.cli.sync([infile, outfile])
-
-    with open(outfile) as f:
+    with open(infile) as f:
         assert f.read() == (
             f"%comment{{This file was created with betterbib v{betterbib.__version__}.}}\n"
             "\n"
@@ -117,7 +106,6 @@ def test_cli_sync():
             "}\n"
         )
     os.remove(infile)
-    os.remove(outfile)
 
 
 def test_cli_doi2bibtex():
@@ -153,9 +141,7 @@ def test_cli_full():
             "}"
         )
 
-    outfile = tempfile.NamedTemporaryFile().name
-
-    betterbib.cli.full([infile, outfile])
+    betterbib.cli.full(["--in-place", infile])
 
     ref = (
         f"%comment{{This file was created with betterbib v{betterbib.__version__}.}}\n"
@@ -177,9 +163,8 @@ def test_cli_full():
         "}\n"
     )
 
-    with open(outfile) as f:
+    with open(infile) as f:
         data = f.read()
         assert data == ref
 
     os.remove(infile)
-    os.remove(outfile)
