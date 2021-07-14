@@ -4,7 +4,8 @@ import sys
 from unidecode import unidecode
 
 from .. import crossref, tools
-from .default_parser import get_version_parser_arguments
+from .default_parser import get_version_parser_arguments, get_formatting_parser_arguments
+from ..tools import bibtex_writer, to_string
 
 
 def _create_citekey_for_entry(entry):
@@ -35,8 +36,10 @@ def main(argv=None):
     source = crossref.Crossref()
     entry = source.get_by_doi(args.doi)
     bibtex_citekey = _create_citekey_for_entry(entry)
-    string = tools.pybtex_to_bibtex_string(entry, bibtex_citekey)
-    args.outfile.write(string)
+
+    string = to_string({bibtex_citekey: entry}, args.delimiter_type, tab_indent=args.tab_indent)
+
+    bibtex_writer(string, sys.stdout, False)
     return
 
 
@@ -44,13 +47,7 @@ def _get_parser():
     parser = argparse.ArgumentParser(description="Turn a DOI into a BibTeX entry.")
 
     parser = get_version_parser_arguments(parser)
+    parser = get_formatting_parser_arguments(parser)
 
     parser.add_argument("doi", type=str, help="input DOI")
-    parser.add_argument(
-        "outfile",
-        nargs="?",
-        type=argparse.FileType("w"),
-        default=sys.stdout,
-        help="output file (default: stdout)",
-    )
     return parser
