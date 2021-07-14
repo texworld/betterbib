@@ -3,21 +3,8 @@ import sys
 
 from unidecode import unidecode
 
-from .. import __about__, crossref, tools
-
-
-def _get_version_text():
-    return "\n".join(
-        [
-            "betterbib {} [Python {}.{}.{}]".format(
-                __about__.__version__,
-                sys.version_info.major,
-                sys.version_info.minor,
-                sys.version_info.micro,
-            ),
-            "Copyright (c) 2013-2020, Nico Schlömer <{nico.schloemer@gmail.com}>",
-        ]
-    )
+from .. import crossref, tools
+from .default_parser import get_version_parser_arguments
 
 
 def _create_citekey_for_entry(entry):
@@ -55,13 +42,9 @@ def main(argv=None):
 
 def _get_parser():
     parser = argparse.ArgumentParser(description="Turn a DOI into a BibTeX entry.")
-    parser.add_argument(
-        "-v",
-        "--version",
-        help="display version information",
-        action="version",
-        version=_get_version_text(),
-    )
+
+    parser = get_version_parser_arguments(parser)
+
     parser.add_argument("doi", type=str, help="input DOI")
     parser.add_argument(
         "outfile",

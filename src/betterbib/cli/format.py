@@ -1,10 +1,12 @@
 import argparse
 
-from pybtex.database.input import bibtex
-
-from .. import tools
 from ..adapt_doi_urls import adapt_doi_urls
-from .default_parser import get_default_parser_arguments
+from ..tools import bibtex_parser, bibtex_writer, filter_fields, to_string
+from .default_parser import (
+    get_file_parser_arguments,
+    get_formatting_parser_arguments,
+    get_version_parser_arguments,
+)
 
 
 def main(argv=None):
@@ -12,32 +14,37 @@ def main(argv=None):
     args = parser.parse_args(argv)
 
     for infile in args.infiles:
-        try:
-            data = bibtex.Parser().parse_file(infile)
+        _handle_single(args, infile)
 
-            string = _format(args, data)
 
-            if args.in_place:
+def _handle_single(args, infile):
+    """
+    Parse and handle a single file
 
-                # Probably should raise error if trying in_place with stdin
+        Parameters:
+            args (dict): commandline arguments
+            infile (FileType("r")): file to be handled
+    """
+    data = bibtex_parser(infile)
 
-                with open(infile.name, "w") as f:
-                    f.write(string)
+    string = _format(args, data)
 
-            else:
-
-                # Maybe append to the outfile ?
-
-                args.outfile.write(string)
-
-        except Exception as e:
-            print("There was an error when parsing " + infile.name)
-            raise e
+    bibtex_writer(string, infile, args.in_place)
 
 
 def _format(args, data):
+    """
+    Formats a bibtex dictionary
+
+        Parameters:
+            args (dict): commandline arguments
+            data (dict): bibtex entries
+
+        Returns:
+            string (String): Formatted multiline string of the entries
+    """
     if args.drop:
-        data = tools.filter_fields(data, args.drop)
+        data = filter_fields(data, args.drop)
 
     # Use an ordered dictionary to make sure that the entries are written out
     # sorted by their BibTeX key if demanded.
@@ -49,7 +56,7 @@ def _format(args, data):
 
     d = adapt_doi_urls(d, args.doi_url_type)
 
-    string = tools.to_string(d, args.delimiter_type, tab_indent=args.tab_indent)
+    string = to_string(d, args.delimiter_type, tab_indent=args.tab_indent)
 
     return string
 
@@ -57,37 +64,10 @@ def _format(args, data):
 def _get_parser():
     parser = argparse.ArgumentParser(description="Reformat BibTeX files.")
 
-    parser = get_default_parser_arguments(parser)
+    parser = get_version_parser_arguments(parser)
+    parser = get_file_parser_arguments(parser)
+    parser = get_formatting_parser_arguments(parser)
 
-    parser.add_argument(
-        "-b",
-        "--sort-by-bibkey",
-        action="store_true",
-        help="sort entries by BibTeX key (default: false)",
-    )
-    parser.add_argument(
-        "-t",
-        "--tab-indent",
-        action="store_true",
-        help="use tabs for indentation (default: false)",
-    )
-    parser.add_argument(
-        "-d",
-        "--delimiter-type",
-        choices=["braces", "quotes"],
-        default="braces",
-        help=("which delimiters to use in the output file " "(default: braces {...})"),
-    )
-    parser.add_argument(
-        "-u",
-        "--doi-url-type",
-        choices=["unchanged", "new", "short"],
-        default="new",
-        help=(
-            "DOI URL (new: https://doi.org/<DOI> (default), "
-            "short: https://doi.org/abcde)"
-        ),
-    )
     parser.add_argument(
         "--drop",
         nargs="+",
