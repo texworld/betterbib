@@ -23,14 +23,6 @@ def get_default_parser_arguments(parser):
         help="input BibTeX files (default: stdin)",
     )
     parser.add_argument(
-        "-o",
-        "--outfile",
-        nargs="?",
-        type=argparse.FileType("w"),
-        default=sys.stdout,
-        help="output BibTeX file (default: stdout)",
-    )
-    parser.add_argument(
         "-i", "--in-place", action="store_true", help="modify infile in place"
     )
     return parser
