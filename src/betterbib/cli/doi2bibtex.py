@@ -4,8 +4,11 @@ import sys
 from unidecode import unidecode
 
 from .. import crossref, tools
-from .default_parser import get_version_parser_arguments, get_formatting_parser_arguments
 from ..tools import bibtex_writer, to_string
+from .default_parser import (
+    get_formatting_parser_arguments,
+    get_version_parser_arguments,
+)
 
 
 def _create_citekey_for_entry(entry):
@@ -37,7 +40,9 @@ def main(argv=None):
     entry = source.get_by_doi(args.doi)
     bibtex_citekey = _create_citekey_for_entry(entry)
 
-    string = to_string({bibtex_citekey: entry}, args.delimiter_type, tab_indent=args.tab_indent)
+    string = to_string(
+        {bibtex_citekey: entry}, args.delimiter_type, tab_indent=args.tab_indent
+    )
 
     bibtex_writer(string, sys.stdout, False)
     return
