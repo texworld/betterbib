@@ -1,7 +1,7 @@
 import argparse
 
 from ..adapt_doi_urls import adapt_doi_urls
-from ..tools import bibtex_parser, bibtex_writer, filter_fields, to_string
+from ..tools import bibtex_parser, filter_fields, to_string, write
 from .default_parser import (
     get_file_parser_arguments,
     get_formatting_parser_arguments,
@@ -29,7 +29,7 @@ def _handle_single(args, infile):
 
     string = _format(args, data)
 
-    bibtex_writer(string, infile, args.in_place)
+    write(string, infile, args.in_place)
 
 
 def _format(args, data):

@@ -4,7 +4,7 @@ import sys
 from unidecode import unidecode
 
 from .. import crossref
-from ..tools import bibtex_writer, to_string
+from ..tools import to_string, write
 from .default_parser import (
     get_formatting_parser_arguments,
     get_version_parser_arguments,
@@ -44,7 +44,7 @@ def main(argv=None):
         {bibtex_citekey: entry}, args.delimiter_type, tab_indent=args.tab_indent
     )
 
-    bibtex_writer(string, sys.stdout, False)
+    write(string, sys.stdout, False)
     return
 
 

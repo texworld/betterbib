@@ -1,6 +1,6 @@
 import argparse
 
-from ..tools import bibtex_parser, bibtex_writer, doi_from_url, to_string
+from ..tools import bibtex_parser, doi_from_url, to_string, write
 from .default_parser import (
     get_file_parser_arguments,
     get_formatting_parser_arguments,
@@ -41,7 +41,7 @@ def _handle_single(args, infile):
                     od[key].fields["doi"] = None
 
     string = to_string(od, args.delimiter_type, tab_indent=args.tab_indent)
-    bibtex_writer(string, infile, args.in_place)
+    write(string, infile, args.in_place)
 
 
 def _get_parser():

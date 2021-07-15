@@ -3,7 +3,7 @@ import argparse
 from ..adapt_doi_urls import adapt_doi_urls
 from ..journal_abbrev import journal_abbrev
 from ..sync import sync
-from ..tools import bibtex_parser, bibtex_writer, sanitize_title, to_string
+from ..tools import bibtex_parser, sanitize_title, to_string, write
 from .default_parser import (
     get_file_parser_arguments,
     get_formatting_parser_arguments,
@@ -48,7 +48,7 @@ def _handle_single(args, infile):
 
     string = to_string(d, args.delimiter_type, tab_indent=args.tab_indent)
 
-    bibtex_writer(string, infile, args.in_place)
+    write(string, infile, args.in_place)
 
 
 def _get_parser():
