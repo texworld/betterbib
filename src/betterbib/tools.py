@@ -469,16 +469,15 @@ def bibtex_parser(infile):
         raise e
 
 
-def write(string: str, outfile=None, to_file: bool = False):
+def write(string: str, outfile=None):
     """
     Writes a string to a BibTeX file
 
         Parameters:
             string (String): string to write
             outfile (FileType("r")): file to write to (default: None)
-            to_file (Boolean): write to file instead stdout (default: False)
     """
-    if to_file:
+    if outfile:
         with open(outfile.name, "w") as f:
             f.write(string)
     else:

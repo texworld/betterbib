@@ -1,5 +1,4 @@
 import argparse
-import sys
 
 from unidecode import unidecode
 
@@ -44,7 +43,7 @@ def main(argv=None):
         {bibtex_citekey: entry}, args.delimiter_type, tab_indent=args.tab_indent
     )
 
-    write(string, sys.stdout, False)
+    write(string)
     return
 
 

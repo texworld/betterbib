@@ -29,7 +29,7 @@ def _handle_single(args, infile):
 
     string = _format(args, data)
 
-    write(string, infile, args.in_place)
+    write(string, infile if args.in_place else None)
 
 
 def _format(args, data):

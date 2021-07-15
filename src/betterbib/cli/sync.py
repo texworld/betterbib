@@ -39,7 +39,7 @@ def _handle_single(args, infile):
 
     string = to_string(out, args.delimiter_type, tab_indent=args.tab_indent)
 
-    write(string, infile, args.in_place)
+    write(string, infile if args.in_place else None)
 
 
 def _get_parser():
