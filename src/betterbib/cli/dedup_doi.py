@@ -41,7 +41,6 @@ def _handle_single(args, infile):
                     od[key].fields["doi"] = None
 
     string = to_string(od, args.delimiter_type, tab_indent=args.tab_indent)
-    print(string)
     bibtex_writer(string, infile, args.in_place)
 
 

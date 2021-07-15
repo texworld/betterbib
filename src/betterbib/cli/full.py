@@ -35,7 +35,13 @@ def _handle_single(args, infile):
 
     d = dict(tuples)
 
-    d = sync(d, args.source, args.long_journal_names, args.num_concurrent_requests)
+    d = sync(
+        d,
+        args.source,
+        args.long_journal_names,
+        args.num_concurrent_requests,
+        not args.in_place,
+    )
     d = adapt_doi_urls(d, args.doi_url_type)
     d = sanitize_title(d)
     d = journal_abbrev(d, args.long_journal_names, args.extra_abbrev_file)
