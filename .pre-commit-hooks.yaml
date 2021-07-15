@@ -1,0 +1,9 @@
+---
+- id: betterbib-format
+  name: Format bib-files
+  description: Format bib-files in a consistent manner
+  entry: betterbib-format
+  language: python
+  files: '^.*\.bib$'
+  args:
+    - "--in-place"

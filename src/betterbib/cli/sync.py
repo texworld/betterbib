@@ -1,53 +1,56 @@
 import argparse
-import sys
 
-from pybtex.database.input import bibtex
-
-from .. import __about__
 from ..sync import sync
-from ..tools import to_string
+from ..tools import bibtex_parser, to_string, write
+from .default_parser import (
+    get_file_parser_arguments,
+    get_formatting_parser_arguments,
+    get_version_parser_arguments,
+)
 
 
 def main(argv=None):
     parser = _get_parser()
     args = parser.parse_args(argv)
 
-    data = bibtex.Parser().parse_file(args.infile)
+    for infile in args.infiles:
+        _handle_single(args, infile)
+
+
+def _handle_single(args, infile):
+    """
+    Parse and handle a single file
+
+        Parameters:
+            args (dict): commandline arguments
+            infile (FileType("r")): file to be handled
+    """
+    data = bibtex_parser(infile)
     # data.entries.items() is a list of tuples, the first item being the BibTeX key.
     input_dict = dict(data.entries.items())
 
     out = sync(
-        input_dict, args.source, args.long_journal_name, args.num_concurrent_requests
+        input_dict,
+        args.source,
+        args.long_journal_name,
+        args.num_concurrent_requests,
+        args.in_place,
     )
 
-    args.outfile.write(to_string(out, "braces", tab_indent=False))
+    string = to_string(out, args.delimiter_type, tab_indent=args.tab_indent)
+
+    write(string, infile if args.in_place else None)
 
 
 def _get_parser():
     parser = argparse.ArgumentParser(
         description="Sync BibTeX files with information from online sources."
     )
-    parser.add_argument(
-        "-v",
-        "--version",
-        help="display version information",
-        action="version",
-        version=f"betterbib {__about__.__version__}, Python {sys.version}",
-    )
-    parser.add_argument(
-        "infile",
-        nargs="?",
-        type=argparse.FileType("r"),
-        default=sys.stdin,
-        help="input BibTeX file (default: stdin)",
-    )
-    parser.add_argument(
-        "outfile",
-        nargs="?",
-        type=argparse.FileType("w"),
-        default=sys.stdout,
-        help="output BibTeX file (default: stdout)",
-    )
+
+    parser = get_version_parser_arguments(parser)
+    parser = get_file_parser_arguments(parser)
+    parser = get_formatting_parser_arguments(parser)
+
     parser.add_argument(
         "-s",
         "--source",

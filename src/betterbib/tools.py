@@ -2,6 +2,9 @@ import codecs
 import configparser
 import os
 import re
+
+# needed for the bibtex_writer
+import sys
 from typing import Tuple
 
 import appdirs
@@ -10,6 +13,9 @@ import enchant
 # for "ulatex" codec
 import latexcodec  # noqa
 import requests
+
+# for enhanced error messages when parsing
+from pybtex.database.input import bibtex
 
 from .__about__ import __version__
 from .errors import UniqueError
@@ -442,3 +448,37 @@ def filter_fields(data, excludes=None):
         if entry.fields:
             entry.fields = {k: v for k, v in entry.fields.items() if k not in excludes}
     return data
+
+
+def bibtex_parser(infile):
+    """
+    Returns the parsed bibtex data and adds context to the exception
+
+        Parameters:
+            infile (FileType("r")): file to be parsed
+
+        Returns:
+            data (dict): bibtex entries
+    """
+    try:
+        data = bibtex.Parser().parse_file(infile)
+        return data
+
+    except Exception as e:
+        print("There was an error when parsing " + infile.name)
+        raise e
+
+
+def write(string: str, outfile=None):
+    """
+    Writes a string to a BibTeX file
+
+        Parameters:
+            string (String): string to write
+            outfile (FileType("r")): file to write to (default: None)
+    """
+    if outfile:
+        with open(outfile.name, "w") as f:
+            f.write(string)
+    else:
+        sys.stdout.write(string)

@@ -1,47 +1,47 @@
 import argparse
-import sys
 
-from pybtex.database.input import bibtex
-
-from .. import __about__, tools
 from ..journal_abbrev import journal_abbrev
+from ..tools import bibtex_parser, to_string, write
+from .default_parser import (
+    get_file_parser_arguments,
+    get_formatting_parser_arguments,
+    get_version_parser_arguments,
+)
 
 
 def main(argv=None):
     parser = _get_parser()
     args = parser.parse_args(argv)
 
-    data = bibtex.Parser().parse_file(args.infile)
+    for infile in args.infiles:
+        _handle_single(args, infile)
+
+
+def _handle_single(args, infile):
+    """
+    Parse and handle a single file
+
+        Parameters:
+            args (dict): commandline arguments
+            infile (FileType("r")): file to be handled
+    """
+    data = bibtex_parser(infile)
     d = dict(data.entries.items())
 
     d = journal_abbrev(d, args.long_journal_names, args.extra_abbrev_file)
 
-    args.outfile.write(tools.to_string(d, "braces", tab_indent=False))
+    string = to_string(d, "braces", tab_indent=False)
+
+    write(string, infile if args.in_place else None)
 
 
 def _get_parser():
     parser = argparse.ArgumentParser(description="(Un)abbreviate journal names.")
-    parser.add_argument(
-        "-v",
-        "--version",
-        help="display version information",
-        action="version",
-        version=f"betterbib {__about__.__version__}, Python {sys.version}",
-    )
-    parser.add_argument(
-        "infile",
-        nargs="?",
-        type=argparse.FileType("r"),
-        default=sys.stdin,
-        help="input BibTeX file (default: stdin)",
-    )
-    parser.add_argument(
-        "outfile",
-        nargs="?",
-        type=argparse.FileType("w"),
-        default=sys.stdout,
-        help="output BibTeX file (default: stdout)",
-    )
+
+    parser = get_version_parser_arguments(parser)
+    parser = get_file_parser_arguments(parser)
+    parser = get_formatting_parser_arguments(parser)
+
     parser.add_argument(
         "-l",
         "--long-journal-names",
