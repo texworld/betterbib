@@ -34,7 +34,7 @@ def _handle_single(args, infile):
         args.source,
         args.long_journal_name,
         args.num_concurrent_requests,
-        not args.in_place,
+        args.in_place,
     )
 
     string = to_string(out, args.delimiter_type, tab_indent=args.tab_indent)

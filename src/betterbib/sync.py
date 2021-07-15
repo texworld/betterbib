@@ -5,7 +5,9 @@ from rich.progress import track
 from . import crossref, dblp, errors, tools
 
 
-def sync(d: dict, source: str, long_journal_name: bool, max_workers: int, quiet: bool):
+def sync(
+    d: dict, source: str, long_journal_name: bool, max_workers: int, verbose: bool
+):
     """
     Sync a bibtex dict with an external source
 
@@ -14,7 +16,7 @@ def sync(d: dict, source: str, long_journal_name: bool, max_workers: int, quiet:
             source (str): data source to sync against
             long_journal_name (bool): use the long journal name instead of short
             max_workers (int): number of concurrent workers to use
-            quiet (bool): do not print status to stdout
+            verbose (bool): print additional information to stdout
 
         Returns:
             synced dict
@@ -36,7 +38,7 @@ def sync(d: dict, source: str, long_journal_name: bool, max_workers: int, quiet:
             concurrent.futures.as_completed(responses),
             total=len(responses),
             description="Syncing...",
-            disable=quiet,
+            disable=not verbose,
         ):
             bib_id, entry = responses[future]
             try:
@@ -48,7 +50,7 @@ def sync(d: dict, source: str, long_journal_name: bool, max_workers: int, quiet:
             else:
                 num_success += 1
                 d[bib_id] = tools.update(entry, data)
-    if not quiet:
+    if verbose:
         print(f"\n\nTotal number of entries: {len(d)}")
         print(f"Found: {num_success}")
 
