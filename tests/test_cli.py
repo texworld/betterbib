@@ -40,6 +40,11 @@ def test_cli_dedup_doi_stdout(capsys):
     os.remove(infile)
 
 
+ref_test_cli_format_in = (
+    "@article{foobar,\n" "doi={foobar},\n" "url = {https://doi.org/foobar}\n" "}"
+)
+
+
 ref_test_cli_format_out = (
     f"%comment{{This file was created with betterbib v{betterbib.__version__}.}}\n"
     "\n"
@@ -48,11 +53,6 @@ ref_test_cli_format_out = (
     " doi = {foobar},\n"
     " url = {https://doi.org/foobar},\n"
     "}\n"
-)
-
-
-ref_test_cli_format_in = (
-    "@article{foobar,\n" "doi={foobar},\n" "url = {https://doi.org/foobar}\n" "}"
 )
 
 
@@ -78,6 +78,82 @@ def test_cli_format_stdout(capsys):
     captured = capsys.readouterr()
 
     assert captured.out == "".join(ref_test_cli_format_out)
+
+    os.remove(infile)
+
+
+ref_test_cli_format_escape_in = (
+    "@article{foobar,\n"
+    "doi={foobar},\n"
+    "url = {https://doi.org/foobar},\n"
+    r"title = {Foo & Bar on \LaTeX\ @TheBridge}," + "\n"
+    "}"
+)
+
+
+ref_test_cli_format_escape_out = (
+    f"%comment{{This file was created with betterbib v{betterbib.__version__}.}}\n"
+    "\n"
+    "\n"
+    "@article{foobar,\n"
+    " doi = {foobar},\n"
+    " url = {https://doi.org/foobar},\n"
+    r" title = {Foo \& Bar on \LaTeX\ @TheBridge}," + "\n"
+    "}\n"
+)
+
+
+def test_cli_format_escape():
+    infile = tempfile.NamedTemporaryFile().name
+    with open(infile, "w") as f:
+        f.write(ref_test_cli_format_escape_in)
+
+    betterbib.cli.format(["--in-place", infile])
+
+    with open(infile) as f:
+        assert f.read() == ref_test_cli_format_escape_out
+
+    os.remove(infile)
+
+
+def test_cli_format_escape_stdout(capsys):
+    infile = tempfile.NamedTemporaryFile().name
+    with open(infile, "w") as f:
+        f.write(ref_test_cli_format_escape_in)
+
+    betterbib.cli.format([infile])
+    captured = capsys.readouterr()
+
+    assert captured.out == "".join(ref_test_cli_format_escape_out)
+
+    os.remove(infile)
+
+
+def test_cli_format_escape_repeated():
+    infile = tempfile.NamedTemporaryFile().name
+    with open(infile, "w") as f:
+        f.write(ref_test_cli_format_escape_in)
+
+    for i in range(10):
+        betterbib.cli.format(["--in-place", infile])
+
+        with open(infile) as f:
+            assert f.read() == ref_test_cli_format_escape_out
+
+    os.remove(infile)
+
+
+def test_cli_format_escape_repeated_stdout(capsys):
+    infile = tempfile.NamedTemporaryFile().name
+    with open(infile, "w") as f:
+        f.write(ref_test_cli_format_escape_in)
+
+    for i in range(10):
+        betterbib.cli.format(["--in-place", infile])
+        betterbib.cli.format([infile])
+        captured = capsys.readouterr()
+
+        assert captured.out == "".join(ref_test_cli_format_escape_out)
 
     os.remove(infile)
 
