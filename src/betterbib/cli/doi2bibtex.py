@@ -22,9 +22,9 @@ def _create_citekey_for_entry(entry):
         entry.persons
         and "author" in entry.persons
         and entry.persons["author"]
-        and entry.persons["author"][0].last()
+        and entry.persons["author"][0].last_names
     ):
-        bibtex_key += unidecode(entry.persons["author"][0].last()[0].lower())
+        bibtex_key += unidecode(entry.persons["author"][0].last_names[0].lower())
     if "year" in entry.fields and entry.fields["year"]:
         bibtex_key += str(entry.fields["year"])
     if not bibtex_key:
