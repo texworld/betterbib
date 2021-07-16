@@ -237,6 +237,12 @@ def pybtex_to_bibtex_string(
                 # Parse the original value to get a unified version
                 value = codecs.decode(value, "ulatex")
                 value = codecs.encode(value, "ulatex")
+
+                # Replace doubled spaces
+                value = value.replace("  ", " ")
+                # Remove trailing spaces
+                value = value.rstrip()
+
         except TypeError:
             # expected unicode for encode input, but got int instead
             pass
