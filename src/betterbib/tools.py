@@ -234,6 +234,8 @@ def pybtex_to_bibtex_string(
 
         try:
             if key not in ["url", "doi"]:
+                # Parse the original value to get a unified version
+                value = codecs.decode(value, "ulatex")
                 value = codecs.encode(value, "ulatex")
         except TypeError:
             # expected unicode for encode input, but got int instead
