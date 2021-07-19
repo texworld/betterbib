@@ -235,8 +235,8 @@ def pybtex_to_bibtex_string(
         try:
             if key not in ["url", "doi"]:
                 # Parse the original value to get a unified version
-                value = codecs.decode(value, "ulatex")
-                value = codecs.encode(value, "ulatex")
+                value = codecs.decode(value, "ulatex", errors="replace")
+                value = codecs.encode(value, "ulatex", errors="replace")
 
                 # Replace doubled spaces
                 value = value.replace("  ", " ")
