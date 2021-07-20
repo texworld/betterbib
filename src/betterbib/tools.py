@@ -234,7 +234,15 @@ def pybtex_to_bibtex_string(
 
         try:
             if key not in ["url", "doi"]:
-                value = codecs.encode(value, "ulatex")
+                # Parse the original value to get a unified version
+                value = codecs.decode(value, "ulatex", errors="replace")
+                value = codecs.encode(value, "ulatex", errors="replace")
+
+                # Replace doubled spaces
+                value = value.replace("  ", " ")
+                # Remove trailing spaces
+                value = value.rstrip()
+
         except TypeError:
             # expected unicode for encode input, but got int instead
             pass
