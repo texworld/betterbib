@@ -7,7 +7,8 @@ from . import _doi_to_bibtex, _format, _journal_abbrev, _update
 
 def main(argv=None):
     parent_parser = argparse.ArgumentParser(
-        description="Sync BibTeX files with information from online sources."
+        description="Sync BibTeX files with information from online sources.",
+        formatter_class=argparse.RawTextHelpFormatter,
     )
 
     python_version = f"{version_info.major}.{version_info.minor}.{version_info.micro}"
