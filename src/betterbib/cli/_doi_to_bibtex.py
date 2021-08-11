@@ -9,8 +9,19 @@ def run(args):
     source = crossref.Crossref()
     entry = source.get_by_doi(args.doi)
 
-    # Create a citekey for entry using the [author:lower][year] JabRef pattern.
-    # See https://retorque.re/zotero-better-bibtex/citing/
+    bibtex_citekey = _create_citekey_for_entry(entry)
+
+    string = to_string(
+        {bibtex_citekey: entry}, args.delimiter_type, tab_indent=args.tab_indent
+    )
+
+    write(string)
+
+
+def _create_citekey_for_entry(entry):
+    """Create a citekey for entry using the [author:lower][year] JabRef pattern.
+    See https://retorque.re/zotero-better-bibtex/citing/
+    """
     bibtex_key = ""
     if (
         entry.persons
@@ -23,12 +34,7 @@ def run(args):
         bibtex_key += str(entry.fields["year"])
     if not bibtex_key:
         bibtex_key = "key"
-
-    string = to_string(
-        {bibtex_key: entry}, args.delimiter_type, tab_indent=args.tab_indent
-    )
-
-    write(string)
+    return bibtex_key
 
 
 def add_args(parser):
