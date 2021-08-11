@@ -1,31 +1,8 @@
 import argparse
 import sys
 
-from ..__about__ import __version__
 
-
-def get_version_parser_arguments(parser):
-    """
-    Adds the version argument to an argparse parser
-
-        Parameters:
-            parser (argparse.ArgumentParser): ArgumentParser
-
-        Returns:
-            parser (argparse.ArgumentParser): Containing the version argument
-    """
-    parser.add_argument(
-        "-v",
-        "--version",
-        help="display version information",
-        action="version",
-        version=f"betterbib {__version__}, Python {sys.version}",
-    )
-
-    return parser
-
-
-def get_file_parser_arguments(parser):
+def add_file_parser_arguments(parser):
     """
     Adds the file handling arguments to an argparse parser
 
@@ -46,10 +23,8 @@ def get_file_parser_arguments(parser):
         "-i", "--in-place", action="store_true", help="modify infile in place"
     )
 
-    return parser
 
-
-def get_formatting_parser_arguments(parser):
+def add_formatting_parser_arguments(parser):
     """
     Adds the bibtex formatting arguments to an argparse parser
 
@@ -89,5 +64,3 @@ def get_formatting_parser_arguments(parser):
             "short: https://doi.org/abcde)"
         ),
     )
-
-    return parser
