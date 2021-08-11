@@ -19,21 +19,28 @@ mistakes, or are missing information. betterbib helps maintaining your BibTeX fi
 comparing them with online sources and correcting whatever entries are faulty.
 
 Install with
+
 ```
 pip install betterbib
 ```
+
 and run simply run
+
 ```
-betterbib in.bib out.bib
+betterbib update in.bib   # or short `betterbib up`
 ```
+
 to improve your BibTeX file with default settings. For example, the input BibTeX
+
 ```
 @article {krylov,
   author = {Liesen and Gaul and Nabben},
   title = {Framework Deflation Krylov Augmented}
 }
 ```
+
 is converted to
+
 ```
 @article{krylov,
  author = {Gaul, André and Gutknecht, Martin H. and Liesen, Jörg and Nabben, Reinhard},
@@ -51,54 +58,49 @@ is converted to
  month = jan,
 }
 ```
+
 Use `-i`/`--in-place` to modify the input file in place. Use `-h`/`--help` to see all
 options.
-
-### Tools
-
-All of the following tools can read from standard input and write to standard output, so
-you can concatenate them to get exactly what you want. For example, the above
-`betterbib` command is equivalent to
-```
-betterbib-sync in.bib | betterbib-journal-abbrev | betterbib-format -b - out.bib
-```
-
 
 #### Sync
 
 betterbib fetches data from
 
-   * [Crossref](http://www.crossref.org/) (default) or
-   * [DBLP](http://dblp.uni-trier.de/) (`--source dblp`).
+- [Crossref](http://www.crossref.org/) (default) or
+- [DBLP](http://dblp.uni-trier.de/) (`--source dblp`).
 
 All betterbib-sync command-line options are explained in `betterbib-sync -h`.
 
 #### Format
 
 The tool
+
+```sh
+betterbib format in.bib
 ```
-betterbib-format in.bib out.bib
-```
+
 allows you to apply consistent formatting to you BibTeX file. See `-h`/`--help` for
 options.
 
 #### (Un)abbreviate journal names
 
 The tool
+
 ```
-betterbib-journal-abbrev in.bib out.bib
+betterbib abbreviate-journal-names in.bib
 ```
+
 allows you to apply consistent abbreviation of journal names. See `-h`/`--help` for
 options.
-
-#### Custom journal abbreviations
 
 To use custom abbrebiations for journal names, create a file as a JSON dictionary, and
 provide that as a command line argument with `--extra-abbrev-file`. For example, if the
 file `correct_pnas.json` is:
+
 ```json
-{"PNAS": "Proc. Natl. Acad. Sci.  U.S.A."}
+{ "PNAS": "Proc. Natl. Acad. Sci.  U.S.A." }
 ```
+
 and you call `betterbib-journal-abbrev --extra-abbrev-file=correct_pnas.json`, this will
 replace any bibtex entries listed with journal "PNAS" with the correct abbreviation.
 
@@ -107,17 +109,19 @@ This option is included in the `betterbib` and `betterbib-journal-abbrev` comman
 When combined with the `--long-journal-names` option, this will override default options
 only if both have the same abbreviation.
 
-
 ### Configuration
 
 In BibTeX titles, some words need to be protected by curly brackets such that they are
-capitalized correctly, e.g., `{Einstein}`.  betterbib automatically recognizes some of
+capitalized correctly, e.g., `{Einstein}`. betterbib automatically recognizes some of
 them (if they are in the default dictionary, like `Einstein`), but you might want to add
 some. To this end, create the config file
+
 ```
 ~/.config/betterbib/config.ini
 ```
+
 and fill it with, e.g.,
+
 ```
 [DICTIONARY]
 add=Arnoldi,
@@ -130,22 +134,6 @@ remove=hermitian,
    boolean
 ```
 
+### Similar software
 
-### Installation
-
-betterbib is [available from the Python Package
-Index](https://pypi.org/project/betterbib/), so simply do
-```
-pip install betterbib
-```
-to install.
-
-### Testing
-
-To run the betterbib unit tests, check out this repository and type
-```
-pytest
-```
-
-### License
-This software is published under the [GPLv3 license](https://www.gnu.org/licenses/gpl-3.0.en.html).
+- [bibcure](https://github.com/bibcure/bibcure)

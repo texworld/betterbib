@@ -2,7 +2,7 @@ import pybtex
 import pybtex.database
 
 import betterbib
-from betterbib.cli.doi2bibtex import _create_citekey_for_entry
+from betterbib.cli._doi_to_bibtex import _create_citekey_for_entry
 
 
 def test_update():
