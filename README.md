@@ -27,7 +27,7 @@ pip install betterbib
 and run simply run
 
 ```
-betterbib in.bib out.bib
+betterbib update in.bib   # or short `betterbib up`
 ```
 
 to improve your BibTeX file with default settings. For example, the input BibTeX
@@ -62,16 +62,6 @@ is converted to
 Use `-i`/`--in-place` to modify the input file in place. Use `-h`/`--help` to see all
 options.
 
-### Tools
-
-All of the following tools can read from standard input and write to standard output, so
-you can concatenate them to get exactly what you want. For example, the above
-`betterbib` command is equivalent to
-
-```
-betterbib-sync in.bib | betterbib-journal-abbrev | betterbib-format -b - out.bib
-```
-
 #### Sync
 
 betterbib fetches data from
@@ -85,8 +75,8 @@ All betterbib-sync command-line options are explained in `betterbib-sync -h`.
 
 The tool
 
-```
-betterbib-format in.bib out.bib
+```sh
+betterbib format in.bib
 ```
 
 allows you to apply consistent formatting to you BibTeX file. See `-h`/`--help` for
@@ -97,13 +87,11 @@ options.
 The tool
 
 ```
-betterbib-journal-abbrev in.bib out.bib
+betterbib abbreviate-journal-names in.bib
 ```
 
 allows you to apply consistent abbreviation of journal names. See `-h`/`--help` for
 options.
-
-#### Custom journal abbreviations
 
 To use custom abbrebiations for journal names, create a file as a JSON dictionary, and
 provide that as a command line argument with `--extra-abbrev-file`. For example, if the
@@ -144,25 +132,6 @@ add=Arnoldi,
 
 remove=hermitian,
    boolean
-```
-
-### Installation
-
-betterbib is [available from the Python Package
-Index](https://pypi.org/project/betterbib/), so simply do
-
-```
-pip install betterbib
-```
-
-to install.
-
-### Testing
-
-To run the betterbib unit tests, check out this repository and type
-
-```
-pytest
 ```
 
 ### Similar software
