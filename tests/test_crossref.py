@@ -187,7 +187,6 @@ def test_crossref_inbook0():
             "source": "Crossref",
             "year": 2005,
             "pages": "1-44",
-            "isbn": "9780470868270, 9780471967583",
         },
     )
 
@@ -228,7 +227,6 @@ def test_crossref_incollection0():
             "source": "Crossref",
             "year": 2002,
             "pages": "149-219",
-            "isbn": "9780444501684",
         },
         persons=pybtex.database.OrderedCaseInsensitiveDict(
             {
@@ -299,7 +297,6 @@ def test_crossref_inproceedings0():
         fields={
             "publisher": "IEEE",
             "doi": "10.1109/aero.2008.4526230",
-            "isbn": "9781424414871, 9781424414888",
             "issn": "1095-323X",
             "title": "Global Warming is Unequivocal",
             "url": "http://dx.doi.org/10.1109/aero.2008.4526230",
