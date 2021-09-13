@@ -64,3 +64,8 @@ def add_formatting_parser_arguments(parser):
             "short: https://doi.org/abcde)"
         ),
     )
+    formatting_group.add_argument(
+        "--keep-preamble",
+        action="store_true",
+        help="keep the preamble(default: false)",
+    )
