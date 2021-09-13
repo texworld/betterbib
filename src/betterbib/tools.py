@@ -432,7 +432,7 @@ def to_string(od, delimiter_type: str, tab_indent: bool, preamble: list = []):
     if preamble:
         # Add segments for each preamble entry
         segments.extend(
-            [f"@preamble{{{preamble_string}}}\n" for preamble_string in preamble]
+            [f'@preamble{{"{preamble_string}"}}' for preamble_string in preamble]
         )
 
     # Add segments for each bibtex entry in order
