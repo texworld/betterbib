@@ -15,18 +15,20 @@ from .warnings import UnsupportedBibTeXType, UnsupportedCrossRefType
 __author_email__ = "nico.schloemer@gmail.com"
 __website__ = "https://github.com/nschloe/betterbib"
 
+BIBTEX_TO_CROSSREF_TYPEDICT = {
+    "article": ["journal-article"],
+    "book": ["book", "monograph"],
+    "inbook": ["book-chapter"],
+    "misc": ["other"],
+    "incollection": ["book-chapter"],
+    "inproceedings": ["proceedings-article"],
+    "proceedings": ["proceedings"],
+    "techreport": ["report"],
+}
+
 
 def _bibtex_to_crossref_type(bibtex_type):
-    _bibtex_to_crossref_map = {
-        "article": ["journal-article"],
-        "book": ["book", "monograph"],
-        "inbook": ["book-chapter"],
-        "misc": ["other"],
-        "incollection": ["book-chapter"],
-        "inproceedings": ["proceedings-article"],
-        "proceedings": ["proceedings"],
-        "techreport": ["report"],
-    }
+    _bibtex_to_crossref_map = BIBTEX_TO_CROSSREF_TYPEDICT
     try:
         return _bibtex_to_crossref_map[bibtex_type]
     except KeyError:
