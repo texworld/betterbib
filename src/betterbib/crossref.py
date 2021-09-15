@@ -114,7 +114,7 @@ class Crossref:
             return _crossref_to_bibtex_type[crossref_type]
         except KeyError:
             warn(
-                f"{crossref_type} is not an supported type",
+                f"{crossref_type} is not a supported type",
                 UnsupportedCrossRefType,
                 stacklevel=2,
             )
