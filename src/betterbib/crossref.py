@@ -10,7 +10,7 @@ import requests_cache
 from .__about__ import __version__
 from .errors import HttpError, NotFoundError
 from .tools import heuristic_unique_result, pybtex_to_dict
-from .warnings import UnsupportedBibTeXType
+from .warnings import UnsupportedBibTeXType, UnsupportedCrossRefType
 
 __author_email__ = "nico.schloemer@gmail.com"
 __website__ = "https://github.com/nschloe/betterbib"
@@ -36,6 +36,20 @@ def _bibtex_to_crossref_type(bibtex_type):
             stacklevel=2,
         )
         return []
+
+
+CROSSREF_TO_BIBTEX_TYPEDICT = {
+    "book": "book",
+    "dataset": "misc",
+    "dissertation": "phdthesis",
+    "journal-article": "article",
+    "monograph": "book",
+    "other": "misc",
+    "proceedings": "proceedings",
+    "proceedings-article": "inproceedings",
+    "report": "techreport",
+    "reference-book": "book",
+}
 
 
 class Crossref:
@@ -84,19 +98,15 @@ class Crossref:
             return "incollection"
 
         # All other cases
-        _crossref_to_bibtex_type = {
-            "book": "book",
-            "dataset": "misc",
-            "dissertation": "phdthesis",
-            "journal-article": "article",
-            "monograph": "book",
-            "other": "misc",
-            "proceedings": "proceedings",
-            "proceedings-article": "inproceedings",
-            "report": "techreport",
-            "reference-book": "book",
-        }
-        return _crossref_to_bibtex_type[crossref_type]
+        _crossref_to_bibtex_type = CROSSREF_TO_BIBTEX_TYPEDICT
+        try:
+            return _crossref_to_bibtex_type[crossref_type]
+        except KeyError:
+            warn(
+                f"{crossref_type} is not an supported type",
+                UnsupportedCrossRefType,
+                stacklevel=2,
+            )
 
     def get_by_doi(self, doi):
         headers = {
