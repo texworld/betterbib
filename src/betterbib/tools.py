@@ -6,6 +6,7 @@ import re
 # needed for the bibtex_writer
 import sys
 from typing import Tuple
+from warnings import warn
 
 import appdirs
 import enchant
@@ -180,8 +181,11 @@ def _translate_title(val, dictionary=create_dict()):
 
 def sanitize_title(d):
     for _, entry in d.items():
-        title = entry.fields["title"]
-        entry.fields["title"] = _translate_title(title)
+        try:
+            title = entry.fields["title"]
+            entry.fields["title"] = _translate_title(title)
+        except KeyError:
+            warn(f"'entry' {entry} has no title")
     return d
 
 
