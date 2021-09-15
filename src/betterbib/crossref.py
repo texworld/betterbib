@@ -200,11 +200,12 @@ class Crossref:
         )
 
         if not cleaned_results:
-            stripped_types = [
-                r["type"]
-                for r in results and r["type"] not in CROSSREF_TO_BIBTEX_TYPEDICT
-            ]
-            raise NotFoundError(f"No match of proper type. Only found {stripped_types}")
+            raise NotFoundError("No match of proper type")
+
+        stripped_types = [r["type"] for r in results if r not in cleaned_results]
+
+        if stripped_types:
+            warn(f"Stripped the following unknown types: {stripped_types}")
 
         if len(cleaned_results) == 1:
             return self._crossref_to_pybtex(cleaned_results[0])
