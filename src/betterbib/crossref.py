@@ -58,6 +58,10 @@ CROSSREF_TO_BIBTEX_TYPEDICT = {
     "reference-book": "book",
 }
 
+CROSSREF_ADDITIONAL_SUPPORTED_TYPES = [
+    "book-chapter",
+]
+
 
 class Crossref:
     """
@@ -186,10 +190,26 @@ class Crossref:
         if not results:
             raise NotFoundError("No match")
 
-        if len(results) == 1:
-            return self._crossref_to_pybtex(results[0])
+        # clean results of unsupported types
+        cleaned_results = list(
+            filter(
+                lambda r: r["type"] in CROSSREF_TO_BIBTEX_TYPEDICT
+                or r["type"] in CROSSREF_ADDITIONAL_SUPPORTED_TYPES,
+                results,
+            )
+        )
 
-        return self._crossref_to_pybtex(heuristic_unique_result(results, d))
+        if not cleaned_results:
+            stripped_types = [
+                r["type"]
+                for r in results and r["type"] not in CROSSREF_TO_BIBTEX_TYPEDICT
+            ]
+            raise NotFoundError(f"No match of proper type. Only found {stripped_types}")
+
+        if len(cleaned_results) == 1:
+            return self._crossref_to_pybtex(cleaned_results[0])
+
+        return self._crossref_to_pybtex(heuristic_unique_result(cleaned_results, d))
 
     def _crossref_to_pybtex(self, data):
         """Translate a given data set into the bibtex data structure."""
