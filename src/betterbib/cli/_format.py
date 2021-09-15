@@ -23,7 +23,7 @@ def run(args):
             args.delimiter_type,
             tab_indent=args.tab_indent,
             # FIXME: use public argument when it becomes possible
-            preamble=data._preamble if args.keep_preamble else [],
+            preamble=data._preamble,
         )
 
         write(string, infile if args.in_place else None)
