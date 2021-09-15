@@ -24,6 +24,11 @@ BIBTEX_TO_CROSSREF_TYPEDICT = {
     "inproceedings": ["proceedings-article"],
     "proceedings": ["proceedings"],
     "techreport": ["report"],
+    "booklet": ["other"],
+    "manual": ["other"],
+    "masterthesis": ["other"],
+    "phdthesis": ["other"],
+    "unpublished": ["other"],
 }
 
 
