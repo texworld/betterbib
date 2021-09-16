@@ -10,6 +10,38 @@ version_line = (
 )
 
 
+TEST_BIBTEXT_PREAMBLE_UNFORMATTED = (
+    '@preamble{"\\RequirePackage{biblatex}"}\n'
+    '@preamble{"\\addbibressource{dependend.bib}"}\n'
+    "@article{foobar,\n"
+    "doi={foobar},\n"
+    "url = {https://doi.org/foobar}\n"
+    "}"
+)
+
+TEST_BIBTEXT_PREAMBLE_FORMATTED_KEEP = (
+    version_line + "\n"
+    "\n"
+    '@preamble{"\\RequirePackage{biblatex}"}\n'
+    "\n"
+    '@preamble{"\\addbibressource{dependend.bib}"}\n'
+    "\n"
+    "@article{foobar,\n"
+    " doi = {foobar},\n"
+    " url = {https://doi.org/foobar},\n"
+    "}\n"
+)
+
+TEST_BIBTEXT_PREAMBLE_FORMATTED_DROP = (
+    version_line + "\n"
+    "\n"
+    "@article{foobar,\n"
+    " doi = {foobar},\n"
+    " url = {https://doi.org/foobar},\n"
+    "}\n"
+)
+
+
 @pytest.mark.parametrize(
     "ref_in,ref_out",
     [
@@ -69,6 +101,21 @@ version_line = (
             " url = {https://doi.org/foobar},\n"
             r" title = {Foo \& Bar on \LaTeX @TheBridge}," + "\n"
             "}\n",
+        ),
+        # Keeping when unformatted
+        (
+            TEST_BIBTEXT_PREAMBLE_UNFORMATTED,
+            TEST_BIBTEXT_PREAMBLE_FORMATTED_KEEP,
+        ),
+        # Keeping when preamble and preformatted
+        (
+            TEST_BIBTEXT_PREAMBLE_FORMATTED_KEEP,
+            TEST_BIBTEXT_PREAMBLE_FORMATTED_KEEP,
+        ),
+        # Keeping when no preamble and preformatted
+        (
+            TEST_BIBTEXT_PREAMBLE_FORMATTED_DROP,
+            TEST_BIBTEXT_PREAMBLE_FORMATTED_DROP,
         ),
     ],
 )

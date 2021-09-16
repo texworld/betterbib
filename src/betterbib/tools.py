@@ -414,11 +414,30 @@ def heuristic_unique_result(results, d):
 
 # This used to be a write() function, but beware of exceptions! Files would get
 # unintentionally overridden, see <https://github.com/nschloe/betterbib/issues/184>
-def to_string(od, delimiter_type: str, tab_indent: bool):
+def to_string(od, delimiter_type: str, tab_indent: bool, preamble: list = []):
+    """
+    Creates a string representing the bib entries
+
+        Parameters:
+            od (dict): dictionary of bibtex entries
+            outfile (FileType("r")): file to write to (default: None)
+            delimiter_type (str): delimiter to use to mark strings
+            tab_indent (bool): whether to use tabs to indent the entries
+            preamble (list): list of preamble commands
+
+        Returns:
+            string
+    """
     # Write header to the output file.
     segments = [f"%comment{{This file was created with betterbib v{__version__}.}}\n"]
 
     delimiters = {"braces": ("{", "}"), "quotes": ('"', '"')}[delimiter_type]
+
+    if preamble:
+        # Add segments for each preamble entry
+        segments.extend(
+            [f'@preamble{{"{preamble_string}"}}' for preamble_string in preamble]
+        )
 
     # Add segments for each bibtex entry in order
     segments.extend(
