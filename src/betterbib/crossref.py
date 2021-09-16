@@ -1,5 +1,6 @@
 import codecs
 import re
+from warnings import warn
 
 import pybtex
 import pybtex.database
@@ -9,26 +10,57 @@ import requests_cache
 from .__about__ import __version__
 from .errors import HttpError, NotFoundError
 from .tools import heuristic_unique_result, pybtex_to_dict
+from .warnings import UnsupportedBibTeXType, UnsupportedCrossRefType
 
 __author_email__ = "nico.schloemer@gmail.com"
 __website__ = "https://github.com/nschloe/betterbib"
 
+BIBTEX_TO_CROSSREF_TYPEDICT = {
+    "article": ["journal-article"],
+    "book": ["book", "monograph"],
+    "inbook": ["book-chapter"],
+    "misc": ["other"],
+    "incollection": ["book-chapter"],
+    "inproceedings": ["proceedings-article"],
+    "proceedings": ["proceedings"],
+    "techreport": ["report"],
+    "booklet": ["other"],
+    "manual": ["other"],
+    "masterthesis": ["other"],
+    "phdthesis": ["other"],
+    "unpublished": ["other"],
+}
+
 
 def _bibtex_to_crossref_type(bibtex_type):
-    _bibtex_to_crossref_map = {
-        "article": ["journal-article"],
-        "book": ["book", "monograph"],
-        "inbook": ["book-chapter"],
-        "misc": ["other"],
-        "incollection": ["book-chapter"],
-        "inproceedings": ["proceedings-article"],
-        "proceedings": ["proceedings"],
-        "techreport": ["report"],
-    }
+    _bibtex_to_crossref_map = BIBTEX_TO_CROSSREF_TYPEDICT
     try:
         return _bibtex_to_crossref_map[bibtex_type]
     except KeyError:
+        warn(
+            f"'{bibtex_type} is not a currently supported type",
+            UnsupportedBibTeXType,
+            stacklevel=2,
+        )
         return []
+
+
+CROSSREF_TO_BIBTEX_TYPEDICT = {
+    "book": "book",
+    "dataset": "misc",
+    "dissertation": "phdthesis",
+    "journal-article": "article",
+    "monograph": "book",
+    "other": "misc",
+    "proceedings": "proceedings",
+    "proceedings-article": "inproceedings",
+    "report": "techreport",
+    "reference-book": "book",
+}
+
+CROSSREF_ADDITIONAL_SUPPORTED_TYPES = [
+    "book-chapter",
+]
 
 
 class Crossref:
@@ -77,19 +109,15 @@ class Crossref:
             return "incollection"
 
         # All other cases
-        _crossref_to_bibtex_type = {
-            "book": "book",
-            "dataset": "misc",
-            "dissertation": "phdthesis",
-            "journal-article": "article",
-            "monograph": "book",
-            "other": "misc",
-            "proceedings": "proceedings",
-            "proceedings-article": "inproceedings",
-            "report": "techreport",
-            "reference-book": "book",
-        }
-        return _crossref_to_bibtex_type[crossref_type]
+        _crossref_to_bibtex_type = CROSSREF_TO_BIBTEX_TYPEDICT
+        try:
+            return _crossref_to_bibtex_type[crossref_type]
+        except KeyError:
+            warn(
+                f"{crossref_type} is not a supported type",
+                UnsupportedCrossRefType,
+                stacklevel=2,
+            )
 
     def get_by_doi(self, doi):
         headers = {
@@ -162,10 +190,27 @@ class Crossref:
         if not results:
             raise NotFoundError("No match")
 
-        if len(results) == 1:
-            return self._crossref_to_pybtex(results[0])
+        # clean results of unsupported types
+        cleaned_results = list(
+            filter(
+                lambda r: r["type"] in CROSSREF_TO_BIBTEX_TYPEDICT
+                or r["type"] in CROSSREF_ADDITIONAL_SUPPORTED_TYPES,
+                results,
+            )
+        )
 
-        return self._crossref_to_pybtex(heuristic_unique_result(results, d))
+        if not cleaned_results:
+            raise NotFoundError("No match of proper type")
+
+        stripped_types = [r["type"] for r in results if r not in cleaned_results]
+
+        if stripped_types:
+            warn(f"Stripped the following unknown types: {stripped_types}")
+
+        if len(cleaned_results) == 1:
+            return self._crossref_to_pybtex(cleaned_results[0])
+
+        return self._crossref_to_pybtex(heuristic_unique_result(cleaned_results, d))
 
     def _crossref_to_pybtex(self, data):
         """Translate a given data set into the bibtex data structure."""
