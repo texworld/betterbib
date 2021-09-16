@@ -18,7 +18,13 @@ def run(args):
 
         d = dict(tuples)
         d = adapt_doi_urls(d, args.doi_url_type)
-        string = to_string(d, args.delimiter_type, tab_indent=args.tab_indent)
+        string = to_string(
+            d,
+            args.delimiter_type,
+            tab_indent=args.tab_indent,
+            # FIXME: use public argument when it becomes possible
+            preamble=data._preamble,
+        )
 
         write(string, infile if args.in_place else None)
 
