@@ -1,6 +1,7 @@
 import argparse
 import csv
 import json
+import pickle
 
 
 def _main():
@@ -13,6 +14,9 @@ def _main():
 
     with open(args.outfile, "w") as f:
         json.dump(out, f, indent=2)
+
+    with open(args.outfile, "wb") as f:
+        pickle.dump(out, f)
 
 
 def _parse_cmd_arguments():
