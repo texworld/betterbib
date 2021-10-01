@@ -16,7 +16,7 @@ PNAS_ABBREV = "PNAS"
 
 
 this_dir = Path(__file__).resolve().parent
-pytest.mark.skipif(not Path(this_dir / "../src/betterbib/data/journals.json").is_file())
+data_file_exists = Path(this_dir / "../src/betterbib/data/journals.json").is_file()
 
 
 def make_fake_entry(journal, citekey="foo"):
@@ -24,6 +24,7 @@ def make_fake_entry(journal, citekey="foo"):
     return {citekey: contents}
 
 
+@pytest.mark.skipif(not data_file_exists)
 def test_standard_abbrev():
     journals = [FULL_PNAS]
     abbrevs = [PNAS_ABBREV]
@@ -33,6 +34,7 @@ def test_standard_abbrev():
         assert abbreviated["foo"].fields["journal"] == abbrev
 
 
+@pytest.mark.skipif(not data_file_exists)
 def test_custom_abbrev():
     infile = tempfile.NamedTemporaryFile().name
     super_short = '{"PNAS": "' + PNAS_ABBREV + '"}'
@@ -52,6 +54,7 @@ def test_custom_abbrev():
     assert abbreviated["foo"].fields["journal"] == "PNAS"
 
 
+@pytest.mark.skipif(not data_file_exists)
 def test_standard_abbrev_long():
     journals = [FULL_PNAS]
     abbrevs = [PNAS_ABBREV]
@@ -61,6 +64,7 @@ def test_standard_abbrev_long():
         assert abbreviated["foo"].fields["journal"] == journal
 
 
+@pytest.mark.skipif(not data_file_exists)
 def test_custom_abbrev_long():
     infile = tempfile.NamedTemporaryFile().name
     super_short = '{"' + FULL_PNAS + ': "PNAS"}'
