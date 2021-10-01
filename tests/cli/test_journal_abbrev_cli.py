@@ -1,9 +1,15 @@
 import tempfile
 from pathlib import Path
 
+import pytest
+
 import betterbib
 
+this_dir = Path(__file__).resolve().parent
+data_file_exists = Path(this_dir / "../../src/betterbib/data/journals.json").is_file()
 
+
+@pytest.mark.skipif(not data_file_exists, reason="Data file missing")
 def test_cli_journal_abbrev(capsys):
     ref_in = "@article{foobar,\n" "journal={SIAM Journal on Scientific Computing}\n" "}"
     ref_out = (
