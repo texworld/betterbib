@@ -1,5 +1,8 @@
 import tempfile
 from collections import namedtuple
+from pathlib import Path
+
+import pytest
 
 import betterbib
 
@@ -10,6 +13,10 @@ FULL_PNAS = (
     "Proceedings of the National Academy of Sciences of the United States of America"
 )
 PNAS_ABBREV = "PNAS"
+
+
+this_dir = Path(__file__).resolve().parent
+pytest.mark.skipif(not Path(this_dir / "../src/betterbib/data/journals.json").is_file())
 
 
 def make_fake_entry(journal, citekey="foo"):
