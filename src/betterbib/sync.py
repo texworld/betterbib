@@ -23,15 +23,15 @@ def sync(
     """
 
     if source == "crossref":
-        source = crossref.Crossref(long_journal_name)
+        src = crossref.Crossref(long_journal_name)
     else:
         assert source == "dblp", "Illegal source."
-        source = dblp.Dblp()
+        src = dblp.Dblp()
 
     num_success = 0
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
         responses = {
-            executor.submit(source.find_unique, entry): (bib_id, tools.decode(entry))
+            executor.submit(src.find_unique, entry): (bib_id, tools.decode(entry))
             for bib_id, entry in d.items()
         }
         for future in track(
