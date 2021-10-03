@@ -40,7 +40,7 @@ jobs:
       - name: Downloads journals abbreviation file
         run: |
           sudo apt install curl
-          curl https://nschloe.github.io/betterbib/betterbib.svg > src/betterbib/data/
+          curl https://nschloe.github.io/betterbib/journals.json > src/betterbib/data/journals.json
       - name: Test with tox
         run: |
           # add some entries to the dict
