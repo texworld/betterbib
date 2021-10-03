@@ -37,6 +37,10 @@ jobs:
       #     mkdir -p ~/.config/betterbib/ && echo -e "[DICTIONARY]\nadd=Magnus,Peano,Kutta,Runge,Hermitian,Jacobian\nremove=hermitian" > ~/.config/betterbib/config.ini
       #     pip install pytest pytest-cov
       #     cd test && pytest --cov betterbib
+      - name: Downloads journals abbreviation file
+        run: |
+          apt install curl
+          curl https://nschloe.github.io/betterbib/betterbib.svg > src/betterbib/data/
       - name: Test with tox
         run: |
           # add some entries to the dict
