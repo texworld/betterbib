@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import codecs
 import configparser
 import os
@@ -5,7 +7,6 @@ import re
 
 # needed for the bibtex_writer
 import sys
-from typing import Tuple
 from warnings import warn
 
 import appdirs
@@ -192,7 +193,7 @@ def sanitize_title(d):
 def pybtex_to_bibtex_string(
     entry,
     bibtex_key,
-    delimiters: Tuple[str, str] = ("{", "}"),
+    delimiters: tuple[str, str] = ("{", "}"),
     indent: str = " ",
     sort: bool = False,
 ):
