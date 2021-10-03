@@ -1,8 +1,14 @@
+from pathlib import Path
+
 import pybtex
 import pybtex.database
+import pytest
 
 import betterbib
 from betterbib.cli._doi_to_bibtex import _create_citekey_for_entry
+
+this_dir = Path(__file__).resolve().parent
+data_file_exists = Path(this_dir / "../src/betterbib/data/journals.json").is_file()
 
 
 def test_update():
@@ -29,6 +35,7 @@ def test_update():
     ) == betterbib.pybtex_to_bibtex_string(reference, "key", sort=True)
 
 
+@pytest.mark.skipif(not data_file_exists, reason="Data file missing")
 def test_journal_name():
     shrt = pybtex.database.Entry(
         "article", fields={"journal": "SIAM J. Matrix Anal. Appl."}
