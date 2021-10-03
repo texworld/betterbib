@@ -39,7 +39,7 @@ jobs:
       #     cd test && pytest --cov betterbib
       - name: Downloads journals abbreviation file
         run: |
-          apt install curl
+          sudo apt install curl
           curl https://nschloe.github.io/betterbib/betterbib.svg > src/betterbib/data/
       - name: Test with tox
         run: |
