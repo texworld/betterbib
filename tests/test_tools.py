@@ -130,7 +130,7 @@ def test_first_name_space():
     }
     out = betterbib.pybtex_to_bibtex_string(d["doe"], "doe")
     ref = """@misc{doe,
- author = {Doe, J.J.},
+ author = {Doe, J. J.},
 }"""
 
     assert out == ref

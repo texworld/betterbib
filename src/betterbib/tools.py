@@ -290,26 +290,6 @@ def get_short_doi(doi):
     return data["ShortDOI"]
 
 
-def _join_abbreviated_names(lst):
-    """Joins a list of name strings like ["J.", "Frank"] such that it adds a space if
-    one of the two names is not abbreviated. See
-    <https://english.stackexchange.com/a/105529/23644>.
-    """
-    if len(lst) == 0:
-        return ""
-
-    out = lst[0]
-    last_ends_in_dot = lst[0][-1] == "."
-    for item in lst[1:]:
-        ends_in_dot = item[-1] == "."
-        if last_ends_in_dot and ends_in_dot:
-            out += item
-        else:
-            out += " " + item
-        last_ends_in_dot = ends_in_dot
-    return out
-
-
 def _get_person_str(p):
     out = ", ".join(
         filter(
@@ -317,7 +297,15 @@ def _get_person_str(p):
             [
                 " ".join(p.prelast_names + p.last_names),
                 " ".join(p.lineage_names),
-                _join_abbreviated_names(p.first_names + p.middle_names),
+                # In plain English, you wouldn't put a full space between abbreviated
+                # initials, see, e.g.,
+                # <https://english.stackexchange.com/a/105529/23644>. In bib files,
+                # though, it's useful, see
+                # <https://github.com/nschloe/betterbib/issues/212> and
+                # <https://clauswilke.com/blog/2015/10/02/bibtex/>.
+                # See <https://tex.stackexchange.com/a/11083/13262> on how to configure
+                # biber/biblatex to use thin spaces.
+                " ".join(p.first_names + p.middle_names),
             ],
         )
     )
@@ -415,7 +403,7 @@ def heuristic_unique_result(results, d):
 
 # This used to be a write() function, but beware of exceptions! Files would get
 # unintentionally overridden, see <https://github.com/nschloe/betterbib/issues/184>
-def to_string(od, delimiter_type: str, tab_indent: bool, preamble: list = []):
+def to_string(od: dict, delimiter_type: str, tab_indent: bool, preamble: list = []):
     """
     Creates a string representing the bib entries
 
