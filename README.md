@@ -5,7 +5,8 @@
 [![PyPi Version](https://img.shields.io/pypi/v/betterbib.svg?style=flat-square)](https://pypi.org/project/betterbib)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/betterbib.svg?style=flat-square)](https://pypi.org/pypi/betterbib/)
 [![GitHub stars](https://img.shields.io/github/stars/nschloe/betterbib.svg?style=flat-square&logo=github&label=Stars&logoColor=white)](https://github.com/nschloe/betterbib)
-[![PyPi downloads](https://img.shields.io/pypi/dm/betterbib.svg?style=flat-square)](https://pypistats.org/packages/betterbib)
+[![Downloads](https://pepy.tech/badge/betterbib/month?style=flat-square)](https://pepy.tech/project/betterbib)
+<!--[![PyPi downloads](https://img.shields.io/pypi/dm/betterbib.svg?style=flat-square)](https://pypistats.org/packages/betterbib)-->
 
 [![Discord](https://img.shields.io/static/v1?logo=discord&label=chat&message=on%20discord&color=7289da&style=flat-square)](https://discord.gg/hnTJ5MRX2Y)
 
