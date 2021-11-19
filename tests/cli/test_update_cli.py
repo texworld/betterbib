@@ -43,8 +43,9 @@ def test_cli_update(capsys):
 
         betterbib.cli.main(["update", str(infile)])
         captured = capsys.readouterr()
-        assert captured.out == ref_out
+        assert captured.out == "\n" + ref_out
 
         betterbib.cli.main(["up", "--in-place", str(infile)])
         with open(infile) as f:
-            assert f.read() == ref_out
+            fcontent = f.read()
+        assert fcontent == ref_out
