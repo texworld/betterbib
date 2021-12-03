@@ -8,7 +8,7 @@
 [![Downloads](https://pepy.tech/badge/betterbib/month?style=flat-square)](https://pepy.tech/project/betterbib)
 <!--[![PyPi downloads](https://img.shields.io/pypi/dm/betterbib.svg?style=flat-square)](https://pypistats.org/packages/betterbib)-->
 
-[![Discord](https://img.shields.io/static/v1?logo=discord&label=chat&message=on%20discord&color=7289da&style=flat-square)](https://discord.gg/hnTJ5MRX2Y)
+[![Discord](https://img.shields.io/static/v1?logo=discord&logoColor=white&label=chat&message=on%20discord&color=7289da&style=flat-square)](https://discord.gg/hnTJ5MRX2Y)
 
 [![gh-actions](https://img.shields.io/github/workflow/status/nschloe/betterbib/ci?style=flat-square)](https://github.com/nschloe/betterbib/actions?query=workflow%3Aci)
 [![codecov](https://img.shields.io/codecov/c/github/nschloe/betterbib.svg?style=flat-square)](https://codecov.io/gh/nschloe/betterbib)
