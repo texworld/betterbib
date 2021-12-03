@@ -1,4 +1,3 @@
-import codecs
 import re
 from warnings import warn
 
@@ -6,6 +5,7 @@ import pybtex
 import pybtex.database
 import requests
 import requests_cache
+from pylatexenc.latex2text import LatexNodes2Text
 
 from .__about__ import __version__
 from .errors import HttpError, NotFoundError
@@ -167,7 +167,8 @@ class Crossref:
 
         # Simply plug the dict together to a search query. Typical query:
         # https://api.crossref.org/works?query=vanroose+schl%C3%B6mer&rows=5
-        payload = codecs.decode(" ".join(L), "ulatex").replace(" ", "+")
+        translator = LatexNodes2Text()
+        payload = translator.latex_to_text(" ".join(L)).replace(" ", "+")
 
         params = {"query": payload, "rows": 2}  # max number of results
 

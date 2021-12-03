@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import codecs
 import configparser
 import os
 import re
@@ -11,13 +10,12 @@ from warnings import warn
 
 import appdirs
 import enchant
-
-# for "ulatex" codec
-import latexcodec  # noqa
 import requests
 
 # for enhanced error messages when parsing
 from pybtex.database.input import bibtex
+from pylatexenc.latex2text import LatexNodes2Text
+from pylatexenc.latexencode import unicode_to_latex
 
 from .__about__ import __version__
 from .errors import UniqueError
@@ -30,11 +28,12 @@ _config_file = os.path.join(_config_dir, "config.ini")
 
 def decode(entry):
     """Decode a dictionary with LaTeX strings into a dictionary with unicode strings."""
+    translator = LatexNodes2Text()
     for key, value in entry.fields.items():
         if key == "url":
             # The url can contain special LaTeX characters (like %) and that's fine
             continue
-        entry.fields[key] = codecs.decode(value, "ulatex")
+        entry.fields[key] = translator.latex_to_text(value)
     return entry
 
 
@@ -211,38 +210,20 @@ def pybtex_to_bibtex_string(
     if sort:
         keys = sorted(keys)
 
+    translator = LatexNodes2Text()
+
     for key in keys:
         value = entry.fields[key]
 
-        # handle things that latexcodec can't handle yet
-        repl = {
-            # <https://github.com/mcmtroffaes/latexcodec/issues/74>:
-            # "\u2217": "\\ast",
-            # <https://github.com/mcmtroffaes/latexcodec/issues/83>:
-            "\ufffd": "?",
-            # <https://github.com/mcmtroffaes/latexcodec/issues/84>:
-            "\N{MODIFIER LETTER PRIME}": "'",
-            # <https://github.com/mcmtroffaes/latexcodec/issues/91>:
-            "\ufb03": "ffi",
-            "\N{MODIFIER LETTER DOUBLE PRIME}": "''",
-            "\N{MODIFIER LETTER TURNED COMMA}": "`",
-            "\N{MODIFIER LETTER APOSTROPHE}": "'",
-            "\N{MODIFIER LETTER REVERSED COMMA}": "`",
-            "«": r"{\guillemotleft}",
-            "»": r"{\guillemotlright}",
-        }
-        for k, val in repl.items():
-            try:
-                value = value.replace(k, val)
-            except AttributeError:
-                pass
+        try:
+            value = value.replace("\N{REPLACEMENT CHARACTER}", "?")
+        except AttributeError:
+            pass
 
         try:
             if key not in ["url", "doi"]:
                 # Parse the original value to get a unified version
-                value = codecs.decode(value, "ulatex", errors="replace")
-                value = codecs.encode(value, "ulatex", errors="replace")
-
+                value = unicode_to_latex(translator.latex_to_text(value))
                 # Replace doubled spaces
                 value = value.replace("  ", " ")
                 # Remove trailing spaces

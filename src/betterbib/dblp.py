@@ -1,9 +1,8 @@
-import codecs
-
 import pybtex
 import pybtex.database
 import requests
 import requests_cache
+from pylatexenc.latex2text import LatexNodes2Text
 
 from .errors import HttpError, NotFoundError
 from .tools import heuristic_unique_result, pybtex_to_dict
@@ -130,7 +129,8 @@ class Dblp:
 
         # Simply plug the dict together to a search query. Typical query:
         # <api>?q=vanroose+schl%C3%B6mer&h=5
-        payload = codecs.decode(" ".join(L), "ulatex").replace(" ", "+")
+        translator = LatexNodes2Text()
+        payload = translator.latex_to_text(" ".join(L)).replace(" ", "+")
 
         params = {
             "q": payload,
