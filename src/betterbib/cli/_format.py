@@ -35,7 +35,6 @@ def add_args(parser):
 
     parser.add_argument(
         "--drop",
-        nargs="+",
-        default=[],
-        help="Drops fields from bibtex entry if they exist.",
+        action="append",
+        help="drops field from bibtex entry if they exist, can be passed multiple times",
     )
