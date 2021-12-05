@@ -10,9 +10,10 @@ from warnings import warn
 
 import appdirs
 import enchant
-import requests
 
 # for enhanced error messages when parsing
+import pybtex.database
+import requests
 from pybtex.database.input import bibtex
 from pylatexenc.latex2text import LatexNodes2Text
 from pylatexenc.latexencode import unicode_to_latex
@@ -41,14 +42,15 @@ def pybtex_to_dict(entry):
     """dict representation of BibTeX entry."""
     d = {}
     d["genre"] = entry.type
+    transform = unicode_to_latex
     for key, persons in entry.persons.items():
         d[key.lower()] = [
             {
-                "first": p.first_names,
-                "middle": p.middle_names,
-                "prelast": p.prelast_names,
-                "last": p.last_names,
-                "lineage": p.lineage_names,
+                "first": [transform(string) for string in p.first_names],
+                "middle": [transform(string) for string in p.middle_names],
+                "prelast": [transform(string) for string in p.prelast_names],
+                "last": [transform(string) for string in p.last_names],
+                "lineage": [transform(string) for string in p.lineage_names],
             }
             for p in persons
         ]
@@ -195,6 +197,7 @@ def pybtex_to_bibtex_string(
     delimiters: tuple[str, str] = ("{", "}"),
     indent: str = " ",
     sort: bool = False,
+    unicode: bool = True,
 ):
     """String representation of BibTeX entry."""
     out = f"@{entry.type}{{{bibtex_key},\n{indent}"
@@ -204,6 +207,8 @@ def pybtex_to_bibtex_string(
 
     for key, persons in entry.persons.items():
         persons_str = " and ".join([_get_person_str(p) for p in persons])
+        if not unicode:
+            persons_str = unicode_to_latex(persons_str)
         content.append(f"{key.lower()} = {left}{persons_str}{right}")
 
     keys = entry.fields.keys()
@@ -223,12 +228,13 @@ def pybtex_to_bibtex_string(
         try:
             if key not in ["url", "doi"]:
                 # Parse the original value to get a unified version
-                value = unicode_to_latex(translator.latex_to_text(value))
-                # Replace doubled spaces
-                value = value.replace("  ", " ")
+                value = translator.latex_to_text(value)
+                if not unicode:
+                    value = unicode_to_latex(value)
+                # Replace multiple spaces by one
+                value = re.sub(" +", " ", value)
                 # Remove trailing spaces
                 value = value.rstrip()
-
         except TypeError:
             # expected unicode for encode input, but got int instead
             pass
@@ -384,7 +390,13 @@ def heuristic_unique_result(results, d):
 
 # This used to be a write() function, but beware of exceptions! Files would get
 # unintentionally overridden, see <https://github.com/nschloe/betterbib/issues/184>
-def to_string(od: dict, delimiter_type: str, tab_indent: bool, preamble: list = []):
+def to_string(
+    od: dict[str, pybtex.database.Entry],
+    delimiter_type: str,
+    tab_indent: bool,
+    preamble: list = [],
+    unicode: bool = True,
+) -> str:
     """
     Creates a string representing the bib entries
 
@@ -417,6 +429,7 @@ def to_string(od: dict, delimiter_type: str, tab_indent: bool, preamble: list = 
                 bib_id,
                 delimiters=delimiters,
                 indent="\t" if tab_indent else " ",
+                unicode=unicode,
             )
             for bib_id, d in od.items()
         ]
@@ -424,7 +437,7 @@ def to_string(od: dict, delimiter_type: str, tab_indent: bool, preamble: list = 
     return "\n\n".join(segments) + "\n"
 
 
-def update(entry1, entry2):
+def merge(entry1, entry2):
     """Create a merged BibTeX entry with the data from entry2 taking precedence."""
     out = entry1
     if entry2 is not None:

@@ -21,13 +21,13 @@ comparing them with online sources and correcting whatever entries are faulty.
 
 Install with
 
-```
+```sh
 pip install betterbib
 ```
 
 and run simply run
 
-```
+```sh
 betterbib update in.bib   # or short `betterbib up`
 ```
 

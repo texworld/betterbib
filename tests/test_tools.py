@@ -11,7 +11,7 @@ this_dir = Path(__file__).resolve().parent
 data_file_exists = Path(this_dir / "../src/betterbib/data/journals.json").is_file()
 
 
-def test_update():
+def test_merge():
     entry1 = pybtex.database.Entry(
         "article",
         fields={"title": "Yes", "year": 2000},
@@ -28,7 +28,7 @@ def test_update():
         persons={"author": [pybtex.database.Person("Doe, John")]},
     )
 
-    merged = betterbib.update(entry1, entry2)
+    merged = betterbib.merge(entry1, entry2)
 
     assert betterbib.pybtex_to_bibtex_string(
         merged, "key", sort=True

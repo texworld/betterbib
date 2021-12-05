@@ -27,7 +27,12 @@ def run(args):
         d = sanitize_title(d)
         d = journal_abbrev(d, args.long_journal_names, args.extra_abbrev_file)
 
-        string = to_string(d, args.delimiter_type, tab_indent=args.tab_indent)
+        string = to_string(
+            d,
+            args.delimiter_type,
+            tab_indent=args.tab_indent,
+            unicode=not args.latex_output,
+        )
 
         write(string, infile if args.in_place else None)
 
@@ -62,5 +67,12 @@ def add_args(parser):
         default=10,
         metavar="N",
         help="number of concurrent HTTPS requests (default: 10)",
+    )
+    parser.add_argument(
+        "-a",
+        "--latex-output",
+        action="store_true",
+        default=False,
+        help="force LaTeX output (default: unicode)",
     )
     return parser

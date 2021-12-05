@@ -1,13 +1,21 @@
-import concurrent.futures
+from __future__ import annotations
 
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
+import pybtex
+import pybtex.database
 from rich.progress import track
 
 from . import crossref, dblp, errors, tools
 
 
 def sync(
-    d: dict, source: str, long_journal_name: bool, max_workers: int, verbose: bool
-):
+    d: dict[str, pybtex.database.Entry],
+    source: str,
+    long_journal_name: bool,
+    max_workers: int,
+    verbose: bool,
+) -> dict[str, pybtex.database.Entry]:
     """
     Sync a bibtex dict with an external source
 
@@ -29,13 +37,13 @@ def sync(
         src = dblp.Dblp()
 
     num_success = 0
-    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
         responses = {
             executor.submit(src.find_unique, entry): (bib_id, tools.decode(entry))
             for bib_id, entry in d.items()
         }
         for future in track(
-            concurrent.futures.as_completed(responses),
+            as_completed(responses),
             total=len(responses),
             description="Syncing...",
             disable=not verbose,
@@ -49,7 +57,8 @@ def sync(
                 print(e.args[0])
             else:
                 num_success += 1
-                d[bib_id] = tools.update(entry, data)
+                d[bib_id] = tools.merge(entry, data)
+
     if verbose:
         print(f"\n\nTotal number of entries: {len(d)}")
         print(f"Found: {num_success}")
