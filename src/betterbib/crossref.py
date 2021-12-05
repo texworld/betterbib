@@ -131,7 +131,7 @@ class Crossref:
         result = data["message"]
         return self._crossref_to_pybtex(result)
 
-    def find_unique(self, entry):
+    def find_unique(self, entry: pybtex.database.Entry) -> pybtex.database.Entry:
         d = pybtex_to_dict(entry)
 
         if "title" not in d and "doi" not in d and "author" not in d:
@@ -163,11 +163,15 @@ class Crossref:
             pass
 
         # kick out empty strings
-        L = filter(None, L)
+        # list() is actually no necessary, but not using it here and print()ing
+        # the "naked" filter exhausts the filter and leads to errors
+        # downstream. Has happened more than once when debugging.
+        L = list(filter(None, L))
 
         # Simply plug the dict together to a search query. Typical query:
         # https://api.crossref.org/works?query=vanroose+schl%C3%B6mer&rows=5
         translator = LatexNodes2Text()
+
         payload = translator.latex_to_text(" ".join(L)).replace(" ", "+")
 
         params = {"query": payload, "rows": 2}  # max number of results
@@ -199,7 +203,6 @@ class Crossref:
                 results,
             )
         )
-
         if not cleaned_results:
             raise NotFoundError("No match of proper type")
 
