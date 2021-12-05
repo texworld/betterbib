@@ -229,8 +229,8 @@ def pybtex_to_bibtex_string(
             if key not in ["url", "doi"]:
                 # Parse the original value to get a unified version
                 value = translator.latex_to_text(value)
-                if not unicode:
-                    value = unicode_to_latex(value)
+                # back to latex to escape "&" etc.
+                value = unicode_to_latex(value)
                 # Replace multiple spaces by one
                 value = re.sub(" +", " ", value)
                 # Remove trailing spaces
