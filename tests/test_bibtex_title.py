@@ -41,6 +41,7 @@ import betterbib
             "{Aaa {${\\text{Pt/Co/AlO}}_{x}$} aaa bbb}",
         ),
         ("z*", "z*"),
+        ("A \\LaTeX title", "A \\LaTeX title"),
     ],
 )
 def test_translate_title(string, ref):

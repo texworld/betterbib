@@ -6,14 +6,15 @@ import re
 
 # needed for the bibtex_writer
 import sys
+from copy import deepcopy
 from warnings import warn
 
 import appdirs
 import enchant
+import requests
 
 # for enhanced error messages when parsing
-import pybtex.database
-import requests
+from pybtex.database import Entry
 from pybtex.database.input import bibtex
 from pylatexenc.latex2text import LatexNodes2Text
 from pylatexenc.latexencode import unicode_to_latex
@@ -27,15 +28,18 @@ if not os.path.exists(_config_dir):
 _config_file = os.path.join(_config_dir, "config.ini")
 
 
-def decode(entry):
+def decode(entry: Entry) -> Entry:
     """Decode a dictionary with LaTeX strings into a dictionary with unicode strings."""
     translator = LatexNodes2Text()
-    for key, value in entry.fields.items():
+    # Perform a deepcopy, otherwise the input entry will get altered
+    out = deepcopy(entry)
+    assert out.fields is not None
+    for key, value in out.fields.items():
         if key == "url":
             # The url can contain special LaTeX characters (like %) and that's fine
             continue
-        entry.fields[key] = translator.latex_to_text(value)
-    return entry
+        out.fields[key] = translator.latex_to_text(value)
+    return out
 
 
 def pybtex_to_dict(entry):
@@ -133,11 +137,12 @@ def create_dict():
 def _translate_word(word, d):
     # Check if the word needs to be protected by curly braces to prevent
     # recapitalization.
-    if not word:
-        needs_protection = False
-    elif word.count("{") != word.count("}"):
-        needs_protection = False
-    elif word[0] == "{" and word[-1] == "}":
+    if (
+        not word
+        or word.count("{") != word.count("}")
+        or (word[0] == "{" and word[-1] == "}")
+        or word[0] == "\\"
+    ):
         needs_protection = False
     elif any([char.isupper() for char in word[1:]]):
         needs_protection = True
@@ -181,41 +186,42 @@ def _translate_title(val, dictionary=create_dict()):
     return " ".join(words)
 
 
-def sanitize_title(d):
+def sanitize_title(d) -> None:
     for _, entry in d.items():
         try:
             title = entry.fields["title"]
             entry.fields["title"] = _translate_title(title)
         except KeyError:
             warn(f"'entry' {entry} has no title")
-    return d
 
 
 def pybtex_to_bibtex_string(
-    entry,
-    bibtex_key,
+    entry: Entry,
+    bibtex_key: str,
     delimiters: tuple[str, str] = ("{", "}"),
     indent: str = " ",
     sort: bool = False,
     unicode: bool = True,
-):
+) -> str:
     """String representation of BibTeX entry."""
     out = f"@{entry.type}{{{bibtex_key},\n{indent}"
     content = []
 
     left, right = delimiters
 
+    assert entry.persons is not None
     for key, persons in entry.persons.items():
         persons_str = " and ".join([_get_person_str(p) for p in persons])
         if not unicode:
             persons_str = unicode_to_latex(persons_str)
         content.append(f"{key.lower()} = {left}{persons_str}{right}")
 
+    assert entry.fields is not None
     keys = entry.fields.keys()
     if sort:
         keys = sorted(keys)
 
-    translator = LatexNodes2Text()
+    # translator = LatexNodes2Text()
 
     for key in keys:
         value = entry.fields[key]
@@ -228,9 +234,9 @@ def pybtex_to_bibtex_string(
         try:
             if key not in ["url", "doi"]:
                 # Parse the original value to get a unified version
-                value = translator.latex_to_text(value)
-                # back to latex to escape "&" etc.
-                value = unicode_to_latex(value)
+                # value = translator.latex_to_text(value)
+                # # back to latex to escape "&" etc.
+                # value = unicode_to_latex(value)
                 # Replace multiple spaces by one
                 value = re.sub(" +", " ", value)
                 # Remove trailing spaces
@@ -391,10 +397,10 @@ def heuristic_unique_result(results, d):
 # This used to be a write() function, but beware of exceptions! Files would get
 # unintentionally overridden, see <https://github.com/nschloe/betterbib/issues/184>
 def to_string(
-    od: dict[str, pybtex.database.Entry],
+    od: dict[str, Entry],
     delimiter_type: str,
     tab_indent: bool,
-    preamble: list = [],
+    preamble: list | None = None,
     unicode: bool = True,
 ) -> str:
     """
