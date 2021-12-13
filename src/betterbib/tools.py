@@ -1,17 +1,16 @@
 from __future__ import annotations
 
 import configparser
-import os
 import re
-
-# needed for the bibtex_writer
 import sys
 from copy import deepcopy
+from pathlib import Path
 from warnings import warn
 
 import appdirs
 import enchant
 import requests
+import tomli
 
 # for enhanced error messages when parsing
 from pybtex.database import Entry
@@ -21,11 +20,6 @@ from pylatexenc.latexencode import unicode_to_latex
 
 from .__about__ import __version__
 from .errors import UniqueError
-
-_config_dir = appdirs.user_config_dir("betterbib")
-if not os.path.exists(_config_dir):
-    os.makedirs(_config_dir)
-_config_file = os.path.join(_config_dir, "config.ini")
 
 
 def decode(entry: Entry) -> Entry:
@@ -105,30 +99,64 @@ def translate_month(key: str):
     return ' # "-" # '.join(strings)
 
 
+def _get_config_data() -> tuple[list[str], list[str]]:
+    _config_dir = Path(appdirs.user_config_dir("betterbib"))
+
+    ini_config = _config_dir / "config.ini"
+    toml_config = _config_dir / "config.toml"
+
+    add_list = []
+    remove_list = []
+
+    if toml_config.exists():
+        with open(toml_config, "rb") as f:
+            config_data = tomli.load(f)
+
+        try:
+            add_list = config_data["DICTIONARY"]["add"]
+        except KeyError:
+            pass
+
+        try:
+            remove_list = config_data["DICTIONARY"]["remove"]
+        except KeyError:
+            pass
+
+    elif ini_config.exists():
+        warn(
+            f"betterbib INI ({ini_config}) config is deprecated. "
+            + "Please convert to TOML."
+        )
+
+        config = configparser.ConfigParser()
+        config.read(ini_config)
+        try:
+            add_list = config.get("DICTIONARY", "add").split(",")
+        except (configparser.NoSectionError, configparser.NoOptionError):
+            # No section: 'DICTIONARY', No option 'add' in section: 'DICTIONARY'
+            pass
+
+        try:
+            remove_list = config.get("DICTIONARY", "remove").split(",")
+        except (configparser.NoSectionError, configparser.NoOptionError):
+            pass
+
+    return add_list, remove_list
+
+
 def create_dict():
     d = enchant.DictWithPWL("en_US")
 
-    # read extra names from config file
-    config = configparser.ConfigParser()
-    config.read(_config_file)
-    try:
-        extra_names = config.get("DICTIONARY", "add").split(",")
-    except (configparser.NoSectionError, configparser.NoOptionError):
-        # No section: 'DICTIONARY', No option 'add' in section: 'DICTIONARY'
-        extra_names = []
+    add_list, remove_list = _get_config_data()
 
-    for name in extra_names:
-        name = name.strip()
-        d.add(name)
-        d.add(name + "'s")
-        if name[-1] == "s":
-            d.add(name + "'")
+    for word in add_list:
+        word = word.strip()
+        d.add(word)
+        d.add(word + "'s")
+        if word[-1] == "s":
+            d.add(word + "'")
 
-    try:
-        blacklist = config.get("DICTIONARY", "remove").split(",")
-    except (configparser.NoSectionError, configparser.NoOptionError):
-        blacklist = []
-    for word in blacklist:
+    for word in remove_list:
         d.remove(word.strip())
 
     return d
