@@ -31,7 +31,9 @@ _config_file = os.path.join(_config_dir, "config.ini")
 def decode(entry: Entry) -> Entry:
     """Decode a dictionary with LaTeX strings into a dictionary with unicode strings."""
     translator = LatexNodes2Text()
+    # Perform a deepcopy, otherwise the input entry will get altered
     out = deepcopy(entry)
+    assert out.fields is not None
     for key, value in out.fields.items():
         if key == "url":
             # The url can contain special LaTeX characters (like %) and that's fine
@@ -135,11 +137,12 @@ def create_dict():
 def _translate_word(word, d):
     # Check if the word needs to be protected by curly braces to prevent
     # recapitalization.
-    if not word:
-        needs_protection = False
-    elif word.count("{") != word.count("}"):
-        needs_protection = False
-    elif word[0] == "{" and word[-1] == "}":
+    if (
+        not word
+        or word.count("{") != word.count("}")
+        or (word[0] == "{" and word[-1] == "}")
+        or word[0] == "\\"
+    ):
         needs_protection = False
     elif any([char.isupper() for char in word[1:]]):
         needs_protection = True
@@ -183,14 +186,13 @@ def _translate_title(val, dictionary=create_dict()):
     return " ".join(words)
 
 
-def sanitize_title(d):
+def sanitize_title(d) -> None:
     for _, entry in d.items():
         try:
             title = entry.fields["title"]
             entry.fields["title"] = _translate_title(title)
         except KeyError:
             warn(f"'entry' {entry} has no title")
-    return d
 
 
 def pybtex_to_bibtex_string(
@@ -207,12 +209,14 @@ def pybtex_to_bibtex_string(
 
     left, right = delimiters
 
+    assert entry.persons is not None
     for key, persons in entry.persons.items():
         persons_str = " and ".join([_get_person_str(p) for p in persons])
         if not unicode:
             persons_str = unicode_to_latex(persons_str)
         content.append(f"{key.lower()} = {left}{persons_str}{right}")
 
+    assert entry.fields is not None
     keys = entry.fields.keys()
     if sort:
         keys = sorted(keys)
