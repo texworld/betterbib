@@ -45,63 +45,6 @@ TEST_BIBTEXT_PREAMBLE_FORMATTED_DROP = (
 @pytest.mark.parametrize(
     "ref_in,ref_out",
     [
-        (
-            "@article{foobar,\n"
-            "doi={foobar},\n"
-            "url = {https://doi.org/foobar}\n"
-            "}",
-            version_line + "\n"
-            "\n"
-            "@article{foobar,\n"
-            " doi = {foobar},\n"
-            " url = {https://doi.org/foobar},\n"
-            "}\n",
-        ),
-        # escape ampersand:
-        (
-            "@article{foobar,\n"
-            "doi={foobar},\n"
-            "url = {https://doi.org/foobar},\n"
-            "title = {Foo \\& Bar},\n"
-            "}",
-            version_line + "\n"
-            "\n"
-            "@article{foobar,\n"
-            " doi = {foobar},\n"
-            " url = {https://doi.org/foobar},\n"
-            r" title = {Foo \& Bar}," + "\n"
-            "}\n",
-        ),
-        # escape command:
-        # (
-        #     "@article{foobar,\n"
-        #     "doi={foobar},\n"
-        #     "url = {https://doi.org/foobar},\n"
-        #     r"title = {Foo on \LaTeX}," + "\n"
-        #     "}",
-        #     version_line + "\n"
-        #     "\n"
-        #     "@article{foobar,\n"
-        #     " doi = {foobar},\n"
-        #     " url = {https://doi.org/foobar},\n"
-        #     r" title = {Foo on \LaTeX}," + "\n"
-        #     "}\n",
-        # ),
-        # more escape:
-        (
-            "@article{foobar,\n"
-            "doi={foobar},\n"
-            "url = {https://doi.org/foobar},\n"
-            r"title = {Foo \& Bar on \ @TheBridge}," + "\n"
-            "}",
-            version_line + "\n"
-            "\n"
-            "@article{foobar,\n"
-            " doi = {foobar},\n"
-            " url = {https://doi.org/foobar},\n"
-            r" title = {Foo \& Bar on @TheBridge}," + "\n"
-            "}\n",
-        ),
         # Keeping when unformatted
         (
             TEST_BIBTEXT_PREAMBLE_UNFORMATTED,

@@ -192,13 +192,13 @@ def sanitize_title(d):
 
 
 def pybtex_to_bibtex_string(
-    entry,
-    bibtex_key,
+    entry: pybtex.database.Entry,
+    bibtex_key: str,
     delimiters: tuple[str, str] = ("{", "}"),
     indent: str = " ",
     sort: bool = False,
     unicode: bool = True,
-):
+) -> str:
     """String representation of BibTeX entry."""
     out = f"@{entry.type}{{{bibtex_key},\n{indent}"
     content = []
@@ -215,7 +215,7 @@ def pybtex_to_bibtex_string(
     if sort:
         keys = sorted(keys)
 
-    translator = LatexNodes2Text()
+    # translator = LatexNodes2Text()
 
     for key in keys:
         value = entry.fields[key]
@@ -228,9 +228,9 @@ def pybtex_to_bibtex_string(
         try:
             if key not in ["url", "doi"]:
                 # Parse the original value to get a unified version
-                value = translator.latex_to_text(value)
-                # back to latex to escape "&" etc.
-                value = unicode_to_latex(value)
+                # value = translator.latex_to_text(value)
+                # # back to latex to escape "&" etc.
+                # value = unicode_to_latex(value)
                 # Replace multiple spaces by one
                 value = re.sub(" +", " ", value)
                 # Remove trailing spaces
@@ -394,7 +394,7 @@ def to_string(
     od: dict[str, pybtex.database.Entry],
     delimiter_type: str,
     tab_indent: bool,
-    preamble: list = [],
+    preamble: list | None = None,
     unicode: bool = True,
 ) -> str:
     """
