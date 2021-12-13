@@ -6,14 +6,15 @@ import re
 
 # needed for the bibtex_writer
 import sys
+from copy import deepcopy
 from warnings import warn
 
 import appdirs
 import enchant
+import requests
 
 # for enhanced error messages when parsing
-import pybtex.database
-import requests
+from pybtex.database import Entry
 from pybtex.database.input import bibtex
 from pylatexenc.latex2text import LatexNodes2Text
 from pylatexenc.latexencode import unicode_to_latex
@@ -27,15 +28,16 @@ if not os.path.exists(_config_dir):
 _config_file = os.path.join(_config_dir, "config.ini")
 
 
-def decode(entry):
+def decode(entry: Entry) -> Entry:
     """Decode a dictionary with LaTeX strings into a dictionary with unicode strings."""
     translator = LatexNodes2Text()
-    for key, value in entry.fields.items():
+    out = deepcopy(entry)
+    for key, value in out.fields.items():
         if key == "url":
             # The url can contain special LaTeX characters (like %) and that's fine
             continue
-        entry.fields[key] = translator.latex_to_text(value)
-    return entry
+        out.fields[key] = translator.latex_to_text(value)
+    return out
 
 
 def pybtex_to_dict(entry):
@@ -192,7 +194,7 @@ def sanitize_title(d):
 
 
 def pybtex_to_bibtex_string(
-    entry: pybtex.database.Entry,
+    entry: Entry,
     bibtex_key: str,
     delimiters: tuple[str, str] = ("{", "}"),
     indent: str = " ",
@@ -391,7 +393,7 @@ def heuristic_unique_result(results, d):
 # This used to be a write() function, but beware of exceptions! Files would get
 # unintentionally overridden, see <https://github.com/nschloe/betterbib/issues/184>
 def to_string(
-    od: dict[str, pybtex.database.Entry],
+    od: dict[str, Entry],
     delimiter_type: str,
     tab_indent: bool,
     preamble: list | None = None,
