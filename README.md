@@ -118,21 +118,26 @@ them (if they are in the default dictionary, like `Einstein`), but you might wan
 some. To this end, create the config file
 
 ```
-~/.config/betterbib/config.ini
+~/.config/betterbib/config.toml
 ```
 
 and fill it with, e.g.,
 
-```
+```toml
 [DICTIONARY]
-add=Arnoldi,
-    Bernstein,
-    Boolean,
-    Chebyshev,
-    Hermitian
+add=["Abrikosov", "Arnoldi", "Bergman", "Bernstein",
+"Bruijn", "Chebyshev", "Danilewski", "Darboux", "Galerkin",
+"Ginzburg", "Goldbach", "Hermite", "Hermitian", "Hopf",
+"Hopfield", "Hölder", "Jacobi", "Jacobian", "Kolmogorov",
+"Kronrod", "Krylov", "Kuratowski", "Kutta", "Lanczos",
+"Liouville", "Lyapunov", "Magnus", "Manin", "Minkowski",
+"Navier", "Peano", "Pell", "Pezzo", "Pitaevskii", "Pólya",
+"Ramanujan", "Ricatti", "Runge", "Scholz", "Schur", "Siebeck",
+"Sommerfeld", "Stieltjes", "Tausworthe", "Tchebycheff",
+"Toeplitz", "Voronoi", "Voronoï", "Wieland", "Wronski",
+"Wronskian"]
 
-remove=hermitian,
-   boolean
+remove=["hermitian", "boolean" ]
 ```
 
 ### Similar software
