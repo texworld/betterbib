@@ -1,19 +1,14 @@
-import pybtex
 import pytest
+from pybtex.database import Entry, Person
 
 import betterbib
 
-version_line = (
-    f"%comment{{This file was created with betterbib v{betterbib.__version__}.}}\n"
-)
-
 
 @pytest.mark.parametrize(
-    "key,ref_entry,ref_str",
+    "ref_entry,ref_str",
     [
         (
-            "foobar",
-            pybtex.database.Entry(
+            Entry(
                 "article",
                 fields={
                     "doi": "foobar",
@@ -29,47 +24,58 @@ version_line = (
         ),
         # escape ampersand:
         (
-            "foobar",
-            pybtex.database.Entry("article", fields={"title": "Foo \\& Bar"}),
+            Entry("article", fields={"title": "Foo \\& Bar"}),
             ["@article{foobar,", " title = {Foo \\& Bar},", "}"],
         ),
         # escape command:
         (
-            "foobar",
-            pybtex.database.Entry("article", fields={"title": "Foo on \\LaTeX"}),
+            Entry("article", fields={"title": "Foo on \\LaTeX"}),
             ["@article{foobar,", " title = {Foo on \\LaTeX},", "}"],
         ),
-        # more escape:
+        # more empty space
         (
-            "foobar",
-            pybtex.database.Entry(
-                "article", fields={"title": "Foo \\& on \\ @TheBridge"}
+            Entry("article", fields={"title": "Foo \\ Bridge"}),
+            ["@article{foobar,", " title = {Foo \\ Bridge},", "}"],
+        ),
+        # encode url
+        (
+            Entry(
+                "misc",
+                fields={
+                    "url": "https://www.wolframalpha.com/input/?i=integrate+from+0+to+2pi+(cos(x)+e%5E(i+*+(m+-+n)+*+x))",
+                    "note": "Online; accessed 19-February-2019",
+                },
             ),
-            ["@article{foobar,", " title = {Foo \\& on \\ @TheBridge},", "}"],
+            [
+                "@misc{foobar,",
+                " url = {https://www.wolframalpha.com/input/?i=integrate+from+0+to+2pi+(cos(x)+e%5E(i+*+(m+-+n)+*+x))},",
+                " note = {Online; accessed 19-February-2019},",
+                "}",
+            ],
         ),
         (
-            "foobar",
-            pybtex.database.Entry(
-                "article", fields={"title": "Foo \\& on \\LaTeX\\ @TheBridge"}
+            Entry(
+                "misc",
+                fields={"doi": "10.1007/978-1-4615-7419-4_6"},
             ),
-            ["@article{foobar,", " title = {Foo \\& on \\LaTeX\\ @TheBridge},", "}"],
+            [
+                "@misc{foobar,",
+                " doi = {10.1007/978-1-4615-7419-4_6},",
+                "}",
+            ],
         ),
-        # # Keeping when unformatted
-        # (
-        #     TEST_BIBTEXT_PREAMBLE_UNFORMATTED,
-        #     TEST_BIBTEXT_PREAMBLE_FORMATTED_KEEP,
-        # ),
-        # # Keeping when preamble and preformatted
-        # (
-        #     TEST_BIBTEXT_PREAMBLE_FORMATTED_KEEP,
-        #     TEST_BIBTEXT_PREAMBLE_FORMATTED_KEEP,
-        # ),
-        # # Keeping when no preamble and preformatted
-        # (
-        #     TEST_BIBTEXT_PREAMBLE_FORMATTED_DROP,
-        #     TEST_BIBTEXT_PREAMBLE_FORMATTED_DROP,
-        # ),
+        (
+            Entry(
+                "misc",
+                persons={"author": [Person("Doe, J. J.")]},
+            ),
+            [
+                "@misc{foobar,",
+                " author = {Doe, J. J.},",
+                "}",
+            ],
+        ),
     ],
 )
-def test_cli_format(key, ref_entry, ref_str):
-    assert betterbib.pybtex_to_bibtex_string(ref_entry, key) == "\n".join(ref_str)
+def test_cli_format(ref_entry, ref_str):
+    assert betterbib.pybtex_to_bibtex_string(ref_entry, "foobar") == "\n".join(ref_str)
