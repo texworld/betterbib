@@ -44,7 +44,7 @@ jobs:
       - name: Test with tox
         run: |
           # add some entries to the dict
-          mkdir -p ~/.config/betterbib/ && echo -e "[DICTIONARY]\nadd=Magnus,Peano,Kutta,Runge,Hermitian,Jacobian\nremove=hermitian" > ~/.config/betterbib/config.ini
+          mkdir -p ~/.config/betterbib/ && echo -e "[DICTIONARY]\nadd=['Magnus','Peano','Kutta','Runge','Hermitian','Jacobian']\nremove=['hermitian']" > ~/.config/betterbib/config.toml
           pip install tox
           tox -- --cov betterbib --cov-report xml --cov-report term
       - uses: codecov/codecov-action@v1
