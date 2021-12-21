@@ -67,6 +67,8 @@ is converted to
 Use `-i`/`--in-place` to modify the input file in place. Use `-h`/`--help` to see all
 options.
 
+<!--pytest-codeblocks:skipif(sys.version_info >= (3, 10))-->
+
 ```sh
 betterbib up -h
 ```
