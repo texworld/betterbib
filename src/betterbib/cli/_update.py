@@ -76,11 +76,4 @@ def add_args(parser):
         default=False,
         help="force LaTeX output (default: unicode)",
     )
-    parser.add_argument(
-        "-p",
-        "--page-range-separator",
-        type=str,
-        default="--",
-        help="page range separator (default: --)",
-    )
     return parser
