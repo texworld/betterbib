@@ -21,11 +21,15 @@ comparing them with online sources and correcting whatever entries are faulty.
 
 Install with
 
+<!--pytest-codeblocks:skip-->
+
 ```sh
 pip install betterbib
 ```
 
-and run simply run
+and simply run
+
+<!--pytest-codeblocks:skip-->
 
 ```sh
 betterbib update in.bib   # or short `betterbib up`
@@ -63,18 +67,60 @@ is converted to
 Use `-i`/`--in-place` to modify the input file in place. Use `-h`/`--help` to see all
 options.
 
-#### Sync
+<!--pytest-codeblocks:skipif(sys.version_info >= (3, 10))-->
+
+```sh
+betterbib up -h
+```
+
+<!--pytest-codeblocks:expected-output-->
+
+```
+usage: betterbib update [-h] [-i] [-b] [-t] [-d {braces,quotes}]
+                        [-u {unchanged,new,short}] [-p PAGE_RANGE_SEPARATOR]
+                        [-s {crossref,dblp}] [-l]
+                        [--extra-abbrev-file EXTRA_ABBREV_FILE] [-c N] [-a]
+                        infiles [infiles ...]
+
+positional arguments:
+  infiles               input BibTeX files (default: stdin)
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -i, --in-place        modify infile in place
+  -s {crossref,dblp}, --source {crossref,dblp}
+                        data source (default: crossref)
+  -l, --long-journal-names
+                        prefer long journal names (default: false)
+  --extra-abbrev-file EXTRA_ABBREV_FILE
+                        custom journal abbreviations, as JSON file
+  -c N, --num-concurrent-requests N
+                        number of concurrent HTTPS requests (default: 10)
+  -a, --latex-output    force LaTeX output (default: unicode)
+
+Formatting:
+  -b, --sort-by-bibkey  sort entries by BibTeX key (default: false)
+  -t, --tab-indent      use tabs for indentation (default: false)
+  -d {braces,quotes}, --delimiter-type {braces,quotes}
+                        which delimiters to use in the output file (default:
+                        braces {...})
+  -u {unchanged,new,short}, --doi-url-type {unchanged,new,short}
+                        DOI URL (new: https://doi.org/<DOI> (default), short:
+                        https://doi.org/abcde)
+  -p PAGE_RANGE_SEPARATOR, --page-range-separator PAGE_RANGE_SEPARATOR
+                        page range separator (default: --)
+```
 
 betterbib fetches data from
 
 - [Crossref](http://www.crossref.org/) (default) or
 - [DBLP](http://dblp.uni-trier.de/) (`--source dblp`).
 
-All betterbib-sync command-line options are explained in `betterbib-sync -h`.
-
 #### Format
 
 The tool
+
+<!--pytest-codeblocks:skip-->
 
 ```sh
 betterbib format in.bib

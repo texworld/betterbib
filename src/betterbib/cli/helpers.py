@@ -64,3 +64,10 @@ def add_formatting_parser_arguments(parser):
             "short: https://doi.org/abcde)"
         ),
     )
+    formatting_group.add_argument(
+        "-p",
+        "--page-range-separator",
+        type=str,
+        default="--",
+        help="page range separator (default: --)",
+    )

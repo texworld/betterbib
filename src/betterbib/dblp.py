@@ -62,6 +62,12 @@ def _dblp_to_pybtex(data):
             pass
 
     try:
+        # unify page ranges to xx-xx (instead of the double dash)
+        fields_dict["pages"] = data["pages"].replace("--", "-")
+    except KeyError:
+        pass
+
+    try:
         fields_dict["source"] = data["source"]
     except KeyError:
         fields_dict["source"] = "DBLP"

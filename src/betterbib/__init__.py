@@ -8,10 +8,10 @@ from .sync import sync
 from .tools import (
     create_dict,
     decode,
+    dict_to_string,
     merge,
     pybtex_to_bibtex_string,
     pybtex_to_dict,
-    to_string,
     translate_month,
 )
 
@@ -23,7 +23,7 @@ __all__ = [
     "errors",
     "pybtex_to_dict",
     "pybtex_to_bibtex_string",
-    "to_string",
+    "dict_to_string",
     "merge",
     "translate_month",
     "Crossref",

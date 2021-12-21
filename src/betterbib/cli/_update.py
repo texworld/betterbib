@@ -1,7 +1,7 @@
 from ..adapt_doi_urls import adapt_doi_urls
 from ..journal_abbrev import journal_abbrev
 from ..sync import sync
-from ..tools import bibtex_parser, sanitize_title, to_string, write
+from ..tools import bibtex_parser, dict_to_string, sanitize_title, write
 from .helpers import add_file_parser_arguments, add_formatting_parser_arguments
 
 
@@ -27,11 +27,12 @@ def run(args):
         sanitize_title(d)
         d = journal_abbrev(d, args.long_journal_names, args.extra_abbrev_file)
 
-        string = to_string(
+        string = dict_to_string(
             d,
             args.delimiter_type,
             tab_indent=args.tab_indent,
             unicode=not args.latex_output,
+            page_range_separator="--",
         )
 
         write(string, infile if args.in_place else None)
