@@ -227,6 +227,7 @@ def pybtex_to_bibtex_string(
     entry: Entry,
     bibtex_key: str,
     delimiters: tuple[str, str] = ("{", "}"),
+    page_range_separator: str = "--",
     indent: str = " ",
     sort: bool = False,
     unicode: bool = True,
@@ -276,13 +277,18 @@ def pybtex_to_bibtex_string(
         # Always make keys lowercase
         key = key.lower()
 
+        if key == "pages":
+            # force double https://tex.stackexchange.com/a/58671/13262
+            value = value.replace("-", page_range_separator)
+
         if key == "month":
             month_string = translate_month(value)
             if month_string:
                 content.append(f"{key} = {month_string}")
-        else:
-            if value is not None:
-                content.append(f"{key} = {left}{value}{right}")
+            continue
+
+        if value is not None:
+            content.append(f"{key} = {left}{value}{right}")
 
     # Make sure that every line ends with a comma
     out += indent.join([line + ",\n" for line in content])
@@ -424,9 +430,10 @@ def heuristic_unique_result(results, d):
 
 # This used to be a write() function, but beware of exceptions! Files would get
 # unintentionally overridden, see <https://github.com/nschloe/betterbib/issues/184>
-def to_string(
+def dict_to_string(
     od: dict[str, Entry],
     delimiter_type: str,
+    page_range_separator: str,
     tab_indent: bool,
     preamble: list | None = None,
     unicode: bool = True,
@@ -462,6 +469,7 @@ def to_string(
                 d,
                 bib_id,
                 delimiters=delimiters,
+                page_range_separator=page_range_separator,
                 indent="\t" if tab_indent else " ",
                 unicode=unicode,
             )

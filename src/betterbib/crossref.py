@@ -143,7 +143,6 @@ class Crossref:
             "title",
             "journal",
             "doi",
-            "pages",
             "year",
             "volume",
             "number",
@@ -270,7 +269,6 @@ class Crossref:
         pairs = {
             "doi": "DOI",
             "number": "issue",
-            "pages": "page",
             "source": "source",
             "url": "URL",
             "volume": "volume",
@@ -373,6 +371,12 @@ class Crossref:
 
         try:
             fields_dict["isbn"] = ", ".join(data["ISBN"])
+        except KeyError:
+            pass
+
+        try:
+            # unify page ranges to xx-xx (instead of the double dash)
+            fields_dict["pages"] = data["page"]
         except KeyError:
             pass
 
