@@ -25,7 +25,7 @@ Install with
 pip install betterbib
 ```
 
-and run simply run
+and simply run
 
 ```sh
 betterbib update in.bib   # or short `betterbib up`

@@ -28,8 +28,7 @@ def test_crossref_article0():
             "doi": "10.1137/110820713",
             "issn": "0895-4798, 1095-7162",
             "publisher": "Society for Industrial & Applied Mathematics (SIAM)",
-            "title": "A Framework for Deflated and Augmented "
-            + "Krylov Subspace Methods",
+            "title": "A Framework for Deflated and Augmented Krylov Subspace Methods",
             "url": "http://dx.doi.org/10.1137/110820713",
             "journal": "SIAM J. Matrix Anal. & Appl.",
             "number": "2",
@@ -182,7 +181,8 @@ def test_crossref_inbook0():
             "publisher": "John Wiley & Sons, Ltd",
             "chapter": "Differential and Difference Equations",
             "url": "http://dx.doi.org/10.1002/0470868279.ch1",
-            "booktitle": "Numerical Methods " + "for Ordinary Differential Equations",
+            "booktitle": "Numerical Methods for Ordinary Differential Equations",
+            "isbn": "9780470868270, 9780471967583",
             "month": 1,
             "source": "Crossref",
             "year": 2005,
@@ -200,9 +200,7 @@ def test_crossref_incollection0():
 
     test_entry = pybtex.database.Entry(
         "incollection",
-        fields={
-            "title": "Numerical continuation, " + "and computation of normal forms"
-        },
+        fields={"title": "Numerical continuation, and computation of normal forms"},
         persons=pybtex.database.OrderedCaseInsensitiveDict(
             {
                 "author": [
@@ -331,7 +329,7 @@ def test_crossref_proceedings0():
     reference = pybtex.database.Entry(
         "proceedings",
         fields={
-            "publisher": "Wydawnictwo Uniwersytetu Ekonomicznego " + "we Wrocławiu",
+            "publisher": "Wydawnictwo Uniwersytetu Ekonomicznego we Wrocławiu",
             "doi": "10.15611/amse.2014.17",
             "title": "International Scientific Conference",
             "url": "http://dx.doi.org/10.15611/amse.2014.17",
@@ -355,8 +353,7 @@ def test_doi_only():
             "doi": "10.1137/110820713",
             "issn": "0895-4798, 1095-7162",
             "publisher": "Society for Industrial & Applied Mathematics (SIAM)",
-            "title": "A Framework for Deflated and Augmented "
-            + "Krylov Subspace Methods",
+            "title": "A Framework for Deflated and Augmented Krylov Subspace Methods",
             "url": "http://dx.doi.org/10.1137/110820713",
             "journal": "SIAM Journal on Matrix Analysis and Applications",
             "number": "2",
@@ -369,9 +366,9 @@ def test_doi_only():
         persons=pybtex.database.OrderedCaseInsensitiveDict(
             {
                 "author": [
-                    pybtex.database.Person("Gaul, Andr\xe9"),
+                    pybtex.database.Person("Gaul, André"),
                     pybtex.database.Person("Gutknecht, Martin H."),
-                    pybtex.database.Person("Liesen, J\xf6rg"),
+                    pybtex.database.Person("Liesen, Jörg"),
                     pybtex.database.Person("Nabben, Reinhard"),
                 ]
             }
