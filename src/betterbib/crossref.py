@@ -279,7 +279,7 @@ class Crossref:
         container_title = None
         # If possible, get the long journal name; it's later abbreviated if
         # requested. See <https://github.com/nschloe/betterbib/issues/233> for
-        # an example of how the native CrossRef journal names are off.
+        # an example of how the CrossRef-native short journal names are off.
         for key in [
             "container-title",
             "short-container-title",
