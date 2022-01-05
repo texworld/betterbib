@@ -26,6 +26,9 @@ def journal_abbrev(
     table_keys_lower = {k.lower(): v for k, v in table.items()}
 
     for value in d.values():
+        if "journal" not in value.fields:
+            continue
+
         journal = value.fields["journal"]
         try:
             value.fields["journal"] = table[journal]
