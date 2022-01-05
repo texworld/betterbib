@@ -278,8 +278,9 @@ def pybtex_to_bibtex_string(
         key = key.lower()
 
         if key == "pages":
-            # force double https://tex.stackexchange.com/a/58671/13262
-            value = value.replace("-", page_range_separator)
+            # Replace any number of `-` by page_range_separator; see
+            # <https://tex.stackexchange.com/a/58671/13262>
+            value = re.sub("-+", page_range_separator, value)
 
         if key == "month":
             month_string = translate_month(value)
