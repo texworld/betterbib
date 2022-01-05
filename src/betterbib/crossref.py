@@ -69,13 +69,10 @@ class Crossref:
     <https://github.com/Crossref/rest-api-doc/blob/master/rest_api.md>.
     """
 
-    def __init__(self, prefer_long_journal_name=False):
+    def __init__(self):
         self.api_url = "https://api.crossref.org/works"
-        self.prefer_long_journal_name = prefer_long_journal_name
-
         requests_cache.install_cache("betterbib_cache", expire_after=3600)
         # requests_cache.remove_expired_responses()
-        return
 
     def _crossref_to_bibtex_type(self, entry):
         # The difficulty here: Translating book-chapter. If the book is a monograph (all
@@ -280,10 +277,13 @@ class Crossref:
                 pass
 
         container_title = None
-        keys = ["short-container-title", "container-title"]
-        if self.prefer_long_journal_name:
-            keys = reversed(keys)
-        for key in keys:
+        # If possible, get the long journal name; it's later abbreviated if
+        # requested. See <https://github.com/nschloe/betterbib/issues/233> for
+        # an example of how the native CrossRef journal names are off.
+        for key in [
+            "container-title",
+            "short-container-title",
+        ]:
             if key in data and data[key]:
                 container_title = data[key][0]
                 break

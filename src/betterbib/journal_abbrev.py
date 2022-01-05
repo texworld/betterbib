@@ -1,35 +1,37 @@
+from __future__ import annotations
+
 import json
 from pathlib import Path
 
+from pybtex.database import Entry
 
-def journal_abbrev(d, long_journal_names: bool = False, custom_abbrev=None):
+
+def journal_abbrev(
+    d: dict[str, Entry],
+    long_journal_names: bool = False,
+    custom_abbrev: str | None = None,
+) -> dict[str, Entry]:
     this_dir = Path(__file__).resolve().parent
     with open(this_dir / "data/journals.json") as f:
         table = json.load(f)
 
     if custom_abbrev is not None:
         with open(custom_abbrev) as f:
-            custom_table = json.load(f)
-    else:
-        custom_table = {}
+            table.update(json.load(f))
 
     if long_journal_names:
-        custom_table = {v: k for k, v in custom_table.items()}
         table = {v: k for k, v in table.items()}
-
-    table.update(custom_table)
 
     # fallback option
     table_keys_lower = {k.lower(): v for k, v in table.items()}
 
     for value in d.values():
+        journal = value.fields["journal"]
         try:
-            value.fields["journal"] = table[value.fields["journal"]]
+            value.fields["journal"] = table[journal]
         except KeyError:
             try:
-                value.fields["journal"] = table_keys_lower[
-                    value.fields["journal"].lower()
-                ]
+                value.fields["journal"] = table_keys_lower[journal.lower()]
             except KeyError:
                 pass
 
