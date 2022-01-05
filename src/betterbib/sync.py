@@ -2,27 +2,27 @@ from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
-import pybtex
-import pybtex.database
+from pybtex.database import Entry
 from rich.progress import track
 
 from . import crossref, dblp, errors, tools
+from .journal_abbrev import journal_abbrev
 
 
 def sync(
-    d: dict[str, pybtex.database.Entry],
+    d: dict[str, Entry],
     source: str,
-    long_journal_name: bool,
+    long_journal_names: bool,
     max_workers: int,
     verbose: bool,
-) -> dict[str, pybtex.database.Entry]:
+) -> dict[str, Entry]:
     """
     Sync a bibtex dict with an external source
 
         Parameters:
             d (dict): bibtex dict
             source (str): data source to sync against
-            long_journal_name (bool): use the long journal name instead of short
+            long_journal_names (bool): use the long journal name instead of short
             max_workers (int): number of concurrent workers to use
             verbose (bool): print additional information to stdout
 
@@ -31,7 +31,7 @@ def sync(
     """
 
     if source == "crossref":
-        src = crossref.Crossref(long_journal_name)
+        src = crossref.Crossref()
     else:
         assert source == "dblp", "Illegal source."
         src = dblp.Dblp()
@@ -58,6 +58,9 @@ def sync(
             else:
                 num_success += 1
                 d[bib_id] = tools.merge(entry, data)
+
+    # (un)abbreviate journal names
+    d = journal_abbrev(d, long_journal_names)
 
     if verbose:
         print(f"\n\nTotal number of entries: {len(d)}")

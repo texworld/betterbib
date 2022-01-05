@@ -30,7 +30,7 @@ def test_crossref_article0():
             "publisher": "Society for Industrial & Applied Mathematics (SIAM)",
             "title": "A Framework for Deflated and Augmented Krylov Subspace Methods",
             "url": "http://dx.doi.org/10.1137/110820713",
-            "journal": "SIAM J. Matrix Anal. & Appl.",
+            "journal": "SIAM Journal on Matrix Analysis and Applications",
             "number": "2",
             "month": 1,
             "volume": "34",
@@ -41,9 +41,9 @@ def test_crossref_article0():
         persons=pybtex.database.OrderedCaseInsensitiveDict(
             {
                 "author": [
-                    pybtex.database.Person("Gaul, Andr\xe9"),
+                    pybtex.database.Person("Gaul, André"),
                     pybtex.database.Person("Gutknecht, Martin H."),
-                    pybtex.database.Person("Liesen, J\xf6rg"),
+                    pybtex.database.Person("Liesen, Jörg"),
                     pybtex.database.Person("Nabben, Reinhard"),
                 ]
             }
@@ -152,7 +152,7 @@ def test_crossref_book1():
             {
                 "author": [
                     pybtex.database.Person("Golub, Gene H."),
-                    pybtex.database.Person("Meurant, G\xe9rard"),
+                    pybtex.database.Person("Meurant, Gérard"),
                 ]
             }
         ),
@@ -229,12 +229,12 @@ def test_crossref_incollection0():
         persons=pybtex.database.OrderedCaseInsensitiveDict(
             {
                 "author": [
-                    pybtex.database.Person("Beyn, Wolf-J\xfcrgen"),
+                    pybtex.database.Person("Beyn, Wolf-Jürgen"),
                     pybtex.database.Person("Champneys, Alan"),
                     pybtex.database.Person("Doedel, Eusebius"),
                     pybtex.database.Person("Govaerts, Willy"),
                     pybtex.database.Person("Kuznetsov, Yuri A."),
-                    pybtex.database.Person("Sandstede, Bj\xf6rn"),
+                    pybtex.database.Person("Sandstede, Björn"),
                 ]
             }
         ),
@@ -344,7 +344,7 @@ def test_crossref_proceedings0():
 
 
 def test_doi_only():
-    source = betterbib.Crossref(prefer_long_journal_name=True)
+    source = betterbib.Crossref()
 
     bt = source.get_by_doi("10.1137/110820713")
     reference = pybtex.database.Entry(
@@ -410,7 +410,7 @@ def test_crossref_all_capitals():
             "publisher": "World Scientific Pub Co Pte Lt",
             "title": "ONTOLOGICAL COGNITIVE MAP",
             "url": "http://dx.doi.org/10.1142/s0218213009000366",
-            "journal": "Int. J. Artif. Intell. Tools",
+            "journal": "International Journal on Artificial Intelligence Tools",
             "number": "05",
             "month": 10,
             "volume": "18",
@@ -464,7 +464,7 @@ def test_subtitle():
             "title": "TUBE",
             "subtitle": "time-dependent pricing for mobile data",
             "url": "http://dx.doi.org/10.1145/2377677.2377723",
-            "journal": "SIGCOMM Comput. Commun. Rev.",
+            "journal": "ACM SIGCOMM Computer Communication Review",
             "issn": "0146-4833",
             "number": "4",
             "month": 9,
