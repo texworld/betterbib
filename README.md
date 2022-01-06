@@ -67,7 +67,7 @@ is converted to
 Use `-i`/`--in-place` to modify the input file in place. Use `-h`/`--help` to see all
 options.
 
-<!--pytest-codeblocks:skipif(sys.version_info >= (3, 10))-->
+<!--pytest-codeblocks:skipif(sys.version_info < (3, 10))-->
 
 ```sh
 betterbib up -h
@@ -77,15 +77,15 @@ betterbib up -h
 
 ```
 usage: betterbib update [-h] [-i] [-b] [-t] [-d {braces,quotes}]
-                        [-u {unchanged,new,short}] [-p PAGE_RANGE_SEPARATOR]
-                        [-s {crossref,dblp}] [-l]
-                        [--extra-abbrev-file EXTRA_ABBREV_FILE] [-c N] [-a]
+                        [--doi-url-type {unchanged,new,short}]
+                        [-p PAGE_RANGE_SEPARATOR] [-s {crossref,dblp}] [-l]
+                        [--extra-abbrev-file EXTRA_ABBREV_FILE] [-c N] [-u]
                         infiles [infiles ...]
 
 positional arguments:
   infiles               input BibTeX files (default: stdin)
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
   -i, --in-place        modify infile in place
   -s {crossref,dblp}, --source {crossref,dblp}
@@ -96,7 +96,7 @@ optional arguments:
                         custom journal abbreviations, as JSON file
   -c N, --num-concurrent-requests N
                         number of concurrent HTTPS requests (default: 10)
-  -a, --latex-output    force LaTeX output (default: unicode)
+  -u, --unicode-output  unicode output (default: escape special characters)
 
 Formatting:
   -b, --sort-by-bibkey  sort entries by BibTeX key (default: false)
@@ -104,7 +104,7 @@ Formatting:
   -d {braces,quotes}, --delimiter-type {braces,quotes}
                         which delimiters to use in the output file (default:
                         braces {...})
-  -u {unchanged,new,short}, --doi-url-type {unchanged,new,short}
+  --doi-url-type {unchanged,new,short}
                         DOI URL (new: https://doi.org/<DOI> (default), short:
                         https://doi.org/abcde)
   -p PAGE_RANGE_SEPARATOR, --page-range-separator PAGE_RANGE_SEPARATOR
