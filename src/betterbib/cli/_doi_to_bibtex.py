@@ -1,7 +1,7 @@
 from unidecode import unidecode
 
 from .. import crossref
-from ..tools import dict_to_string, write
+from ..tools import dict_to_string, set_page_range_separator, write
 from .helpers import add_formatting_parser_arguments
 
 
@@ -11,12 +11,10 @@ def run(args):
 
     bibtex_citekey = _create_citekey_for_entry(entry)
 
-    string = dict_to_string(
-        {bibtex_citekey: entry},
-        args.delimiter_type,
-        tab_indent=args.tab_indent,
-        page_range_separator="--",
-    )
+    d = {bibtex_citekey: entry}
+    set_page_range_separator(d, "--")
+
+    string = dict_to_string(d, args.delimiter_type, tab_indent=args.tab_indent)
 
     write(string)
 

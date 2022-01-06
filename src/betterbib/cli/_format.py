@@ -1,5 +1,11 @@
 from ..adapt_doi_urls import adapt_doi_urls
-from ..tools import bibtex_parser, dict_to_string, filter_fields, write
+from ..tools import (
+    bibtex_parser,
+    dict_to_string,
+    filter_fields,
+    set_page_range_separator,
+    write,
+)
 from .helpers import add_file_parser_arguments, add_formatting_parser_arguments
 
 
@@ -18,11 +24,12 @@ def run(args):
 
         d = dict(tuples)
         adapt_doi_urls(d, args.doi_url_type)
+        set_page_range_separator(d, "--")
+
         string = dict_to_string(
             d,
             args.delimiter_type,
             tab_indent=args.tab_indent,
-            page_range_separator="--",
             # FIXME: use public argument when it becomes possible
             preamble=data._preamble,
         )
