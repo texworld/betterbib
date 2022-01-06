@@ -214,7 +214,7 @@ def _translate_title(val, dictionary=create_dict()):
     return " ".join(words)
 
 
-def sanitize_title(d) -> None:
+def preserve_title_capitalization(d: dict[str, Entry]) -> None:
     for _, entry in d.items():
         try:
             title = entry.fields["title"]
@@ -242,7 +242,23 @@ def set_page_range_separator(d: dict[str, Entry], string: str) -> None:
     for _, entry in d.items():
         if "pages" not in entry.fields:
             continue
-        entry.fields["pages"] = re.sub(f"[{chars}]+", string, entry.field["pages"])
+        entry.fields["pages"] = re.sub(f"[{chars}]+", string, entry.fields["pages"])
+
+
+def remove_multiple_spaces(d: dict[str, Entry]) -> None:
+    for _, entry in d.items():
+        for key, value in entry.fields.items():
+            if key in ["url", "doi"]:
+                continue
+            try:
+                value = re.sub(" +", " ", value)
+                # Remove trailing spaces
+                value = value.rstrip()
+            except TypeError:
+                # expected unicode for encode input, but got int instead
+                pass
+            else:
+                entry.fields[key] = value
 
 
 def pybtex_to_bibtex_string(
@@ -276,25 +292,6 @@ def pybtex_to_bibtex_string(
     for key in keys:
         value = entry.fields[key]
 
-        try:
-            value = value.replace("\N{REPLACEMENT CHARACTER}", "?")
-        except AttributeError:
-            pass
-
-        try:
-            if key not in ["url", "doi"]:
-                # Parse the original value to get a unified version
-                # value = translator.latex_to_text(value)
-                # # back to latex to escape "&" etc.
-                # value = unicode_to_latex(value)
-                # Replace multiple spaces by one
-                value = re.sub(" +", " ", value)
-                # Remove trailing spaces
-                value = value.rstrip()
-        except TypeError:
-            # expected unicode for encode input, but got int instead
-            pass
-
         # Always make keys lowercase
         key = key.lower()
 
@@ -303,6 +300,14 @@ def pybtex_to_bibtex_string(
             if month_string:
                 content.append(f"{key} = {month_string}")
             continue
+
+        try:
+            value = value.replace("\N{REPLACEMENT CHARACTER}", "?")
+        except AttributeError:
+            pass
+
+        if not unicode:
+            value = unicode_to_latex(value)
 
         if value is not None:
             content.append(f"{key} = {left}{value}{right}")

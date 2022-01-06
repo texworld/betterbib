@@ -4,7 +4,8 @@ from ..sync import sync
 from ..tools import (
     bibtex_parser,
     dict_to_string,
-    sanitize_title,
+    preserve_title_capitalization,
+    remove_multiple_spaces,
     set_page_range_separator,
     write,
 )
@@ -29,9 +30,10 @@ def run(args):
             args.num_concurrent_requests,
             args.in_place,
         )
-        d = adapt_doi_urls(d, args.doi_url_type)
-        sanitize_title(d)
+        adapt_doi_urls(d, args.doi_url_type)
+        preserve_title_capitalization(d)
         set_page_range_separator(d, "--")
+        remove_multiple_spaces(d)
         d = journal_abbrev(d, args.long_journal_names, args.extra_abbrev_file)
 
         string = dict_to_string(

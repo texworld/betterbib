@@ -17,7 +17,7 @@ def run(args):
             tuples = sorted(data.entries.items())
 
         d = dict(tuples)
-        d = adapt_doi_urls(d, args.doi_url_type)
+        adapt_doi_urls(d, args.doi_url_type)
         string = dict_to_string(
             d,
             args.delimiter_type,
