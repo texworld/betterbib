@@ -55,7 +55,6 @@ def add_formatting_parser_arguments(parser):
         help=("which delimiters to use in the output file " "(default: braces {...})"),
     )
     formatting_group.add_argument(
-        "-u",
         "--doi-url-type",
         choices=["unchanged", "new", "short"],
         default="new",

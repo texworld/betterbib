@@ -40,7 +40,7 @@ def run(args):
             d,
             args.delimiter_type,
             tab_indent=args.tab_indent,
-            unicode=not args.latex_output,
+            unicode=args.unicode_output,
         )
 
         write(string, infile if args.in_place else None)
@@ -78,10 +78,10 @@ def add_args(parser):
         help="number of concurrent HTTPS requests (default: 10)",
     )
     parser.add_argument(
-        "-a",
-        "--latex-output",
+        "-u",
+        "--unicode-output",
         action="store_true",
         default=False,
-        help="force LaTeX output (default: unicode)",
+        help="unicode output (default: escape special characters)",
     )
     return parser
