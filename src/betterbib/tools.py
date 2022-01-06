@@ -306,7 +306,9 @@ def pybtex_to_bibtex_string(
         except AttributeError:
             pass
 
-        if not unicode:
+        # skip title; otherwise, the "protective" braces (e.g., "{Krylov}") get
+        # escaped as well
+        if not unicode and key != "title":
             value = unicode_to_latex(value)
 
         if value is not None:

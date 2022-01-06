@@ -26,7 +26,7 @@ def adapt_doi_urls(d: dict[str, Entry], doi_url_type: str) -> None:
 
 
 def _update_doi_url(d: dict[str, Entry], url_from_doi: Callable[[str], str]) -> None:
-    for bib_id, value in d:
+    for bib_id, value in d.items():
         if "url" not in value.fields:
             continue
 

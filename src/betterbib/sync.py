@@ -60,7 +60,7 @@ def sync(
                 d[bib_id] = tools.merge(entry, data)
 
     # (un)abbreviate journal names
-    d = journal_abbrev(d, long_journal_names)
+    journal_abbrev(d, long_journal_names)
 
     if verbose:
         print(f"\n\nTotal number of entries: {len(d)}")

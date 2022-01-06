@@ -34,7 +34,7 @@ def run(args):
         preserve_title_capitalization(d)
         set_page_range_separator(d, "--")
         remove_multiple_spaces(d)
-        d = journal_abbrev(d, args.long_journal_names, args.extra_abbrev_file)
+        journal_abbrev(d, args.long_journal_names, args.extra_abbrev_file)
 
         string = dict_to_string(
             d,
