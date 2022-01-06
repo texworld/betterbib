@@ -1,32 +1,37 @@
+from __future__ import annotations
+
 from typing import Callable
+
+from pybtex.database import Entry
 
 from . import tools
 
 
-def adapt_doi_urls(d, doi_url_type: str):
+def adapt_doi_urls(d: dict[str, Entry], doi_url_type: str) -> None:
     if doi_url_type == "new":
-        d = _update_doi_url(d, lambda doi: "https://doi.org/" + doi)
+        _update_doi_url(d, lambda doi: f"https://doi.org/{doi}")
+
     elif doi_url_type == "short":
 
-        def update_to_short_doi(doi):
+        def update_to_short_doi(doi: str) -> str | None:
             short_doi = tools.get_short_doi(doi)
             if short_doi:
-                return "https://doi.org/" + short_doi
+                return f"https://doi.org/{short_doi}"
             return None
 
-        d = _update_doi_url(d, update_to_short_doi)
+        _update_doi_url(d, update_to_short_doi)
+
     else:
         assert doi_url_type == "unchanged"
 
-    return d
 
+def _update_doi_url(d: dict[str, Entry], url_from_doi: Callable[[str], str]) -> None:
+    for bib_id, value in d.items():
+        if "url" not in value.fields:
+            continue
 
-def _update_doi_url(d, url_from_doi: Callable[[str], str]):
-    for bib_id in d:
-        if "url" in d[bib_id].fields:
-            doi = tools.doi_from_url(d[bib_id].fields["url"])
-            if doi:
-                new_url = url_from_doi(doi)
-                if new_url:
-                    d[bib_id].fields["url"] = new_url
-    return d
+        doi = tools.doi_from_url(value.fields["url"])
+        if doi:
+            new_url = url_from_doi(doi)
+            if new_url:
+                d[bib_id].fields["url"] = new_url

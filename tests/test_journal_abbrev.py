@@ -30,8 +30,8 @@ def test_standard_abbrev():
     abbrevs = [PNAS_ABBREV]
     for journal, abbrev in zip(journals, abbrevs):
         entries = make_fake_entry(journal)
-        abbreviated = betterbib.journal_abbrev(entries)
-        assert abbreviated["foo"].fields["journal"] == abbrev
+        betterbib.journal_abbrev(entries)
+        assert entries["foo"].fields["journal"] == abbrev
 
 
 @pytest.mark.skipif(not data_file_exists, reason="Data file missing")
@@ -42,16 +42,16 @@ def test_custom_abbrev():
         f.write(super_short)
 
     entries = make_fake_entry("PNAS")
-    abbreviated = betterbib.journal_abbrev(entries, custom_abbrev=infile)
-    assert abbreviated["foo"].fields["journal"] == PNAS_ABBREV
+    betterbib.journal_abbrev(entries, custom_abbrev=infile)
+    assert entries["foo"].fields["journal"] == PNAS_ABBREV
 
     super_short = '{"' + FULL_PNAS + '": "PNAS"}'
     with open(infile, "w") as f:
         f.write(super_short)
 
     entries = make_fake_entry(FULL_PNAS)
-    abbreviated = betterbib.journal_abbrev(entries, custom_abbrev=infile)
-    assert abbreviated["foo"].fields["journal"] == "PNAS"
+    betterbib.journal_abbrev(entries, custom_abbrev=infile)
+    assert entries["foo"].fields["journal"] == "PNAS"
 
 
 @pytest.mark.skipif(not data_file_exists, reason="Data file missing")
@@ -60,8 +60,8 @@ def test_standard_abbrev_long():
     abbrevs = [PNAS_ABBREV]
     for journal, abbrev in zip(journals, abbrevs):
         entries = make_fake_entry(abbrev)
-        abbreviated = betterbib.journal_abbrev(entries, long_journal_names=True)
-        assert abbreviated["foo"].fields["journal"] == journal
+        betterbib.journal_abbrev(entries, long_journal_names=True)
+        assert entries["foo"].fields["journal"] == journal
 
 
 @pytest.mark.skipif(not data_file_exists, reason="Data file missing")
@@ -72,5 +72,5 @@ def test_custom_abbrev_long():
         f.write(super_short)
 
     entries = make_fake_entry(PNAS_ABBREV)
-    abbreviated = betterbib.journal_abbrev(entries, long_journal_names=True)
-    assert abbreviated["foo"].fields["journal"] == FULL_PNAS
+    betterbib.journal_abbrev(entries, long_journal_names=True)
+    assert entries["foo"].fields["journal"] == FULL_PNAS

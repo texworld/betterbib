@@ -10,7 +10,7 @@ def journal_abbrev(
     d: dict[str, Entry],
     long_journal_names: bool = False,
     custom_abbrev: str | None = None,
-) -> dict[str, Entry]:
+) -> None:
     this_dir = Path(__file__).resolve().parent
     with open(this_dir / "data/journals.json") as f:
         table = json.load(f)
@@ -37,5 +37,3 @@ def journal_abbrev(
                 value.fields["journal"] = table_keys_lower[journal.lower()]
             except KeyError:
                 pass
-
-    return d

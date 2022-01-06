@@ -214,7 +214,7 @@ def _translate_title(val, dictionary=create_dict()):
     return " ".join(words)
 
 
-def sanitize_title(d) -> None:
+def preserve_title_capitalization(d: dict[str, Entry]) -> None:
     for _, entry in d.items():
         try:
             title = entry.fields["title"]
@@ -223,11 +223,48 @@ def sanitize_title(d) -> None:
             warn(f"'entry' {entry} has no title")
 
 
+def set_page_range_separator(d: dict[str, Entry], string: str) -> None:
+    # Replace any number of dashes (hypen, en dash, em dash etc.) by
+    # page_range_separator; see
+    # <https://tex.stackexchange.com/a/58671/13262>
+    # <https://jkorpela.fi/dashes.html>
+    chars = "".join(
+        [
+            "-",
+            "\N{HYPHEN}",
+            "\N{NON-BREAKING HYPHEN}",
+            "\N{FIGURE DASH}",
+            "\N{EN DASH}",
+            "\N{EM DASH}",
+            "\N{HORIZONTAL BAR}",
+        ]
+    )
+    for _, entry in d.items():
+        if "pages" not in entry.fields:
+            continue
+        entry.fields["pages"] = re.sub(f"[{chars}]+", string, entry.fields["pages"])
+
+
+def remove_multiple_spaces(d: dict[str, Entry]) -> None:
+    for _, entry in d.items():
+        for key, value in entry.fields.items():
+            if key in ["url", "doi"]:
+                continue
+            try:
+                value = re.sub(" +", " ", value)
+                # Remove trailing spaces
+                value = value.rstrip()
+            except TypeError:
+                # expected unicode for encode input, but got int instead
+                pass
+            else:
+                entry.fields[key] = value
+
+
 def pybtex_to_bibtex_string(
     entry: Entry,
     bibtex_key: str,
     delimiters: tuple[str, str] = ("{", "}"),
-    page_range_separator: str = "--",
     indent: str = " ",
     sort: bool = False,
     unicode: bool = True,
@@ -255,42 +292,24 @@ def pybtex_to_bibtex_string(
     for key in keys:
         value = entry.fields[key]
 
-        try:
-            value = value.replace("\N{REPLACEMENT CHARACTER}", "?")
-        except AttributeError:
-            pass
-
-        try:
-            if key not in ["url", "doi"]:
-                # Parse the original value to get a unified version
-                # value = translator.latex_to_text(value)
-                # # back to latex to escape "&" etc.
-                # value = unicode_to_latex(value)
-                # Replace multiple spaces by one
-                value = re.sub(" +", " ", value)
-                # Remove trailing spaces
-                value = value.rstrip()
-        except TypeError:
-            # expected unicode for encode input, but got int instead
-            pass
-
         # Always make keys lowercase
         key = key.lower()
-
-        if key == "pages":
-            # Replace any number of dashes (hypen, en dash, em dash etc.) by
-            # page_range_separator; see
-            # <https://tex.stackexchange.com/a/58671/13262>
-            # <https://jkorpela.fi/dashes.html>
-            value = re.sub(
-                "[-\u2010\u2011\u2012\u2013\u2014\u2015]+", page_range_separator, value
-            )
 
         if key == "month":
             month_string = translate_month(value)
             if month_string:
                 content.append(f"{key} = {month_string}")
             continue
+
+        try:
+            value = value.replace("\N{REPLACEMENT CHARACTER}", "?")
+        except AttributeError:
+            pass
+
+        # skip title; otherwise, the "protective" braces (e.g., "{Krylov}") get
+        # escaped as well
+        if not unicode and key != "title":
+            value = unicode_to_latex(value)
 
         if value is not None:
             content.append(f"{key} = {left}{value}{right}")
@@ -438,7 +457,6 @@ def heuristic_unique_result(results, d):
 def dict_to_string(
     od: dict[str, Entry],
     delimiter_type: str,
-    page_range_separator: str,
     tab_indent: bool,
     preamble: list | None = None,
     unicode: bool = True,
@@ -468,19 +486,17 @@ def dict_to_string(
         )
 
     # Add segments for each bibtex entry in order
-    segments.extend(
-        [
-            pybtex_to_bibtex_string(
-                d,
-                bib_id,
-                delimiters=delimiters,
-                page_range_separator=page_range_separator,
-                indent="\t" if tab_indent else " ",
-                unicode=unicode,
-            )
-            for bib_id, d in od.items()
-        ]
-    )
+    segments += [
+        pybtex_to_bibtex_string(
+            d,
+            bib_id,
+            delimiters=delimiters,
+            indent="\t" if tab_indent else " ",
+            unicode=unicode,
+        )
+        for bib_id, d in od.items()
+    ]
+
     return "\n\n".join(segments) + "\n"
 
 

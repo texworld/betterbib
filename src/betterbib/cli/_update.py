@@ -1,7 +1,14 @@
 from ..adapt_doi_urls import adapt_doi_urls
 from ..journal_abbrev import journal_abbrev
 from ..sync import sync
-from ..tools import bibtex_parser, dict_to_string, sanitize_title, write
+from ..tools import (
+    bibtex_parser,
+    dict_to_string,
+    preserve_title_capitalization,
+    remove_multiple_spaces,
+    set_page_range_separator,
+    write,
+)
 from .helpers import add_file_parser_arguments, add_formatting_parser_arguments
 
 
@@ -23,16 +30,17 @@ def run(args):
             args.num_concurrent_requests,
             args.in_place,
         )
-        d = adapt_doi_urls(d, args.doi_url_type)
-        sanitize_title(d)
-        d = journal_abbrev(d, args.long_journal_names, args.extra_abbrev_file)
+        adapt_doi_urls(d, args.doi_url_type)
+        preserve_title_capitalization(d)
+        set_page_range_separator(d, "--")
+        remove_multiple_spaces(d)
+        journal_abbrev(d, args.long_journal_names, args.extra_abbrev_file)
 
         string = dict_to_string(
             d,
             args.delimiter_type,
             tab_indent=args.tab_indent,
-            unicode=not args.latex_output,
-            page_range_separator="--",
+            unicode=args.unicode_output,
         )
 
         write(string, infile if args.in_place else None)
@@ -70,10 +78,10 @@ def add_args(parser):
         help="number of concurrent HTTPS requests (default: 10)",
     )
     parser.add_argument(
-        "-a",
-        "--latex-output",
+        "-u",
+        "--unicode-output",
         action="store_true",
         default=False,
-        help="force LaTeX output (default: unicode)",
+        help="unicode output (default: escape special characters)",
     )
     return parser
