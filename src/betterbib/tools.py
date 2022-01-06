@@ -278,9 +278,13 @@ def pybtex_to_bibtex_string(
         key = key.lower()
 
         if key == "pages":
-            # Replace any number of `-` by page_range_separator; see
+            # Replace any number of dashes (hypen, en dash, em dash etc.) by
+            # page_range_separator; see
             # <https://tex.stackexchange.com/a/58671/13262>
-            value = re.sub("-+", page_range_separator, value)
+            # <https://jkorpela.fi/dashes.html>
+            value = re.sub(
+                "[-\u2010\u2011\u2012\u2013\u2014\u2015]+", page_range_separator, value
+            )
 
         if key == "month":
             month_string = translate_month(value)
