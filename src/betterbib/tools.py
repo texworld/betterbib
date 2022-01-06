@@ -223,11 +223,32 @@ def sanitize_title(d) -> None:
             warn(f"'entry' {entry} has no title")
 
 
+def set_page_range_separator(d: dict[str, Entry], string: str) -> None:
+    # Replace any number of dashes (hypen, en dash, em dash etc.) by
+    # page_range_separator; see
+    # <https://tex.stackexchange.com/a/58671/13262>
+    # <https://jkorpela.fi/dashes.html>
+    chars = "".join(
+        [
+            "-",
+            "\N{HYPHEN}",
+            "\N{NON-BREAKING HYPHEN}",
+            "\N{FIGURE DASH}",
+            "\N{EN DASH}",
+            "\N{EM DASH}",
+            "\N{HORIZONTAL BAR}",
+        ]
+    )
+    for _, entry in d.items():
+        if "pages" not in entry.fields:
+            continue
+        entry.fields["pages"] = re.sub(f"[{chars}]+", string, entry.field["pages"])
+
+
 def pybtex_to_bibtex_string(
     entry: Entry,
     bibtex_key: str,
     delimiters: tuple[str, str] = ("{", "}"),
-    page_range_separator: str = "--",
     indent: str = " ",
     sort: bool = False,
     unicode: bool = True,
@@ -276,15 +297,6 @@ def pybtex_to_bibtex_string(
 
         # Always make keys lowercase
         key = key.lower()
-
-        if key == "pages":
-            # Replace any number of dashes (hypen, en dash, em dash etc.) by
-            # page_range_separator; see
-            # <https://tex.stackexchange.com/a/58671/13262>
-            # <https://jkorpela.fi/dashes.html>
-            value = re.sub(
-                "[-\u2010\u2011\u2012\u2013\u2014\u2015]+", page_range_separator, value
-            )
 
         if key == "month":
             month_string = translate_month(value)
@@ -438,7 +450,6 @@ def heuristic_unique_result(results, d):
 def dict_to_string(
     od: dict[str, Entry],
     delimiter_type: str,
-    page_range_separator: str,
     tab_indent: bool,
     preamble: list | None = None,
     unicode: bool = True,
@@ -468,19 +479,17 @@ def dict_to_string(
         )
 
     # Add segments for each bibtex entry in order
-    segments.extend(
-        [
-            pybtex_to_bibtex_string(
-                d,
-                bib_id,
-                delimiters=delimiters,
-                page_range_separator=page_range_separator,
-                indent="\t" if tab_indent else " ",
-                unicode=unicode,
-            )
-            for bib_id, d in od.items()
-        ]
-    )
+    segments += [
+        pybtex_to_bibtex_string(
+            d,
+            bib_id,
+            delimiters=delimiters,
+            indent="\t" if tab_indent else " ",
+            unicode=unicode,
+        )
+        for bib_id, d in od.items()
+    ]
+
     return "\n\n".join(segments) + "\n"
 
 
